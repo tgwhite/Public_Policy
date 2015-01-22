@@ -1,0 +1,2 @@
+
+The original Excel file in this location, "oecd_historical_toprate.xls", was downloaded from [here](http://www.taxpolicycenter.org/taxfacts/displayafact.cfm?Docid=105&Topic2id=95). "oecd_historical_toprate_raw.csv" is simply a raw version of this file.  
