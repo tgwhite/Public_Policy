@@ -13,6 +13,9 @@ library(Hmisc)
 library(extrafont)
 options(stringsAsFactors = F)
 
+##### Helper parameters #####
+out_directory = "C:/Users/taylor/Dropbox/WildPolicy/Public/Output/social_policy"
+
 ##### Data import and cleaning #####
 marriage_tab_url = "http://www.cdc.gov/nchs/nvss/marriage_divorce_tables.htm"
 extracted_tables = readHTMLTable(marriage_tab_url)
@@ -77,10 +80,12 @@ scatterplot = ggplot(cleaned_tables_stacked_wide, aes(national_marriage_rate, na
   geom_point()
 
 # export plots #
-setwd("C:/Users/taylor/Dropbox/WildPolicy/Output/social_policy")
+dir.create(out_directory, recursive = T)
 
-ggsave("marriage_vs_divorce_scatter.png", plot = scatterplot, 
+ggsave(paste0(out_directory, "/marriage_vs_divorce_scatter.png"),        
+       plot = scatterplot, 
        height = 8, width = 10, units = "in")
 
-ggsave("marriage_vs_divorce_lines.png", plot = lineplot, 
+ggsave(paste0(out_directory, "/marriage_vs_divorce_lines.png"), 
+       plot = lineplot, 
        height = 8, width = 10, units = "in")
