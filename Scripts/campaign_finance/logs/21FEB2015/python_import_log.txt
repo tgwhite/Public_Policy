@@ -1,0 +1,1080 @@
+b'Skipping line 83839: expected 38 fields, saw 39\nSkipping line 84799: expected 38 fields, saw 39\nSkipping line 86776: expected 38 fields, saw 39\nSkipping line 88017: expected 38 fields, saw 39\nSkipping line 88166: expected 38 fields, saw 39\nSkipping line 90285: expected 38 fields, saw 39\nSkipping line 90286: expected 38 fields, saw 39\nSkipping line 92250: expected 38 fields, saw 39\nSkipping line 92253: expected 38 fields, saw 39\n' 
+
+b'Skipping line 62105: expected 12 fields, saw 13\n' 
+
+b'Skipping line 341: expected 86 fields, saw 98\nSkipping line 472: expected 86 fields, saw 113\nSkipping line 732: expected 86 fields, saw 89\nSkipping line 1782: expected 86 fields, saw 87\nSkipping line 109225: expected 86 fields, saw 89\nSkipping line 155370: expected 86 fields, saw 89\nSkipping line 167228: expected 86 fields, saw 87\nSkipping line 276379: expected 86 fields, saw 87\nSkipping line 318905: expected 86 fields, saw 88\n' 
+
+b'Skipping line 2959: expected 52 fields, saw 87\nSkipping line 4759: expected 52 fields, saw 53\nSkipping line 7500: expected 52 fields, saw 53\nSkipping line 13495: expected 52 fields, saw 53\nSkipping line 17505: expected 52 fields, saw 53\nSkipping line 19109: expected 52 fields, saw 53\nSkipping line 21168: expected 52 fields, saw 53\nSkipping line 23740: expected 52 fields, saw 53\nSkipping line 25799: expected 52 fields, saw 53\nSkipping line 32030: expected 52 fields, saw 53\nSkipping line 33176: expected 52 fields, saw 53\nSkipping line 36127: expected 52 fields, saw 53\nSkipping line 43421: expected 52 fields, saw 53\nSkipping line 46592: expected 52 fields, saw 53\nSkipping line 48789: expected 52 fields, saw 53\nSkipping line 50834: expected 52 fields, saw 53\nSkipping line 53211: expected 52 fields, saw 53\nSkipping line 55048: expected 52 fields, saw 53\nSkipping line 55294: expected 52 fields, saw 53\nSkipping line 57281: expected 52 fields, saw 53\nSkipping line 59776: expected 52 fields, saw 53\nSkipping line 64808: expected 52 fields, saw 53\nSkipping line 73924: expected 52 fields, saw 53\nSkipping line 77601: expected 52 fields, saw 53\nSkipping line 77751: expected 52 fields, saw 91\nSkipping line 79730: expected 52 fields, saw 53\nSkipping line 81273: expected 52 fields, saw 53\nSkipping line 82735: expected 52 fields, saw 53\nSkipping line 87180: expected 52 fields, saw 56\nSkipping line 87496: expected 52 fields, saw 60\nSkipping line 87499: expected 52 fields, saw 54\nSkipping line 87513: expected 52 fields, saw 54\nSkipping line 87652: expected 52 fields, saw 54\nSkipping line 87753: expected 52 fields, saw 54\nSkipping line 90668: expected 52 fields, saw 54\nSkipping line 91000: expected 52 fields, saw 62\nSkipping line 91006: expected 52 fields, saw 61\nSkipping line 91018: expected 52 fields, saw 54\nSkipping line 91074: expected 52 fields, saw 54\nSkipping line 91338: expected 52 fields, saw 55\nSkipping line 91428: expected 52 fields, saw 54\nSkipping line 91671: expected 52 fields, saw 54\nSkipping line 106428: expected 52 fields, saw 53\nSkipping line 108435: expected 52 fields, saw 53\nSkipping line 108499: expected 52 fields, saw 54\nSkipping line 109175: expected 52 fields, saw 62\nSkipping line 109795: expected 52 fields, saw 53\nSkipping line 109796: expected 52 fields, saw 53\nSkipping line 109888: expected 52 fields, saw 72\nSkipping line 112696: expected 52 fields, saw 75\nSkipping line 122463: expected 52 fields, saw 53\nSkipping line 122608: expected 52 fields, saw 53\nSkipping line 122785: expected 52 fields, saw 55\nSkipping line 123834: expected 52 fields, saw 55\nSkipping line 126363: expected 52 fields, saw 56\nSkipping line 138247: expected 52 fields, saw 53\nSkipping line 138898: expected 52 fields, saw 54\nSkipping line 139256: expected 52 fields, saw 63\nSkipping line 139985: expected 52 fields, saw 53\nSkipping line 142100: expected 52 fields, saw 74\nSkipping line 147040: expected 52 fields, saw 53\nSkipping line 156407: expected 52 fields, saw 53\nSkipping line 158772: expected 52 fields, saw 53\nSkipping line 160737: expected 52 fields, saw 55\nSkipping line 169031: expected 52 fields, saw 59\nSkipping line 182373: expected 52 fields, saw 82\nSkipping line 185237: expected 52 fields, saw 53\nSkipping line 189446: expected 52 fields, saw 58\nSkipping line 189855: expected 52 fields, saw 54\nSkipping line 196799: expected 52 fields, saw 54\nSkipping line 201330: expected 52 fields, saw 54\nSkipping line 224030: expected 52 fields, saw 54\n' 
+
+b'Skipping line 30382: expected 71 fields, saw 72\n' 
+
+b'Skipping line 230634: expected 33 fields, saw 34\nSkipping line 230638: expected 33 fields, saw 34\nSkipping line 236139: expected 33 fields, saw 34\nSkipping line 236143: expected 33 fields, saw 34\nSkipping line 236933: expected 33 fields, saw 34\nSkipping line 236937: expected 33 fields, saw 34\nSkipping line 241526: expected 33 fields, saw 34\nSkipping line 241530: expected 33 fields, saw 34\nSkipping line 256677: expected 33 fields, saw 34\nSkipping line 256681: expected 33 fields, saw 34\nSkipping line 391693: expected 33 fields, saw 34\n' 
+
+b'Skipping line 1172627: expected 53 fields, saw 54\n' 
+
+b'Skipping line 1669038: expected 53 fields, saw 54\n' 
+
+b'Skipping line 2747319: expected 53 fields, saw 54\nSkipping line 2747320: expected 53 fields, saw 54\nSkipping line 2748031: expected 53 fields, saw 54\nSkipping line 2748083: expected 53 fields, saw 54\nSkipping line 2748084: expected 53 fields, saw 54\nSkipping line 2748675: expected 53 fields, saw 54\nSkipping line 2748679: expected 53 fields, saw 54\nSkipping line 2750470: expected 53 fields, saw 54\nSkipping line 2751102: expected 53 fields, saw 54\nSkipping line 2751149: expected 53 fields, saw 54\nSkipping line 2751164: expected 53 fields, saw 54\nSkipping line 2751170: expected 53 fields, saw 54\nSkipping line 2767550: expected 53 fields, saw 54\nSkipping line 2775613: expected 53 fields, saw 54\nSkipping line 2775614: expected 53 fields, saw 54\nSkipping line 2787226: expected 53 fields, saw 54\nSkipping line 2797430: expected 53 fields, saw 54\nSkipping line 2797475: expected 53 fields, saw 54\nSkipping line 2797476: expected 53 fields, saw 54\nSkipping line 2798043: expected 53 fields, saw 54\nSkipping line 2798100: expected 53 fields, saw 54\nSkipping line 2798115: expected 53 fields, saw 54\nSkipping line 2798116: expected 53 fields, saw 54\nSkipping line 2798192: expected 53 fields, saw 54\nSkipping line 2798954: expected 53 fields, saw 54\nSkipping line 2805204: expected 53 fields, saw 54\nSkipping line 2809579: expected 53 fields, saw 54\nSkipping line 2809952: expected 53 fields, saw 54\nSkipping line 2809953: expected 53 fields, saw 54\nSkipping line 2809954: expected 53 fields, saw 54\nSkipping line 2847761: expected 53 fields, saw 54\nSkipping line 2887261: expected 53 fields, saw 54\nSkipping line 2889675: expected 53 fields, saw 54\nSkipping line 2889676: expected 53 fields, saw 54\nSkipping line 2916966: expected 53 fields, saw 54\nSkipping line 2916967: expected 53 fields, saw 54\nSkipping line 2960261: expected 53 fields, saw 54\nSkipping line 2966209: expected 53 fields, saw 54\nSkipping line 2966784: expected 53 fields, saw 54\nSkipping line 2977654: expected 53 fields, saw 54\nSkipping line 2977655: expected 53 fields, saw 54\nSkipping line 2977656: expected 53 fields, saw 54\nSkipping line 2980258: expected 53 fields, saw 54\nSkipping line 2981781: expected 53 fields, saw 54\nSkipping line 2981786: expected 53 fields, saw 54\nSkipping line 2997315: expected 53 fields, saw 54\nSkipping line 2997316: expected 53 fields, saw 54\n' 
+
+b'Skipping line 3012934: expected 53 fields, saw 54\nSkipping line 3012991: expected 53 fields, saw 54\nSkipping line 3017969: expected 53 fields, saw 54\nSkipping line 3017970: expected 53 fields, saw 54\nSkipping line 3017971: expected 53 fields, saw 54\nSkipping line 3047866: expected 53 fields, saw 54\nSkipping line 3050496: expected 53 fields, saw 54\nSkipping line 3058353: expected 53 fields, saw 54\nSkipping line 3097586: expected 53 fields, saw 54\nSkipping line 3102534: expected 53 fields, saw 54\nSkipping line 3104593: expected 53 fields, saw 54\nSkipping line 3104594: expected 53 fields, saw 54\nSkipping line 3105439: expected 53 fields, saw 54\nSkipping line 3105556: expected 53 fields, saw 54\nSkipping line 3105557: expected 53 fields, saw 54\nSkipping line 3105558: expected 53 fields, saw 54\nSkipping line 3106015: expected 53 fields, saw 54\nSkipping line 3106021: expected 53 fields, saw 54\nSkipping line 3106030: expected 53 fields, saw 54\nSkipping line 3106032: expected 53 fields, saw 54\nSkipping line 3106036: expected 53 fields, saw 54\nSkipping line 3107502: expected 53 fields, saw 54\nSkipping line 3114227: expected 53 fields, saw 54\nSkipping line 3115727: expected 53 fields, saw 54\nSkipping line 3118307: expected 53 fields, saw 54\nSkipping line 3143282: expected 53 fields, saw 54\nSkipping line 3143285: expected 53 fields, saw 54\nSkipping line 3189294: expected 53 fields, saw 54\nSkipping line 3205289: expected 53 fields, saw 54\nSkipping line 3205292: expected 53 fields, saw 54\nSkipping line 3206020: expected 53 fields, saw 54\nSkipping line 3206023: expected 53 fields, saw 54\nSkipping line 3206202: expected 53 fields, saw 54\nSkipping line 3206203: expected 53 fields, saw 54\nSkipping line 3210198: expected 53 fields, saw 54\nSkipping line 3246994: expected 53 fields, saw 54\nSkipping line 3246995: expected 53 fields, saw 54\nSkipping line 3246996: expected 53 fields, saw 54\nSkipping line 3252807: expected 53 fields, saw 54\nSkipping line 3253995: expected 53 fields, saw 54\nSkipping line 3263306: expected 53 fields, saw 54\nSkipping line 3263955: expected 53 fields, saw 54\nSkipping line 3283070: expected 53 fields, saw 54\nSkipping line 3283082: expected 53 fields, saw 54\nSkipping line 3295152: expected 53 fields, saw 54\nSkipping line 3394594: expected 53 fields, saw 54\nSkipping line 3394595: expected 53 fields, saw 54\nSkipping line 3394596: expected 53 fields, saw 54\nSkipping line 3404954: expected 53 fields, saw 54\nSkipping line 3404955: expected 53 fields, saw 54\nSkipping line 3405587: expected 53 fields, saw 54\nSkipping line 3405588: expected 53 fields, saw 54\nSkipping line 3405591: expected 53 fields, saw 54\nSkipping line 3405592: expected 53 fields, saw 54\nSkipping line 3405593: expected 53 fields, saw 54\nSkipping line 3433324: expected 53 fields, saw 54\nSkipping line 3435971: expected 53 fields, saw 54\nSkipping line 3438089: expected 53 fields, saw 54\nSkipping line 3438099: expected 53 fields, saw 54\nSkipping line 3441927: expected 53 fields, saw 54\nSkipping line 3443406: expected 53 fields, saw 54\nSkipping line 3459443: expected 53 fields, saw 54\nSkipping line 3471005: expected 53 fields, saw 54\nSkipping line 3500026: expected 53 fields, saw 54\n' 
+
+b'Skipping line 3530286: expected 53 fields, saw 54\nSkipping line 3530290: expected 53 fields, saw 54\nSkipping line 3530291: expected 53 fields, saw 54\nSkipping line 3530297: expected 53 fields, saw 54\nSkipping line 3530298: expected 53 fields, saw 54\nSkipping line 3530301: expected 53 fields, saw 54\nSkipping line 3530930: expected 53 fields, saw 54\nSkipping line 3532907: expected 53 fields, saw 54\nSkipping line 3537123: expected 53 fields, saw 54\nSkipping line 3542807: expected 53 fields, saw 54\nSkipping line 3546963: expected 53 fields, saw 54\nSkipping line 3546965: expected 53 fields, saw 54\nSkipping line 3546966: expected 53 fields, saw 54\nSkipping line 3546969: expected 53 fields, saw 54\nSkipping line 3547595: expected 53 fields, saw 54\nSkipping line 3547656: expected 53 fields, saw 54\nSkipping line 3549688: expected 53 fields, saw 54\nSkipping line 3560615: expected 53 fields, saw 54\nSkipping line 3566750: expected 53 fields, saw 54\nSkipping line 3567357: expected 53 fields, saw 54\nSkipping line 3567377: expected 53 fields, saw 54\nSkipping line 3567387: expected 53 fields, saw 54\nSkipping line 3567388: expected 53 fields, saw 54\nSkipping line 3567389: expected 53 fields, saw 54\nSkipping line 3567390: expected 53 fields, saw 54\nSkipping line 3572528: expected 53 fields, saw 54\nSkipping line 3593663: expected 53 fields, saw 54\nSkipping line 3594256: expected 53 fields, saw 54\nSkipping line 3600712: expected 53 fields, saw 54\nSkipping line 3606541: expected 53 fields, saw 54\nSkipping line 3606639: expected 53 fields, saw 54\nSkipping line 3607264: expected 53 fields, saw 54\nSkipping line 3607288: expected 53 fields, saw 54\nSkipping line 3607971: expected 53 fields, saw 54\nSkipping line 3610005: expected 53 fields, saw 54\nSkipping line 3612429: expected 53 fields, saw 54\nSkipping line 3615175: expected 53 fields, saw 54\nSkipping line 3634979: expected 53 fields, saw 54\nSkipping line 3638707: expected 53 fields, saw 54\nSkipping line 3663654: expected 53 fields, saw 54\nSkipping line 3663655: expected 53 fields, saw 54\nSkipping line 3663656: expected 53 fields, saw 54\nSkipping line 3663657: expected 53 fields, saw 54\nSkipping line 3663658: expected 53 fields, saw 54\nSkipping line 3663659: expected 53 fields, saw 54\nSkipping line 3663660: expected 53 fields, saw 54\nSkipping line 3665520: expected 53 fields, saw 54\nSkipping line 3666140: expected 53 fields, saw 54\nSkipping line 3669681: expected 53 fields, saw 54\nSkipping line 3670400: expected 53 fields, saw 54\nSkipping line 3673486: expected 53 fields, saw 54\nSkipping line 3673487: expected 53 fields, saw 54\nSkipping line 3673488: expected 53 fields, saw 54\nSkipping line 3673489: expected 53 fields, saw 54\nSkipping line 3674193: expected 53 fields, saw 54\nSkipping line 3674194: expected 53 fields, saw 54\nSkipping line 3674195: expected 53 fields, saw 54\nSkipping line 3675515: expected 53 fields, saw 54\nSkipping line 3676418: expected 53 fields, saw 54\nSkipping line 3676442: expected 53 fields, saw 54\nSkipping line 3676471: expected 53 fields, saw 54\nSkipping line 3677079: expected 53 fields, saw 54\nSkipping line 3677115: expected 53 fields, saw 54\nSkipping line 3677116: expected 53 fields, saw 54\nSkipping line 3677117: expected 53 fields, saw 54\nSkipping line 3682983: expected 53 fields, saw 54\nSkipping line 3723816: expected 53 fields, saw 54\nSkipping line 3730869: expected 53 fields, saw 54\nSkipping line 3731852: expected 53 fields, saw 54\nSkipping line 3732352: expected 53 fields, saw 54\nSkipping line 3739017: expected 53 fields, saw 54\nSkipping line 3745366: expected 53 fields, saw 54\nSkipping line 3746937: expected 53 fields, saw 54\nSkipping line 3765567: expected 53 fields, saw 54\nSkipping line 3765786: expected 53 fields, saw 54\nSkipping line 3816699: expected 53 fields, saw 54\nSkipping line 3890802: expected 53 fields, saw 54\nSkipping line 3918278: expected 53 fields, saw 54\nSkipping line 3927981: expected 53 fields, saw 54\nSkipping line 3987093: expected 53 fields, saw 54\nSkipping line 3988535: expected 53 fields, saw 54\nSkipping line 3994563: expected 53 fields, saw 54\nSkipping line 3996160: expected 53 fields, saw 54\nSkipping line 3996767: expected 53 fields, saw 54\n' 
+
+b'Skipping line 4004190: expected 53 fields, saw 54\nSkipping line 4044236: expected 53 fields, saw 54\nSkipping line 4077374: expected 53 fields, saw 54\nSkipping line 4096698: expected 53 fields, saw 54\nSkipping line 4101554: expected 53 fields, saw 54\nSkipping line 4101555: expected 53 fields, saw 54\nSkipping line 4104702: expected 53 fields, saw 54\nSkipping line 4106660: expected 53 fields, saw 54\nSkipping line 4106669: expected 53 fields, saw 54\nSkipping line 4106670: expected 53 fields, saw 54\nSkipping line 4107087: expected 53 fields, saw 54\nSkipping line 4107949: expected 53 fields, saw 54\nSkipping line 4108626: expected 53 fields, saw 54\nSkipping line 4110375: expected 53 fields, saw 54\nSkipping line 4110559: expected 53 fields, saw 54\nSkipping line 4110560: expected 53 fields, saw 54\nSkipping line 4111488: expected 53 fields, saw 54\nSkipping line 4113559: expected 53 fields, saw 54\nSkipping line 4135402: expected 53 fields, saw 54\nSkipping line 4135403: expected 53 fields, saw 54\nSkipping line 4136416: expected 53 fields, saw 54\nSkipping line 4146787: expected 53 fields, saw 54\nSkipping line 4149188: expected 53 fields, saw 54\nSkipping line 4150809: expected 53 fields, saw 54\nSkipping line 4152274: expected 53 fields, saw 54\nSkipping line 4153170: expected 53 fields, saw 54\nSkipping line 4155419: expected 53 fields, saw 54\nSkipping line 4158167: expected 53 fields, saw 54\nSkipping line 4158170: expected 53 fields, saw 54\nSkipping line 4169075: expected 53 fields, saw 54\nSkipping line 4195275: expected 53 fields, saw 54\nSkipping line 4196154: expected 53 fields, saw 54\nSkipping line 4203409: expected 53 fields, saw 54\nSkipping line 4203753: expected 53 fields, saw 54\nSkipping line 4203818: expected 53 fields, saw 54\nSkipping line 4207303: expected 53 fields, saw 54\nSkipping line 4208844: expected 53 fields, saw 54\nSkipping line 4210333: expected 53 fields, saw 54\nSkipping line 4210334: expected 53 fields, saw 54\nSkipping line 4216507: expected 53 fields, saw 54\nSkipping line 4224641: expected 53 fields, saw 54\nSkipping line 4226900: expected 53 fields, saw 54\nSkipping line 4246355: expected 53 fields, saw 54\nSkipping line 4286260: expected 53 fields, saw 54\nSkipping line 4288392: expected 53 fields, saw 54\nSkipping line 4289776: expected 53 fields, saw 54\nSkipping line 4289863: expected 53 fields, saw 54\nSkipping line 4290931: expected 53 fields, saw 54\nSkipping line 4330934: expected 53 fields, saw 54\nSkipping line 4372248: expected 53 fields, saw 54\nSkipping line 4372249: expected 53 fields, saw 54\nSkipping line 4372250: expected 53 fields, saw 54\nSkipping line 4373034: expected 53 fields, saw 54\nSkipping line 4412448: expected 53 fields, saw 54\nSkipping line 4412454: expected 53 fields, saw 54\nSkipping line 4429013: expected 53 fields, saw 54\nSkipping line 4432870: expected 53 fields, saw 54\nSkipping line 4434672: expected 53 fields, saw 54\nSkipping line 4434673: expected 53 fields, saw 54\nSkipping line 4434674: expected 53 fields, saw 54\nSkipping line 4438625: expected 53 fields, saw 54\nSkipping line 4438626: expected 53 fields, saw 54\nSkipping line 4456873: expected 53 fields, saw 54\nSkipping line 4456874: expected 53 fields, saw 54\nSkipping line 4456875: expected 53 fields, saw 54\nSkipping line 4457042: expected 53 fields, saw 54\nSkipping line 4462096: expected 53 fields, saw 54\nSkipping line 4477399: expected 53 fields, saw 54\nSkipping line 4477406: expected 53 fields, saw 54\nSkipping line 4498951: expected 53 fields, saw 54\n' 
+
+b'Skipping line 4511842: expected 53 fields, saw 54\nSkipping line 4518496: expected 53 fields, saw 54\nSkipping line 4519640: expected 53 fields, saw 54\nSkipping line 4523652: expected 53 fields, saw 54\nSkipping line 4546366: expected 53 fields, saw 54\nSkipping line 4552438: expected 53 fields, saw 54\nSkipping line 4561133: expected 53 fields, saw 54\nSkipping line 4566435: expected 53 fields, saw 54\nSkipping line 4568225: expected 53 fields, saw 54\n' 
+
+b'Skipping line 238687: expected 17 fields, saw 18\n' 
+
+b'Skipping line 2373: expected 24 fields, saw 25\nSkipping line 4185: expected 24 fields, saw 25\nSkipping line 4293: expected 24 fields, saw 25\nSkipping line 4326: expected 24 fields, saw 25\nSkipping line 4329: expected 24 fields, saw 25\nSkipping line 4362: expected 24 fields, saw 25\nSkipping line 7814: expected 24 fields, saw 25\nSkipping line 7816: expected 24 fields, saw 25\nSkipping line 7819: expected 24 fields, saw 25\nSkipping line 7821: expected 24 fields, saw 25\nSkipping line 11664: expected 24 fields, saw 25\nSkipping line 13987: expected 24 fields, saw 26\nSkipping line 21911: expected 24 fields, saw 25\nSkipping line 21918: expected 24 fields, saw 25\nSkipping line 21923: expected 24 fields, saw 25\nSkipping line 21930: expected 24 fields, saw 25\n' 
+
+b'Skipping line 62937: expected 24 fields, saw 25\nSkipping line 64159: expected 24 fields, saw 25\nSkipping line 66082: expected 24 fields, saw 25\nSkipping line 74124: expected 24 fields, saw 27\nSkipping line 74155: expected 24 fields, saw 27\nSkipping line 82350: expected 24 fields, saw 25\nSkipping line 82355: expected 24 fields, saw 25\nSkipping line 103410: expected 24 fields, saw 27\nSkipping line 191090: expected 24 fields, saw 25\n' 
+
+b'Skipping line 25871: expected 25 fields, saw 26\nSkipping line 25872: expected 25 fields, saw 26\nSkipping line 25996: expected 25 fields, saw 26\nSkipping line 25997: expected 25 fields, saw 26\nSkipping line 27238: expected 25 fields, saw 26\nSkipping line 27239: expected 25 fields, saw 26\nSkipping line 27241: expected 25 fields, saw 26\nSkipping line 27242: expected 25 fields, saw 26\nSkipping line 27243: expected 25 fields, saw 26\nSkipping line 27244: expected 25 fields, saw 26\nSkipping line 27245: expected 25 fields, saw 26\nSkipping line 27246: expected 25 fields, saw 26\nSkipping line 27247: expected 25 fields, saw 26\nSkipping line 27248: expected 25 fields, saw 26\nSkipping line 27249: expected 25 fields, saw 26\nSkipping line 27250: expected 25 fields, saw 26\nSkipping line 27251: expected 25 fields, saw 26\nSkipping line 27252: expected 25 fields, saw 26\nSkipping line 27253: expected 25 fields, saw 26\nSkipping line 27254: expected 25 fields, saw 26\nSkipping line 27255: expected 25 fields, saw 26\nSkipping line 27256: expected 25 fields, saw 26\nSkipping line 27257: expected 25 fields, saw 26\nSkipping line 27258: expected 25 fields, saw 26\nSkipping line 27259: expected 25 fields, saw 26\nSkipping line 27260: expected 25 fields, saw 26\nSkipping line 27261: expected 25 fields, saw 26\nSkipping line 27262: expected 25 fields, saw 26\nSkipping line 27263: expected 25 fields, saw 26\nSkipping line 27721: expected 25 fields, saw 26\nSkipping line 27836: expected 25 fields, saw 26\nSkipping line 27837: expected 25 fields, saw 26\nSkipping line 27838: expected 25 fields, saw 26\nSkipping line 27839: expected 25 fields, saw 26\nSkipping line 27840: expected 25 fields, saw 26\nSkipping line 27841: expected 25 fields, saw 26\nSkipping line 27842: expected 25 fields, saw 26\nSkipping line 27843: expected 25 fields, saw 26\nSkipping line 27844: expected 25 fields, saw 26\nSkipping line 27845: expected 25 fields, saw 26\nSkipping line 27846: expected 25 fields, saw 26\nSkipping line 27847: expected 25 fields, saw 26\nSkipping line 27848: expected 25 fields, saw 26\nSkipping line 27849: expected 25 fields, saw 26\nSkipping line 27850: expected 25 fields, saw 26\nSkipping line 27851: expected 25 fields, saw 26\nSkipping line 27852: expected 25 fields, saw 26\nSkipping line 27853: expected 25 fields, saw 26\nSkipping line 27854: expected 25 fields, saw 26\nSkipping line 27855: expected 25 fields, saw 26\nSkipping line 27856: expected 25 fields, saw 26\nSkipping line 27857: expected 25 fields, saw 26\nSkipping line 27858: expected 25 fields, saw 26\nSkipping line 27859: expected 25 fields, saw 26\nSkipping line 27860: expected 25 fields, saw 26\nSkipping line 27861: expected 25 fields, saw 26\nSkipping line 27862: expected 25 fields, saw 26\nSkipping line 27863: expected 25 fields, saw 26\nSkipping line 27864: expected 25 fields, saw 26\nSkipping line 27865: expected 25 fields, saw 26\nSkipping line 27866: expected 25 fields, saw 26\nSkipping line 27867: expected 25 fields, saw 26\nSkipping line 27868: expected 25 fields, saw 26\nSkipping line 27869: expected 25 fields, saw 26\nSkipping line 27870: expected 25 fields, saw 26\nSkipping line 27871: expected 25 fields, saw 26\nSkipping line 27872: expected 25 fields, saw 26\nSkipping line 27873: expected 25 fields, saw 26\nSkipping line 27874: expected 25 fields, saw 26\nSkipping line 27875: expected 25 fields, saw 26\nSkipping line 27876: expected 25 fields, saw 26\nSkipping line 108161: expected 25 fields, saw 27\nSkipping line 108162: expected 25 fields, saw 29\nSkipping line 108163: expected 25 fields, saw 29\nSkipping line 115765: expected 25 fields, saw 26\nSkipping line 150091: expected 25 fields, saw 26\nSkipping line 150092: expected 25 fields, saw 26\nSkipping line 150093: expected 25 fields, saw 26\nSkipping line 151461: expected 25 fields, saw 26\nSkipping line 151462: expected 25 fields, saw 26\nSkipping line 151463: expected 25 fields, saw 26\nSkipping line 151464: expected 25 fields, saw 26\nSkipping line 151465: expected 25 fields, saw 26\nSkipping line 151466: expected 25 fields, saw 26\nSkipping line 151467: expected 25 fields, saw 26\nSkipping line 151468: expected 25 fields, saw 26\nSkipping line 151469: expected 25 fields, saw 26\nSkipping line 151470: expected 25 fields, saw 26\nSkipping line 158788: expected 25 fields, saw 26\nSkipping line 158789: expected 25 fields, saw 26\nSkipping line 158790: expected 25 fields, saw 26\nSkipping line 158904: expected 25 fields, saw 26\nSkipping line 158905: expected 25 fields, saw 26\nSkipping line 158906: expected 25 fields, saw 26\nSkipping line 158907: expected 25 fields, saw 26\nSkipping line 158908: expected 25 fields, saw 26\nSkipping line 158909: expected 25 fields, saw 26\nSkipping line 158910: expected 25 fields, saw 26\nSkipping line 158911: expected 25 fields, saw 26\nSkipping line 158912: expected 25 fields, saw 26\nSkipping line 158913: expected 25 fields, saw 26\n' 
+
+b'Skipping line 55919: expected 49 fields, saw 50\nSkipping line 56377: expected 49 fields, saw 50\nSkipping line 59052: expected 49 fields, saw 50\nSkipping line 59636: expected 49 fields, saw 50\nSkipping line 60758: expected 49 fields, saw 50\nSkipping line 61131: expected 49 fields, saw 50\nSkipping line 61132: expected 49 fields, saw 50\nSkipping line 61713: expected 49 fields, saw 50\nSkipping line 62545: expected 49 fields, saw 50\nSkipping line 62549: expected 49 fields, saw 50\nSkipping line 63223: expected 49 fields, saw 50\nSkipping line 65714: expected 49 fields, saw 50\n' 
+
+b'Skipping line 6262: expected 26 fields, saw 27\nSkipping line 6449: expected 26 fields, saw 28\nSkipping line 6561: expected 26 fields, saw 28\nSkipping line 8216: expected 26 fields, saw 27\nSkipping line 8483: expected 26 fields, saw 27\nSkipping line 8484: expected 26 fields, saw 27\nSkipping line 9687: expected 26 fields, saw 32\nSkipping line 9688: expected 26 fields, saw 27\nSkipping line 10111: expected 26 fields, saw 28\nSkipping line 12219: expected 26 fields, saw 28\nSkipping line 12899: expected 26 fields, saw 27\nSkipping line 13484: expected 26 fields, saw 29\nSkipping line 13501: expected 26 fields, saw 30\nSkipping line 13663: expected 26 fields, saw 29\nSkipping line 13744: expected 26 fields, saw 28\nSkipping line 15364: expected 26 fields, saw 28\nSkipping line 15369: expected 26 fields, saw 32\nSkipping line 15397: expected 26 fields, saw 47\nSkipping line 15402: expected 26 fields, saw 48\nSkipping line 15462: expected 26 fields, saw 27\nSkipping line 16531: expected 26 fields, saw 50\nSkipping line 16895: expected 26 fields, saw 29\nSkipping line 17584: expected 26 fields, saw 28\nSkipping line 18869: expected 26 fields, saw 28\nSkipping line 18875: expected 26 fields, saw 28\nSkipping line 19934: expected 26 fields, saw 29\nSkipping line 19935: expected 26 fields, saw 27\nSkipping line 21269: expected 26 fields, saw 27\nSkipping line 24873: expected 26 fields, saw 29\nSkipping line 25003: expected 26 fields, saw 27\nSkipping line 25166: expected 26 fields, saw 27\nSkipping line 29862: expected 26 fields, saw 29\nSkipping line 29863: expected 26 fields, saw 27\nSkipping line 30327: expected 26 fields, saw 29\nSkipping line 30401: expected 26 fields, saw 29\nSkipping line 30771: expected 26 fields, saw 27\nSkipping line 31038: expected 26 fields, saw 27\nSkipping line 31330: expected 26 fields, saw 27\nSkipping line 31331: expected 26 fields, saw 27\nSkipping line 32291: expected 26 fields, saw 27\nSkipping line 33060: expected 26 fields, saw 28\nSkipping line 37343: expected 26 fields, saw 27\nSkipping line 39764: expected 26 fields, saw 28\nSkipping line 40880: expected 26 fields, saw 28\nSkipping line 42011: expected 26 fields, saw 28\nSkipping line 42136: expected 26 fields, saw 28\nSkipping line 42138: expected 26 fields, saw 27\nSkipping line 42139: expected 26 fields, saw 27\nSkipping line 42141: expected 26 fields, saw 29\nSkipping line 42142: expected 26 fields, saw 27\nSkipping line 42155: expected 26 fields, saw 29\nSkipping line 42301: expected 26 fields, saw 28\nSkipping line 42781: expected 26 fields, saw 29\nSkipping line 45980: expected 26 fields, saw 28\nSkipping line 50058: expected 26 fields, saw 28\nSkipping line 142405: expected 26 fields, saw 29\nSkipping line 154078: expected 26 fields, saw 28\nSkipping line 154079: expected 26 fields, saw 36\nSkipping line 154087: expected 26 fields, saw 28\nSkipping line 155118: expected 26 fields, saw 28\nSkipping line 180453: expected 26 fields, saw 28\nSkipping line 180454: expected 26 fields, saw 36\nSkipping line 180586: expected 26 fields, saw 28\nSkipping line 182957: expected 26 fields, saw 27\nSkipping line 184581: expected 26 fields, saw 28\nSkipping line 184582: expected 26 fields, saw 36\nSkipping line 185045: expected 26 fields, saw 28\nSkipping line 222300: expected 26 fields, saw 27\nSkipping line 243487: expected 26 fields, saw 28\nSkipping line 250899: expected 26 fields, saw 28\nSkipping line 258775: expected 26 fields, saw 27\nSkipping line 262279: expected 26 fields, saw 27\nSkipping line 262660: expected 26 fields, saw 27\nSkipping line 263321: expected 26 fields, saw 29\nSkipping line 264901: expected 26 fields, saw 29\nSkipping line 265434: expected 26 fields, saw 27\nSkipping line 266157: expected 26 fields, saw 29\nSkipping line 271972: expected 26 fields, saw 27\nSkipping line 280380: expected 26 fields, saw 27\nSkipping line 287368: expected 26 fields, saw 27\nSkipping line 323758: expected 26 fields, saw 28\n' 
+
+b'Skipping line 278158: expected 10 fields, saw 12\n' 
+
+b'Skipping line 7891: expected 63 fields, saw 64\n' 
+
+b'Skipping line 1075958: expected 63 fields, saw 64\nSkipping line 1075959: expected 63 fields, saw 67\n' 
+
+b'Skipping line 3024514: expected 63 fields, saw 64\nSkipping line 3026515: expected 63 fields, saw 65\nSkipping line 3026517: expected 63 fields, saw 65\nSkipping line 3026518: expected 63 fields, saw 64\nSkipping line 3217518: expected 63 fields, saw 64\nSkipping line 3217528: expected 63 fields, saw 64\n' 
+
+b'Skipping line 3501731: expected 63 fields, saw 65\nSkipping line 3501734: expected 63 fields, saw 64\nSkipping line 3618081: expected 63 fields, saw 64\nSkipping line 3618782: expected 63 fields, saw 64\n' 
+
+b'Skipping line 4041546: expected 63 fields, saw 64\n' 
+
+b'Skipping line 5740420: expected 63 fields, saw 64\nSkipping line 5740421: expected 63 fields, saw 64\nSkipping line 5741271: expected 63 fields, saw 64\nSkipping line 5741272: expected 63 fields, saw 64\nSkipping line 5741273: expected 63 fields, saw 64\nSkipping line 5741274: expected 63 fields, saw 64\n' 
+
+b'Skipping line 6131523: expected 63 fields, saw 64\nSkipping line 6325821: expected 63 fields, saw 64\nSkipping line 6436216: expected 63 fields, saw 64\nSkipping line 6436566: expected 63 fields, saw 64\n' 
+
+b'Skipping line 6622384: expected 63 fields, saw 64\nSkipping line 6805628: expected 63 fields, saw 64\nSkipping line 6805629: expected 63 fields, saw 64\n' 
+
+b'Skipping line 7110617: expected 63 fields, saw 64\nSkipping line 7242918: expected 63 fields, saw 64\nSkipping line 7251882: expected 63 fields, saw 64\nSkipping line 7338107: expected 63 fields, saw 64\nSkipping line 7361668: expected 63 fields, saw 64\nSkipping line 7417119: expected 63 fields, saw 64\n' 
+
+b'Skipping line 7714810: expected 63 fields, saw 64\nSkipping line 7843769: expected 63 fields, saw 64\nSkipping line 7858781: expected 63 fields, saw 64\n' 
+
+b'Skipping line 8032317: expected 63 fields, saw 64\nSkipping line 8089908: expected 63 fields, saw 64\nSkipping line 8113616: expected 63 fields, saw 64\nSkipping line 8171495: expected 63 fields, saw 64\nSkipping line 8182204: expected 63 fields, saw 64\nSkipping line 8213448: expected 63 fields, saw 64\nSkipping line 8291963: expected 63 fields, saw 64\nSkipping line 8345053: expected 63 fields, saw 64\nSkipping line 8345054: expected 63 fields, saw 64\nSkipping line 8409870: expected 63 fields, saw 64\n' 
+
+b'Skipping line 8511215: expected 63 fields, saw 64\nSkipping line 8557540: expected 63 fields, saw 64\nSkipping line 8704294: expected 63 fields, saw 64\nSkipping line 8734761: expected 63 fields, saw 64\n' 
+
+b'Skipping line 32555: expected 37 fields, saw 38\nSkipping line 32556: expected 37 fields, saw 38\nSkipping line 32557: expected 37 fields, saw 38\n' 
+
+b'Skipping line 13745: expected 12 fields, saw 13\nSkipping line 13767: expected 12 fields, saw 13\nSkipping line 13768: expected 12 fields, saw 13\nSkipping line 13770: expected 12 fields, saw 13\nSkipping line 19424: expected 12 fields, saw 13\nSkipping line 19425: expected 12 fields, saw 13\nSkipping line 23374: expected 12 fields, saw 13\nSkipping line 27050: expected 12 fields, saw 13\nSkipping line 27079: expected 12 fields, saw 13\nSkipping line 27080: expected 12 fields, saw 13\nSkipping line 27549: expected 12 fields, saw 13\nSkipping line 27550: expected 12 fields, saw 13\nSkipping line 30786: expected 12 fields, saw 13\nSkipping line 32395: expected 12 fields, saw 13\nSkipping line 32561: expected 12 fields, saw 13\nSkipping line 32673: expected 12 fields, saw 13\nSkipping line 32674: expected 12 fields, saw 13\nSkipping line 32730: expected 12 fields, saw 13\nSkipping line 32731: expected 12 fields, saw 13\nSkipping line 32842: expected 12 fields, saw 13\nSkipping line 32944: expected 12 fields, saw 13\nSkipping line 32945: expected 12 fields, saw 13\nSkipping line 32946: expected 12 fields, saw 13\nSkipping line 32985: expected 12 fields, saw 13\nSkipping line 32986: expected 12 fields, saw 13\nSkipping line 33091: expected 12 fields, saw 13\nSkipping line 33092: expected 12 fields, saw 13\nSkipping line 33157: expected 12 fields, saw 13\n' 
+
+b'Skipping line 344124: expected 41 fields, saw 42\n' 
+
+b'Skipping line 559013: expected 41 fields, saw 42\n' 
+
+b'Skipping line 7956: expected 37 fields, saw 38\n' 
+
+b'Skipping line 31455: expected 7 fields, saw 23\nSkipping line 54214: expected 7 fields, saw 23\nSkipping line 82134: expected 7 fields, saw 8\nSkipping line 82824: expected 7 fields, saw 38\nSkipping line 82826: expected 7 fields, saw 32\nSkipping line 82859: expected 7 fields, saw 8\nSkipping line 83904: expected 7 fields, saw 62\nSkipping line 86212: expected 7 fields, saw 28\nSkipping line 86213: expected 7 fields, saw 65\nSkipping line 86214: expected 7 fields, saw 13\nSkipping line 86215: expected 7 fields, saw 33\nSkipping line 86310: expected 7 fields, saw 40\nSkipping line 86311: expected 7 fields, saw 29\nSkipping line 86312: expected 7 fields, saw 40\nSkipping line 86313: expected 7 fields, saw 28\nSkipping line 88231: expected 7 fields, saw 28\nSkipping line 100411: expected 7 fields, saw 10\nSkipping line 100413: expected 7 fields, saw 132\nSkipping line 136475: expected 7 fields, saw 12\nSkipping line 140933: expected 7 fields, saw 12\nSkipping line 166710: expected 7 fields, saw 12\nSkipping line 181992: expected 7 fields, saw 40\nSkipping line 182082: expected 7 fields, saw 10\nSkipping line 182548: expected 7 fields, saw 9\nSkipping line 185170: expected 7 fields, saw 12\nSkipping line 196261: expected 7 fields, saw 27\nSkipping line 199251: expected 7 fields, saw 8\nSkipping line 201312: expected 7 fields, saw 10\nSkipping line 203311: expected 7 fields, saw 11\nSkipping line 206464: expected 7 fields, saw 10\nSkipping line 211327: expected 7 fields, saw 8\nSkipping line 214077: expected 7 fields, saw 9\nSkipping line 217895: expected 7 fields, saw 8\nSkipping line 220319: expected 7 fields, saw 8\nSkipping line 231907: expected 7 fields, saw 9\nSkipping line 249800: expected 7 fields, saw 8\nSkipping line 250588: expected 7 fields, saw 9\nSkipping line 254898: expected 7 fields, saw 8\nSkipping line 259571: expected 7 fields, saw 10\nSkipping line 265304: expected 7 fields, saw 8\nSkipping line 279080: expected 7 fields, saw 9\nSkipping line 320959: expected 7 fields, saw 9\nSkipping line 331765: expected 7 fields, saw 9\nSkipping line 355216: expected 7 fields, saw 8\nSkipping line 355642: expected 7 fields, saw 315\nSkipping line 355775: expected 7 fields, saw 187\nSkipping line 355823: expected 7 fields, saw 8\nSkipping line 357427: expected 7 fields, saw 55\nSkipping line 367578: expected 7 fields, saw 8\nSkipping line 382714: expected 7 fields, saw 8\nSkipping line 387214: expected 7 fields, saw 8\nSkipping line 400776: expected 7 fields, saw 8\nSkipping line 402275: expected 7 fields, saw 9\nSkipping line 438879: expected 7 fields, saw 70\nSkipping line 453273: expected 7 fields, saw 9\nSkipping line 459884: expected 7 fields, saw 70\nSkipping line 492825: expected 7 fields, saw 70\nSkipping line 492826: expected 7 fields, saw 70\nSkipping line 494018: expected 7 fields, saw 70\n' 
+
+b'Skipping line 553442: expected 7 fields, saw 9\nSkipping line 572597: expected 7 fields, saw 8\nSkipping line 572598: expected 7 fields, saw 8\nSkipping line 572600: expected 7 fields, saw 8\nSkipping line 573265: expected 7 fields, saw 13\nSkipping line 573310: expected 7 fields, saw 8\nSkipping line 583865: expected 7 fields, saw 9\nSkipping line 593084: expected 7 fields, saw 9\nSkipping line 601615: expected 7 fields, saw 8\nSkipping line 627754: expected 7 fields, saw 9\nSkipping line 647895: expected 7 fields, saw 15\nSkipping line 648783: expected 7 fields, saw 9\nSkipping line 650080: expected 7 fields, saw 12\nSkipping line 674857: expected 7 fields, saw 22\nSkipping line 692280: expected 7 fields, saw 12\nSkipping line 717383: expected 7 fields, saw 21\nSkipping line 719365: expected 7 fields, saw 11\nSkipping line 720239: expected 7 fields, saw 8\nSkipping line 728920: expected 7 fields, saw 8\nSkipping line 730708: expected 7 fields, saw 8\nSkipping line 734117: expected 7 fields, saw 12\nSkipping line 746750: expected 7 fields, saw 25\nSkipping line 756085: expected 7 fields, saw 8\nSkipping line 757310: expected 7 fields, saw 8\nSkipping line 757387: expected 7 fields, saw 8\nSkipping line 759028: expected 7 fields, saw 8\nSkipping line 768943: expected 7 fields, saw 25\nSkipping line 769003: expected 7 fields, saw 9\nSkipping line 769782: expected 7 fields, saw 8\nSkipping line 772827: expected 7 fields, saw 11\nSkipping line 774979: expected 7 fields, saw 8\nSkipping line 781238: expected 7 fields, saw 9\nSkipping line 798406: expected 7 fields, saw 8\nSkipping line 801340: expected 7 fields, saw 8\nSkipping line 804461: expected 7 fields, saw 8\nSkipping line 806482: expected 7 fields, saw 25\nSkipping line 808026: expected 7 fields, saw 11\nSkipping line 811337: expected 7 fields, saw 25\nSkipping line 815682: expected 7 fields, saw 9\nSkipping line 818282: expected 7 fields, saw 33\nSkipping line 818802: expected 7 fields, saw 8\nSkipping line 832871: expected 7 fields, saw 9\nSkipping line 832931: expected 7 fields, saw 36\nSkipping line 839610: expected 7 fields, saw 34\nSkipping line 842649: expected 7 fields, saw 8\nSkipping line 846979: expected 7 fields, saw 8\nSkipping line 863664: expected 7 fields, saw 8\nSkipping line 886923: expected 7 fields, saw 8\nSkipping line 889301: expected 7 fields, saw 8\nSkipping line 889303: expected 7 fields, saw 8\nSkipping line 889305: expected 7 fields, saw 8\nSkipping line 889306: expected 7 fields, saw 8\nSkipping line 889307: expected 7 fields, saw 8\nSkipping line 889308: expected 7 fields, saw 8\nSkipping line 889759: expected 7 fields, saw 8\nSkipping line 892793: expected 7 fields, saw 11\nSkipping line 893320: expected 7 fields, saw 8\nSkipping line 895274: expected 7 fields, saw 8\nSkipping line 897358: expected 7 fields, saw 8\nSkipping line 898045: expected 7 fields, saw 25\nSkipping line 915057: expected 7 fields, saw 8\nSkipping line 919929: expected 7 fields, saw 8\nSkipping line 930456: expected 7 fields, saw 23\nSkipping line 935409: expected 7 fields, saw 12\nSkipping line 935726: expected 7 fields, saw 8\nSkipping line 935731: expected 7 fields, saw 8\nSkipping line 935732: expected 7 fields, saw 8\nSkipping line 935733: expected 7 fields, saw 8\nSkipping line 938692: expected 7 fields, saw 8\nSkipping line 940030: expected 7 fields, saw 9\nSkipping line 973107: expected 7 fields, saw 20\nSkipping line 983300: expected 7 fields, saw 53\nSkipping line 986582: expected 7 fields, saw 10\nSkipping line 986583: expected 7 fields, saw 20\nSkipping line 986792: expected 7 fields, saw 8\nSkipping line 992200: expected 7 fields, saw 15\n' 
+
+b'Skipping line 1020588: expected 7 fields, saw 19\nSkipping line 1021788: expected 7 fields, saw 18\nSkipping line 1023637: expected 7 fields, saw 8\nSkipping line 1025786: expected 7 fields, saw 19\nSkipping line 1028405: expected 7 fields, saw 9\nSkipping line 1034928: expected 7 fields, saw 8\nSkipping line 1066777: expected 7 fields, saw 132\nSkipping line 1072336: expected 7 fields, saw 15\nSkipping line 1078657: expected 7 fields, saw 9\nSkipping line 1082053: expected 7 fields, saw 48\nSkipping line 1094759: expected 7 fields, saw 9\nSkipping line 1096228: expected 7 fields, saw 15\nSkipping line 1134838: expected 7 fields, saw 18\nSkipping line 1138447: expected 7 fields, saw 13\nSkipping line 1174437: expected 7 fields, saw 18\nSkipping line 1206141: expected 7 fields, saw 18\nSkipping line 1209250: expected 7 fields, saw 8\nSkipping line 1216890: expected 7 fields, saw 9\nSkipping line 1236589: expected 7 fields, saw 17\nSkipping line 1239928: expected 7 fields, saw 34\nSkipping line 1269619: expected 7 fields, saw 18\nSkipping line 1281493: expected 7 fields, saw 152\nSkipping line 1293549: expected 7 fields, saw 91\nSkipping line 1302376: expected 7 fields, saw 8\nSkipping line 1310305: expected 7 fields, saw 94\nSkipping line 1313186: expected 7 fields, saw 13\nSkipping line 1341533: expected 7 fields, saw 47\nSkipping line 1345816: expected 7 fields, saw 94\nSkipping line 1347172: expected 7 fields, saw 93\nSkipping line 1348081: expected 7 fields, saw 11\nSkipping line 1348082: expected 7 fields, saw 74\nSkipping line 1348858: expected 7 fields, saw 73\nSkipping line 1351126: expected 7 fields, saw 70\nSkipping line 1360408: expected 7 fields, saw 8\nSkipping line 1360991: expected 7 fields, saw 8\nSkipping line 1360992: expected 7 fields, saw 9\nSkipping line 1363807: expected 7 fields, saw 8\nSkipping line 1382042: expected 7 fields, saw 11\nSkipping line 1382768: expected 7 fields, saw 9\nSkipping line 1382769: expected 7 fields, saw 11\nSkipping line 1382818: expected 7 fields, saw 11\nSkipping line 1383403: expected 7 fields, saw 11\nSkipping line 1383404: expected 7 fields, saw 8\nSkipping line 1383756: expected 7 fields, saw 8\nSkipping line 1384233: expected 7 fields, saw 93\nSkipping line 1384612: expected 7 fields, saw 74\nSkipping line 1385001: expected 7 fields, saw 73\nSkipping line 1385306: expected 7 fields, saw 70\nSkipping line 1385331: expected 7 fields, saw 9\nSkipping line 1386477: expected 7 fields, saw 11\nSkipping line 1387088: expected 7 fields, saw 10\nSkipping line 1387089: expected 7 fields, saw 11\nSkipping line 1387931: expected 7 fields, saw 9\nSkipping line 1394310: expected 7 fields, saw 10\nSkipping line 1394311: expected 7 fields, saw 8\nSkipping line 1395030: expected 7 fields, saw 8\nSkipping line 1395032: expected 7 fields, saw 10\nSkipping line 1395033: expected 7 fields, saw 10\nSkipping line 1395036: expected 7 fields, saw 8\nSkipping line 1400013: expected 7 fields, saw 10\nSkipping line 1400014: expected 7 fields, saw 8\nSkipping line 1400016: expected 7 fields, saw 8\nSkipping line 1400990: expected 7 fields, saw 10\nSkipping line 1400993: expected 7 fields, saw 8\nSkipping line 1400994: expected 7 fields, saw 10\nSkipping line 1400995: expected 7 fields, saw 8\nSkipping line 1400997: expected 7 fields, saw 8\nSkipping line 1401011: expected 7 fields, saw 10\nSkipping line 1401012: expected 7 fields, saw 8\nSkipping line 1401014: expected 7 fields, saw 8\nSkipping line 1401016: expected 7 fields, saw 10\nSkipping line 1401017: expected 7 fields, saw 10\nSkipping line 1401020: expected 7 fields, saw 8\nSkipping line 1409916: expected 7 fields, saw 11\nSkipping line 1415359: expected 7 fields, saw 8\nSkipping line 1419334: expected 7 fields, saw 10\nSkipping line 1419335: expected 7 fields, saw 8\nSkipping line 1419337: expected 7 fields, saw 8\nSkipping line 1419339: expected 7 fields, saw 10\nSkipping line 1419818: expected 7 fields, saw 8\nSkipping line 1419819: expected 7 fields, saw 10\nSkipping line 1419820: expected 7 fields, saw 8\nSkipping line 1419822: expected 7 fields, saw 8\nSkipping line 1423013: expected 7 fields, saw 8\nSkipping line 1424892: expected 7 fields, saw 9\nSkipping line 1441411: expected 7 fields, saw 10\nSkipping line 1441412: expected 7 fields, saw 10\nSkipping line 1442260: expected 7 fields, saw 10\nSkipping line 1442261: expected 7 fields, saw 8\nSkipping line 1442263: expected 7 fields, saw 8\nSkipping line 1442265: expected 7 fields, saw 10\nSkipping line 1442268: expected 7 fields, saw 8\nSkipping line 1442269: expected 7 fields, saw 10\nSkipping line 1442270: expected 7 fields, saw 8\nSkipping line 1442272: expected 7 fields, saw 8\n' 
+
+--Importing modules-- 
+
+--Change working directory-- 
+
+ 
+
+--Here are the files in the current directory-- 
+
+ 
+
+['ACRONYMS_CD.TSV', 'ADDRESS_CD.TSV', 'BALLOT_MEASURES_CD.TSV', 'CLEANED_CSV_FILES', 'CVR2_CAMPAIGN_DISCLOSURE_CD.TSV', 'CVR2_LOBBY_DISCLOSURE_CD.TSV', 'CVR2_REGISTRATION_CD.TSV', 'CVR2_SO_CD.TSV', 'CVR3_VERIFICATION_INFO_CD.TSV', 'CVR_CAMPAIGN_DISCLOSURE_CD.TSV', 'CVR_E530_CD.TSV', 'CVR_F470_CD.TSV', 'CVR_LOBBY_DISCLOSURE_CD.TSV', 'CVR_REGISTRATION_CD.TSV', 'CVR_SO_CD.TSV', 'DEBT_CD.TSV', 'EFS_FILING_LOG_CD.TSV', 'EXPN_CD.TSV', 'F495P2_CD.TSV', 'F501_502_CD.TSV', 'F690P2_CD.TSV', 'FILERNAME_CD.TSV', 'FILERS_CD.TSV', 'FILER_ACRONYMS_CD.TSV', 'FILER_ADDRESS_CD.TSV', 'FILER_ETHICS_CLASS_CD.TSV', 'FILER_FILINGS_CD.TSV', 'FILER_INTERESTS_CD.TSV', 'FILER_LINKS_CD.TSV', 'FILER_STATUS_TYPES_CD.TSV', 'FILER_TO_FILER_TYPE_CD.TSV', 'FILER_TYPES_CD.TSV', 'FILER_TYPE_PERIODS_CD.TSV', 'FILER_XREF_CD.TSV', 'FILINGS_CD.TSV', 'FILING_PERIOD_CD.TSV', 'GROUP_TYPES_CD.TSV', 'HDR_CD.TSV', 'HEADER_CD.TSV', 'IMAGE_LINKS_CD.TSV', 'LATT_CD.TSV', 'LCCM_CD.TSV', 'LEGISLATIVE_SESSIONS_CD.TSV', 'LEMP_CD.TSV', 'LEXP_CD.TSV', 'LOAN_CD.TSV', 'LOBBYING_CHG_LOG_CD.TSV', 'LOBBYIST_CONTRIBUTIONS1_CD.TSV', 'LOBBYIST_CONTRIBUTIONS2_CD.TSV', 'LOBBYIST_CONTRIBUTIONS3_CD.TSV', 'LOBBYIST_EMPLOYER1_CD.TSV', 'LOBBYIST_EMPLOYER2_CD.TSV', 'LOBBYIST_EMPLOYER3_CD.TSV', 'LOBBYIST_EMPLOYER_FIRMS1_CD.TSV', 'LOBBYIST_EMPLOYER_FIRMS2_CD.TSV', 'LOBBYIST_EMPLOYER_HISTORY_CD.TSV', 'LOBBYIST_EMP_LOBBYIST1_CD.TSV', 'LOBBYIST_EMP_LOBBYIST2_CD.TSV', 'LOBBYIST_FIRM1_CD.TSV', 'LOBBYIST_FIRM2_CD.TSV', 'LOBBYIST_FIRM3_CD.TSV', 'LOBBYIST_FIRM_EMPLOYER1_CD.TSV', 'LOBBYIST_FIRM_EMPLOYER2_CD.TSV', 'LOBBYIST_FIRM_HISTORY_CD.TSV', 'LOBBYIST_FIRM_LOBBYIST1_CD.TSV', 'LOBBYIST_FIRM_LOBBYIST2_CD.TSV', 'LOBBY_AMENDMENTS_CD.TSV', 'LOOKUP_CODES_CD.TSV', 'LOTH_CD.TSV', 'LPAY_CD.TSV', 'NAMES_CD.TSV', 'RCPT_CD.TSV', 'RECEIVED_FILINGS_CD.TSV', 'REPORTS_CD.TSV', 'S401_CD.TSV', 'S496_CD.TSV', 'S497_CD.TSV', 'S498_CD.TSV', 'SMRY_CD.TSV', 'SPLT_CD.TSV', 'TEXT_MEMO_CD.TSV'] 
+
+importing and exporting ACRONYMS_CD.TSV  
+
+ 
+
+importing and exporting ADDRESS_CD.TSV  
+
+ 
+
+importing and exporting BALLOT_MEASURES_CD.TSV  
+
+ 
+
+CLEANED_CSV_FILES  is not a .tsv, skipping import 
+
+ 
+
+importing and exporting CVR2_CAMPAIGN_DISCLOSURE_CD.TSV  
+
+ 
+
+importing and exporting CVR2_LOBBY_DISCLOSURE_CD.TSV  
+
+ 
+
+importing and exporting CVR2_REGISTRATION_CD.TSV  
+
+ 
+
+importing and exporting CVR2_SO_CD.TSV  
+
+ 
+
+importing and exporting CVR3_VERIFICATION_INFO_CD.TSV  
+
+ 
+
+importing and exporting CVR_CAMPAIGN_DISCLOSURE_CD.TSV  
+
+ 
+
+importing and exporting CVR_E530_CD.TSV  
+
+ 
+
+importing and exporting CVR_F470_CD.TSV  
+
+ 
+
+import failed for  CVR_F470_CD.TSV , here are the details:  Passed header=0 but only 0 lines in file  
+
+ 
+
+importing and exporting CVR_LOBBY_DISCLOSURE_CD.TSV  
+
+ 
+
+importing and exporting CVR_REGISTRATION_CD.TSV  
+
+ 
+
+importing and exporting CVR_SO_CD.TSV  
+
+ 
+
+importing and exporting DEBT_CD.TSV  
+
+ 
+
+importing and exporting EFS_FILING_LOG_CD.TSV  
+
+ 
+
+importing and exporting EXPN_CD.TSV  
+
+ 
+
+importing and exporting F495P2_CD.TSV  
+
+ 
+
+importing and exporting F501_502_CD.TSV  
+
+ 
+
+importing and exporting F690P2_CD.TSV  
+
+ 
+
+importing and exporting FILERNAME_CD.TSV  
+
+ 
+
+importing and exporting FILERS_CD.TSV  
+
+ 
+
+importing and exporting FILER_ACRONYMS_CD.TSV  
+
+ 
+
+importing and exporting FILER_ADDRESS_CD.TSV  
+
+ 
+
+importing and exporting FILER_ETHICS_CLASS_CD.TSV  
+
+ 
+
+importing and exporting FILER_FILINGS_CD.TSV  
+
+ 
+
+importing and exporting FILER_INTERESTS_CD.TSV  
+
+ 
+
+importing and exporting FILER_LINKS_CD.TSV  
+
+ 
+
+importing and exporting FILER_STATUS_TYPES_CD.TSV  
+
+ 
+
+importing and exporting FILER_TO_FILER_TYPE_CD.TSV  
+
+ 
+
+importing and exporting FILER_TYPES_CD.TSV  
+
+ 
+
+importing and exporting FILER_TYPE_PERIODS_CD.TSV  
+
+ 
+
+import failed for  FILER_TYPE_PERIODS_CD.TSV , here are the details:  Passed header=0 but only 0 lines in file  
+
+ 
+
+importing and exporting FILER_XREF_CD.TSV  
+
+ 
+
+importing and exporting FILINGS_CD.TSV  
+
+ 
+
+importing and exporting FILING_PERIOD_CD.TSV  
+
+ 
+
+importing and exporting GROUP_TYPES_CD.TSV  
+
+ 
+
+importing and exporting HDR_CD.TSV  
+
+ 
+
+importing and exporting HEADER_CD.TSV  
+
+ 
+
+importing and exporting IMAGE_LINKS_CD.TSV  
+
+ 
+
+importing and exporting LATT_CD.TSV  
+
+ 
+
+importing and exporting LCCM_CD.TSV  
+
+ 
+
+importing and exporting LEGISLATIVE_SESSIONS_CD.TSV  
+
+ 
+
+importing and exporting LEMP_CD.TSV  
+
+ 
+
+importing and exporting LEXP_CD.TSV  
+
+ 
+
+importing and exporting LOAN_CD.TSV  
+
+ 
+
+importing and exporting LOBBYING_CHG_LOG_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_CONTRIBUTIONS1_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_CONTRIBUTIONS2_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_CONTRIBUTIONS3_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_EMPLOYER1_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_EMPLOYER2_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_EMPLOYER3_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_EMPLOYER_FIRMS1_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_EMPLOYER_FIRMS2_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_EMPLOYER_HISTORY_CD.TSV  
+
+ 
+
+import failed for  LOBBYIST_EMPLOYER_HISTORY_CD.TSV , here are the details:  Passed header=0 but only 0 lines in file  
+
+ 
+
+importing and exporting LOBBYIST_EMP_LOBBYIST1_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_EMP_LOBBYIST2_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_FIRM1_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_FIRM2_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_FIRM3_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_FIRM_EMPLOYER1_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_FIRM_EMPLOYER2_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_FIRM_HISTORY_CD.TSV  
+
+ 
+
+import failed for  LOBBYIST_FIRM_HISTORY_CD.TSV , here are the details:  Passed header=0 but only 0 lines in file  
+
+ 
+
+importing and exporting LOBBYIST_FIRM_LOBBYIST1_CD.TSV  
+
+ 
+
+importing and exporting LOBBYIST_FIRM_LOBBYIST2_CD.TSV  
+
+ 
+
+importing and exporting LOBBY_AMENDMENTS_CD.TSV  
+
+ 
+
+importing and exporting LOOKUP_CODES_CD.TSV  
+
+ 
+
+importing and exporting LOTH_CD.TSV  
+
+ 
+
+importing and exporting LPAY_CD.TSV  
+
+ 
+
+importing and exporting NAMES_CD.TSV  
+
+ 
+
+importing and exporting RCPT_CD.TSV  
+
+ 
+
+importing and exporting RECEIVED_FILINGS_CD.TSV  
+
+ 
+
+importing and exporting REPORTS_CD.TSV  
+
+ 
+
+importing and exporting S401_CD.TSV  
+
+ 
+
+importing and exporting S496_CD.TSV  
+
+ 
+
+importing and exporting S497_CD.TSV  
+
+ 
+
+importing and exporting S498_CD.TSV  
+
+ 
+
+importing and exporting SMRY_CD.TSV  
+
+ 
+
+importing and exporting SPLT_CD.TSV  
+
+ 
+
+importing and exporting TEXT_MEMO_CD.TSV  
+
+ 
+
+[[1]]
+NULL
+
+[[2]]
+NULL
+
+[[3]]
+NULL
+
+[[4]]
+NULL
+
+[[5]]
+NULL
+
+[[6]]
+NULL
+
+[[7]]
+NULL
+
+[[8]]
+NULL
+
+[[9]]
+NULL
+
+[[10]]
+NULL
+
+[[11]]
+NULL
+
+[[12]]
+NULL
+
+[[13]]
+NULL
+
+[[14]]
+NULL
+
+[[15]]
+NULL
+
+[[16]]
+NULL
+
+[[17]]
+NULL
+
+[[18]]
+NULL
+
+[[19]]
+NULL
+
+[[20]]
+NULL
+
+[[21]]
+NULL
+
+[[22]]
+NULL
+
+[[23]]
+NULL
+
+[[24]]
+NULL
+
+[[25]]
+NULL
+
+[[26]]
+NULL
+
+[[27]]
+NULL
+
+[[28]]
+NULL
+
+[[29]]
+NULL
+
+[[30]]
+NULL
+
+[[31]]
+NULL
+
+[[32]]
+NULL
+
+[[33]]
+NULL
+
+[[34]]
+NULL
+
+[[35]]
+NULL
+
+[[36]]
+NULL
+
+[[37]]
+NULL
+
+[[38]]
+NULL
+
+[[39]]
+NULL
+
+[[40]]
+NULL
+
+[[41]]
+NULL
+
+[[42]]
+NULL
+
+[[43]]
+NULL
+
+[[44]]
+NULL
+
+[[45]]
+NULL
+
+[[46]]
+NULL
+
+[[47]]
+NULL
+
+[[48]]
+NULL
+
+[[49]]
+NULL
+
+[[50]]
+NULL
+
+[[51]]
+NULL
+
+[[52]]
+NULL
+
+[[53]]
+NULL
+
+[[54]]
+NULL
+
+[[55]]
+NULL
+
+[[56]]
+NULL
+
+[[57]]
+NULL
+
+[[58]]
+NULL
+
+[[59]]
+NULL
+
+[[60]]
+NULL
+
+[[61]]
+NULL
+
+[[62]]
+NULL
+
+[[63]]
+NULL
+
+[[64]]
+NULL
+
+[[65]]
+NULL
+
+[[66]]
+NULL
+
+[[67]]
+NULL
+
+[[68]]
+NULL
+
+[[69]]
+NULL
+
+[[70]]
+NULL
+
+[[71]]
+NULL
+
+[[72]]
+NULL
+
+[[73]]
+NULL
+
+[[74]]
+NULL
+
+[[75]]
+NULL
+
+[[76]]
+NULL
+
+[[77]]
+NULL
+
+[[78]]
+NULL
+
+[[79]]
+NULL
+
+[[80]]
+NULL
+
+[[81]]
+NULL
+
+[[82]]
+NULL
+
+[[83]]
+NULL
+
+[[84]]
+NULL
+
+[[85]]
+NULL
+
+[[86]]
+NULL
+
+[[87]]
+NULL
+
+[[88]]
+NULL
+
+[[89]]
+NULL
+
+[[90]]
+NULL
+
+[[91]]
+NULL
+
+[[92]]
+NULL
+
+[[93]]
+NULL
+
+[[94]]
+NULL
+
+[[95]]
+NULL
+
+[[96]]
+NULL
+
+[[97]]
+NULL
+
+[[98]]
+NULL
+
+[[99]]
+NULL
+
+[[100]]
+NULL
+
+[[101]]
+NULL
+
+[[102]]
+NULL
+
+[[103]]
+NULL
+
+[[104]]
+NULL
+
+[[105]]
+NULL
+
+[[106]]
+NULL
+
+[[107]]
+NULL
+
+[[108]]
+NULL
+
+[[109]]
+NULL
+
+[[110]]
+NULL
+
+[[111]]
+NULL
+
+[[112]]
+NULL
+
+[[113]]
+NULL
+
+[[114]]
+NULL
+
+[[115]]
+NULL
+
+[[116]]
+NULL
+
+[[117]]
+NULL
+
+[[118]]
+NULL
+
+[[119]]
+NULL
+
+[[120]]
+NULL
+
+[[121]]
+NULL
+
+[[122]]
+NULL
+
+[[123]]
+NULL
+
+[[124]]
+NULL
+
+[[125]]
+NULL
+
+[[126]]
+NULL
+
+[[127]]
+NULL
+
+[[128]]
+NULL
+
+[[129]]
+NULL
+
+[[130]]
+NULL
+
+[[131]]
+NULL
+
+[[132]]
+NULL
+
+[[133]]
+NULL
+
+[[134]]
+NULL
+
+[[135]]
+NULL
+
+[[136]]
+NULL
+
+[[137]]
+NULL
+
+[[138]]
+NULL
+
+[[139]]
+NULL
+
+[[140]]
+NULL
+
+[[141]]
+NULL
+
+[[142]]
+NULL
+
+[[143]]
+NULL
+
+[[144]]
+NULL
+
+[[145]]
+NULL
+
+[[146]]
+NULL
+
+[[147]]
+NULL
+
+[[148]]
+NULL
+
+[[149]]
+NULL
+
+[[150]]
+NULL
+
+[[151]]
+NULL
+
+[[152]]
+NULL
+
+[[153]]
+NULL
+
+[[154]]
+NULL
+
+[[155]]
+NULL
+
+[[156]]
+NULL
+
+[[157]]
+NULL
+
+[[158]]
+NULL
+
+[[159]]
+NULL
+
+[[160]]
+NULL
+
+[[161]]
+NULL
+
+[[162]]
+NULL
+
+[[163]]
+NULL
+
+[[164]]
+NULL
+
+[[165]]
+NULL
+
+[[166]]
+NULL
+
+[[167]]
+NULL
+
+[[168]]
+NULL
+
+[[169]]
+NULL
+
+[[170]]
+NULL
+
+[[171]]
+NULL
+
+[[172]]
+NULL
+
+[[173]]
+NULL
+
+[[174]]
+NULL
+
+[[175]]
+NULL
+
+[[176]]
+NULL
+
+[[177]]
+NULL
+
+[[178]]
+NULL
+
+[[179]]
+NULL
+
+[[180]]
+NULL
+
+[[181]]
+NULL
+
+[[182]]
+NULL
+
+[[183]]
+NULL
+
+[[184]]
+NULL
+
+[[185]]
+NULL
+
+[[186]]
+NULL
+
+[[187]]
+NULL
+
+[[188]]
+NULL
+
+[[189]]
+NULL
+
+[[190]]
+NULL
+
+[[191]]
+NULL
+
+[[192]]
+NULL
+
+[[193]]
+NULL
+
+[[194]]
+NULL
+
+[[195]]
+NULL
+
+[[196]]
+NULL
+
+[[197]]
+NULL
+
+[[198]]
+NULL
+
+[[199]]
+NULL
+
+[[200]]
+NULL
+
+[[201]]
+NULL
+
+[[202]]
+NULL
+
+[[203]]
+NULL
+
+[[204]]
+NULL
+
+[[205]]
+NULL
+
+[[206]]
+NULL
+
+[[207]]
+NULL
+
+[[208]]
+NULL
+
+[[209]]
+NULL
+
+[[210]]
+NULL
+
+[[211]]
+NULL
+
+[[212]]
+NULL
+
+[[213]]
+NULL
+
+[[214]]
+NULL
+
+[[215]]
+NULL
+
+[[216]]
+NULL
+
