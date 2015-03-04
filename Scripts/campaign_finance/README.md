@@ -1,0 +1,1 @@
+These scripts allow one to download, clean, and analyze campaign finance data managed by the California Secretary of State. 
