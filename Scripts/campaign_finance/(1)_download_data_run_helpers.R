@@ -1,13 +1,22 @@
+#
+# Download, clean, and analyze California campaign finance data 
+# Taylor G. White 
+# 02/26/15
+#
 
 # Helper parameters -------------------------------------------------------
+
+download_SOS_zip = F
+run_python_cleaning = F
+get_clean_annual_contributions = F
+get_contr_summary_by_donor = F
+
+
+# Download CA SOS finance database ----------------------------------------
 
 download_file_path = paste0("C:/Users/taylor/Dropbox/WildPolicy/Data/Campaign finance/CA/", 
                             Sys.Date() %>% format("%d%b%Y") %>% toupper())
 
-download_SOS_zip = F
-run_python_cleaning = F
-
-# Download CA SOS finance database ----------------------------------------
 
 if (download_SOS_zip) {
 
@@ -44,6 +53,29 @@ if (run_python_cleaning) {
   
 }
 
-# Run analysis programs in R ----------------------------------------------
+# Run annual contributions cleaning and export ----------------------------
 
+if (get_clean_annual_contributions) {
+  
+  start_year = 2000
+  end_year = year(Sys.Date())  
+  
+  system.time({
+    source("C:/Users/taylor/Dropbox/WildPolicy/Public/Scripts/campaign_finance/(3)_get_clean_annual_contributions.R")
+  })  
+}
+
+
+# Get stats by donor ------------------------------------------------------
+
+if (get_contr_summary_by_donor) {
+    
+  start_year = 2000
+  end_year = 2015
+  
+  system.time({
+    source("C:/Users/taylor/Dropbox/WildPolicy/Public/Scripts/campaign_finance/(4)_get_contr_summary_by_donor.R")
+  })  
+
+}
 
