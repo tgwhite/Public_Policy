@@ -10,7 +10,8 @@ import time
 import sys
 
 current_date = time.strftime("%d%b%Y")
-import_path = "C:/Users/taylor/Dropbox/WildPolicy/Data/Campaign finance/CA/" + current_date.upper() + "/extracted_files/CalAccess/DATA"
+import_parent = sys.argv[1]
+import_path = import_parent + current_date.upper() + "/extracted_files/CalAccess/DATA"
 
 print("--Change working directory--\n")
 os.chdir(path = import_path)
