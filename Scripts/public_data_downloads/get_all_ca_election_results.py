@@ -28,6 +28,7 @@ for election_link in precinct_links:
 	for this_link in data_page_links: 
 		
 		election_desc = this_link.get_text()
+		print('working on', election_desc)
 
 		os.makedirs('CA' + election_desc)
 		os.chdir('CA' + election_desc)
@@ -40,27 +41,44 @@ for election_link in precinct_links:
 
 		## LOOP OVER RESULTS FOR EACH COUNTY
 		for county_row in data_page_rows: 
-			
-			county_name = county_row.find('th').get_text()
+			try: 
+				county_name = county_row.find('th').get_text()
 
-			## get codebook data then SOV by srprec, contained in first table data element
-			SOV_dat = county_row.find('td')
+				## get codebook data then SOV by srprec, contained in first table data element
+				SOV_dat = county_row.find('td')
 
-			if 'no data' in SOV_dat.get_text(): 
+				if 'no data' in SOV_dat.get_text(): 
+					continue
+
+				## READ IN AND EXPORT CODEBOOK AND SRPREC RESULTS
+
+				try: 
+					codebook_path = statewide_base_url + [x.get('href') for x in SOV_dat.findAll('a') if 'codes' in x.get('href')][0]
+					
+					codebook_df = pd.read_csv(codebook_path, sep = '\t', header = -1)
+					codebook_df.columns = ['variable', 'description', 'value']					
+					
+					codebook_df.to_csv(county_name + 'codebook.csv')
+
+				except Exception as e: 
+					print('issue getting codebook for', county_name)
+					print(e)
+
+				try: 
+					srprec_path = statewide_base_url + [x.get('href') for x in SOV_dat.findAll('a') if 'sov_data' in x.get('href') and 'srprec' in x.get('href')][0]
+					
+					srprec_df = pd.read_csv(srprec_path)
+					
+					srprec_df.to_csv(county_name + 'srprec_SOV.csv')
+				except Exception as e: 
+					print('issue getting srprec data for ', county_name)
+					print(e)
+											
+
+			except Exception as e: 
+				print('issue with downloading data for', county_name)
+				print(e)
 				continue
-
-			codebook_path = statewide_base_url + [x.get('href') for x in SOV_dat.findAll('a') if 'codes' in x.get('href')][0]
-			srprec_path = statewide_base_url + [x.get('href') for x in SOV_dat.findAll('a') if 'sov_data' in x.get('href') and 'srprec' in x.get('href')][0]
-
-			## READ IN CODEBOOK AND SRPREC RESULTS
-			codebook_df = pd.read_csv(codebook_path, sep = '\t', header = -1)
-			codebook_df.columns = ['variable', 'description', 'value']
-
-			srprec_df = pd.read_csv(srprec_path)
-
-			## EXPORT EVERYTHING			
-			codebook_df.to_csv(county_name + 'codebook.csv')
-			srprec_df.to_csv(county_name + 'srprec_SOV.csv')
 		
 		os.chdir('..')
 
