@@ -26,3 +26,7 @@ This project includes data and scripts aimed at informing public policy.
 		- http://www.oecd.org/tax/tax-policy/tax-database/#pir
 		- https://www.taxpolicycenter.org/statistics/historical-top-marginal-personal-income-tax-rate-oecd-countries
 		- https://www.oecd.org/tax/tax-policy/tax-database/tax-database-update-note.pdf
+	+ Election Data, Congress, and the Presidency
+		- https://voteview.com/data
+		- https://electionlab.mit.edu/data
+		- https://www.presidency.ucsb.edu/statistics/data/presidential-job-approval

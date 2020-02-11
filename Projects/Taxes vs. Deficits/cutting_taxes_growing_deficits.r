@@ -4,7 +4,8 @@
 # https://stackoverflow.com/questions/49033016/plm-or-lme4-for-random-and-fixed-effects-model-on-panel-data
 # https://www.princeton.edu/~otorres/Panel101R.pdf
 
-
+library(rvest)
+library(httr)
 library(data.table)
 library(tidyverse)
 library(WDI)
@@ -12,6 +13,9 @@ library(countrycode)
 library(lmtest)
 library(tseries)
 library(plm)
+library(rvest)
+library(httr)
+
 refresh_downloads = FALSE
 
 
@@ -40,6 +44,9 @@ oecd_corp_tax_gdp = read_csv('DP_LIVE_11022020161427862.csv')  %>%
 oecd_gen_gov_debt_gdp = read_csv('DP_LIVE_11022020211431425.csv') %>%
   filter(LOCATION != 'OAVG', MEASURE == 'PC_GDP')
 
+oecd_gen_gov_deficit  = read_csv('DP_LIVE_11022020213043902.csv') %>%
+  filter(LOCATION != 'OAVG', MEASURE == 'PC_GDP')
+
 # map country names
 country_code_name_mappings = data.frame(
   LOCATION = unique(oecd_income_tax_gdp$LOCATION)
@@ -54,8 +61,11 @@ country_code_name_mappings = data.frame(
 oecd_income_tax_gdp_clean = inner_join(oecd_income_tax_gdp, country_code_name_mappings)
 oecd_corp_tax_gdp_clean = inner_join(oecd_corp_tax_gdp, country_code_name_mappings)
 oecd_gen_gov_debt_gdp_clean = inner_join(oecd_gen_gov_debt_gdp, country_code_name_mappings)
+oecd_gen_gov_deficit_clean = inner_join(oecd_gen_gov_deficit, country_code_name_mappings)
 
-stacked_extra_oecd_stats = bind_rows(oecd_income_tax_gdp_clean, oecd_corp_tax_gdp_clean, oecd_gen_gov_debt_gdp_clean)
+stacked_extra_oecd_stats = bind_rows(oecd_income_tax_gdp_clean, 
+                                     oecd_corp_tax_gdp_clean, oecd_gen_gov_debt_gdp_clean,
+                                     oecd_gen_gov_deficit_clean)
 
 # check col classes
 map_chr(brookings_oecd_toptax, class)
@@ -183,10 +193,6 @@ if (refresh_downloads | !file.exists('wdi_download_long.csv')) {
 } else {
   wdi_download_long = read_csv('wdi_download_long.csv')
 }
-
-
-##### Combine world bank and OECD tax data #####
-
 # check country names
 wdi_download_long$country[!wdi_download_long$country %in% joined_oecd_brookings_toptax_filled$Country] %>% unique()
 joined_oecd_brookings_toptax_filled$Country[!joined_oecd_brookings_toptax_filled$Country %in% wdi_download_long$country] %>% unique()
@@ -279,14 +285,12 @@ adf.test(filter(oecd_wdi_pdata, !is.na(diff_value_TAXINCOME))$diff_value_TAXINCO
 
 # check for heteroskedacity
 bptest(diff_value_TAXINCOME ~ diff_value_NY.GDP.PCAP.KD.ZG, data = oecd_wdi_pdata, studentize=F)
-
-
 coeftest(fixed_model, vcovHC(fixed_model, method = "arellano"))
 
-head(wide_oecd_wdi_data)
 ##### Examine US data #####
 US_wide = filter(wide_oecd_wdi_data, Country == 'United States')
 US_long = filter(stacked_oecd_wdi_data_lags_diffs, Country == 'United States')
+unique(US_long$Indicator)
 
 US_sub = filter(US_long, Indicator %in% c('top_tax_rate', 'TAXINCOME', 'NY.GDP.PCAP.KD.ZG'))
 ggplot(US_sub, aes(Year, value)) +
@@ -297,13 +301,37 @@ ggplot(US_wide, aes(Year)) +
   geom_line(aes(y = diff_value_TAXINCOME), size = 1)  +
   geom_line(aes(y = diff_value_NY.GDP.MKTP.KD.ZG), colour = 'red') +
   geom_line(aes(y = diff_value_top_tax_rate), colour = 'blue') +
-  geom_line(aes(y = diff_value_GGDEBT), colour = 'orange')
+  geom_line(aes(y = diff_value_GGDEBT), colour = 'orange') +
+  geom_line(aes(y = diff_value_GC.DOD.TOTL.GD.ZS), linetype = 'dashed', colour = 'purple4') +
+  geom_line(aes(y = -value_GGNLEND), linetype = 'dotted', size = 1.5, colour = 'steelblue')
   
-US_wide$value_DT.DOD.DECT.GN.ZS
-US_wide$lag_diff_value_top_tax_rate
-select(US_wide, Year, value_top_tax_rate, diff_value_top_tax_rate, lag_diff_value_top_tax_rate) %>% as.data.frame()
 
-ggplot(wide_oecd_wdi_data, aes(diff_value_TAXINCOME, diff_value_GGDEBT)) +
-  geom_point() +
-  stat_smooth() +
-  stat_smooth(method = 'lm')
+##### Get election results #####
+house_elections = read.csv('1976-2018-house.csv') %>% 
+  mutate(candidate_votes = as.numeric(candidatevotes)) %>%
+  filter(stage == 'gen') %>% data.table()
+
+senate_elections = read.csv('1976-2018-senate.csv') %>% filter(stage == 'gen') %>% data.table()
+presidential_elections = read.csv('1976-2016-president.csv') %>% data.table()
+
+
+# count up the members by party for each election to determine control 
+
+district_winners = house_elections[, {
+  candidate_winner = candidate[candidate_votes == max(candidate_votes)]
+  party_winner = party[candidate == candidate_winner]
+  obs = length(party_winner)
+  
+  list(
+    total_votes = totalvotes[1],
+    candidate_winner = candidate_winner,
+    party_winner = party_winner,
+    obs = obs
+  )
+  
+}, by = list(year, state, district)]
+
+# 
+# the_url = 'https://www.presidency.ucsb.edu/statistics/data/house-and-senate-concurrence-with-presidents'
+# concurrence_table = html_table(GET(the_url) %>% content(), fill = TRUE)
+# concurrence_table[[1]] %>% write.csv('concurrence_with_president.csv')
