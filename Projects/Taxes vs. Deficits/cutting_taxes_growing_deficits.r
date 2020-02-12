@@ -18,6 +18,7 @@ library(rvest)
 library(httr)
 library(quantmod)
 library(fredr)
+library(scales)
 refresh_downloads = FALSE
 
 
@@ -260,7 +261,6 @@ fixed_model = plm(diff_value_TAXINCOME ~ diff_value_NY.GDP.PCAP.KD.ZG, model = '
 random_model = plm(diff_value_TAXINCOME ~ diff_value_NY.GDP.PCAP.KD.ZG, model = 'random', data = oecd_wdi_pdata)
 fixed_time_model = plm(diff_value_TAXINCOME ~ diff_value_NY.GDP.PCAP.KD.ZG + factor(Year), model = 'within', data = oecd_wdi_pdata)
 
-
 summary(fixed_model)
 summary(random_model)
 
@@ -291,6 +291,7 @@ coeftest(fixed_model, vcovHC(fixed_model, method = "arellano"))
 
 ##### Examine US data #####
 
+# get additional data from FRED
 us_real_gdp_per_capita = fredr('A939RX0Q048SBEA', aggregation_method = 'eop', frequency = 'a', units = 'pch') %>%
   rename(value_real_per_capita_gdp_growth = value) %>%
   mutate(
@@ -310,7 +311,7 @@ recession_years = fredr('JHDUSRGDPBR', aggregation_method = 'sum', frequency = '
   ) %>%
   select(-date, -series_id)
 
-
+# get data from UCSB on congressional concurrence with the president 
 concurrence_with_president_clean = read_csv('concurrence_with_president_clean.csv')
 
 US_wide = filter(wide_oecd_wdi_data, Country == 'United States') %>%
@@ -323,40 +324,27 @@ US_wide = filter(wide_oecd_wdi_data, Country == 'United States') %>%
 
 US_long = filter(stacked_oecd_wdi_data_lags_diffs, Country == 'United States')
 
-US_sub = filter(US_long, Indicator %in% c('top_tax_rate', 'TAXINCOME', 'NY.GDP.PCAP.KD.ZG'))
-ggplot(US_sub, aes(Year, value)) +
-  facet_wrap(~Indicator, scales = 'free_y', ncol = 1) +
-  geom_line()
 
-ggplot(US_wide, aes(Year)) +
-  geom_line(aes(y = diff_value_TAXINCOME), size = 1)  +
-  geom_line(aes(y = value_real_per_capita_gdp_growth), colour = 'red') +
-  geom_line(aes(y = diff_value_top_tax_rate), colour = 'blue') +
-  geom_line(aes(y = diff_value_GGDEBT), colour = 'orange') +
-  geom_line(aes(y = diff_value_GC.DOD.TOTL.GD.ZS), linetype = 'dashed', colour = 'purple4') +
-  geom_line(aes(y = -value_GGNLEND), linetype = 'dotted', size = 1.5, colour = 'steelblue') +
-  geom_line(aes(y = total_hs_concurrence), size = 2)
+# ggplot(US_wide, aes(Year)) +
+#   geom_line(aes(y = diff_value_TAXINCOME), size = 1)  +
+#   geom_line(aes(y = value_real_per_capita_gdp_growth), colour = 'red') +
+#   geom_line(aes(y = diff_value_top_tax_rate), colour = 'blue') +
+#   geom_line(aes(y = diff_value_GGDEBT), colour = 'orange') +
+#   geom_line(aes(y = diff_value_GC.DOD.TOTL.GD.ZS), linetype = 'dashed', colour = 'purple4') +
+#   geom_line(aes(y = -value_GGNLEND), linetype = 'dotted', size = 1.5, colour = 'steelblue') +
+#   geom_line(aes(y = total_hs_concurrence), size = 2)
 
 options(na.action = na.exclude)  
-deficit_vs_growth_mod = lm(value_GGNLEND ~ value_NY.GDP.MKTP.KD.ZG, data = US_wide)
-US_wide$deficit_residuals = residuals(deficit_vs_growth_mod)
 
-ggplot(US_wide, aes(value_real_per_capita_gdp_growth, -diff_value_GGNLEND)) +
-  geom_point(aes(shape = president_party)) +
-  stat_smooth() +
-  stat_smooth(method = 'lm') 
+deficit_model = lm(-diff_value_GGNLEND ~ real_gdp_per_capita_z + president_party, data = US_wide)
+deficit_model$coefficients['president_partyREP']
+summary(deficit_model)
 
-ggplot(US_wide, aes(value_real_per_capita_gdp_growth, -diff_value_GGNLEND)) +
-  geom_point(aes(shape = president_party)) +
-  stat_smooth() +
-  stat_smooth(method = 'lm') 
-
-
-ggplot(US_wide, aes(real_gdp_per_capita_z, -diff_value_GGNLEND, colour = recession_year)) +
-  geom_point(aes(shape = president_party, size = pct_of_year_in_recession)) +
-  stat_smooth(method = 'lm', se = F) 
+select(US_wide, real_gdp_per_capita_z, diff_value_GGNLEND, Year) %>% na.omit() %>% pull(Year) %>% range()
 
 ggplot(US_wide, aes(real_gdp_per_capita_z, -diff_value_GGNLEND, colour = president_party)) +
+  geom_hline(aes(yintercept = 0), linetype = 'dashed', size = 1) +
+  geom_vline(aes(xintercept = 0), linetype = 'dashed', size = 1) +
   geom_point(aes(shape = recession_year, size = pct_of_year_in_recession)) +
   stat_smooth(method = 'lm', se = F) +
   scale_colour_manual(
@@ -364,23 +352,24 @@ ggplot(US_wide, aes(real_gdp_per_capita_z, -diff_value_GGNLEND, colour = preside
     values = c('DEM' = 'blue', 'REP' = 'red')
   ) +
   labs(
-    y = 'Annual Deficit (% of GDP)',
-    y = 'Real GDP Per Capita Growth\nStandard Deviations (Z Value)'
-  )
+    title = 'Economic Growth and Budget Deficits by Presidential Party\n1971-2018',
+    subtitle = sprintf('Republicans add %s more debt each year than Democrats', 
+                       percent(deficit_model$coefficients['president_partyREP']/100, accuracy = 0.01)),
+    y = 'Annual Deficit (% of GDP)\n',
+    x = '\nReal GDP Per Capita Growth\nStandard Deviations (Z Value)',
+    caption = 'Chart: Taylor G. White\nData: OECD, St. Louis Federal Reserve'
+  ) +
+  scale_size(
+    guide = F,
+    range = c(3, 8)
+  ) +
+  scale_shape(name = 'Recession Year', na.translate = FALSE) +
+  geom_text(aes(x = 1, y = -3, label = '(4) Strong Growth\nBudget Surplus'), colour = 'black', hjust=0) +
+  geom_text(aes(x = -2, y = -3, label = '(3) Poor Growth\nBudget Surplus'), colour = 'black', hjust=0) +
+  geom_text(aes(x = 1, y = 7, label = '(1) Strong Growth\nBudget Deficit'), colour = 'black', hjust=0) +
+  geom_text(aes(x = -2, y = 7, label = '(2) Poor Growth\nBudget Deficit'), colour = 'black', hjust=0) 
 
-
-ggplot(US_wide, aes(total_hs_concurrence, y = -deficit_residuals)) +
-  geom_point(aes(colour = unified_government, shape = president_party)) +
-  stat_smooth() +
-  stat_smooth(method = 'lm')
-
-ggplot(US_wide, aes(Year, y = n_recession_quarters)) +
-  geom_bar(stat = 'identity')
-
-ggplot(US_wide, aes(diff_value_NY.GDP.MKTP.KD.ZG, total_hs_concurrence)) +
-  geom_point() +
-  stat_smooth()
-
+ggsave('deficits_vs_economic_growth_by_party.png', height = 7, width = 7.5, units = 'in', dpi = 600)
 
 ##### Get election results #####
 house_elections = read.csv('1976-2018-house.csv') %>% 
@@ -392,10 +381,6 @@ presidential_elections = read.csv('1976-2016-president.csv') %>% data.table()
 
 
 # count up the members by party for each election to determine control 
-
-head(concurrence_with_president_clean)
-
-
 
 district_winners = house_elections[, {
   candidate_winner = candidate[candidate_votes == max(candidate_votes)]
@@ -410,10 +395,7 @@ district_winners = house_elections[, {
   )
   
 }, by = list(year, state, district)]
-head(district_winners)
 
-table(district_winners$obs)
-filter(district_winners, obs > 3)
 # 
 # the_url = 'https://www.presidency.ucsb.edu/statistics/data/house-and-senate-concurrence-with-presidents'
 # concurrence_table = html_table(GET(the_url) %>% content(), fill = TRUE)
