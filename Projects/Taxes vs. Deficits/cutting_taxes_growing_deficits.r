@@ -3,6 +3,7 @@
 # https://rpsychologist.com/r-guide-longitudinal-lme-lmer
 # https://stackoverflow.com/questions/49033016/plm-or-lme4-for-random-and-fixed-effects-model-on-panel-data
 # https://www.princeton.edu/~otorres/Panel101R.pdf
+# fredr_set_key('d0b9e64aba30b479343a06037a5a10c1')
 
 library(rvest)
 library(httr)
@@ -15,7 +16,8 @@ library(tseries)
 library(plm)
 library(rvest)
 library(httr)
-
+library(quantmod)
+library(fredr)
 refresh_downloads = FALSE
 
 
@@ -288,9 +290,38 @@ bptest(diff_value_TAXINCOME ~ diff_value_NY.GDP.PCAP.KD.ZG, data = oecd_wdi_pdat
 coeftest(fixed_model, vcovHC(fixed_model, method = "arellano"))
 
 ##### Examine US data #####
-US_wide = filter(wide_oecd_wdi_data, Country == 'United States')
+
+us_real_gdp_per_capita = fredr('A939RX0Q048SBEA', aggregation_method = 'eop', frequency = 'a', units = 'pch') %>%
+  rename(value_real_per_capita_gdp_growth = value) %>%
+  mutate(
+    Year = year(date),
+    lag_value_real_per_capita_gdp_growth = dplyr::lag(value_real_per_capita_gdp_growth, 1)
+  ) %>% 
+select(-date, -series_id)
+
+recession_years = fredr('JHDUSRGDPBR', aggregation_method = 'sum', frequency = 'a') %>%
+  rename(
+    n_recession_quarters = value
+  ) %>% 
+  mutate(
+    Year = year(date),
+    pct_of_year_in_recession = n_recession_quarters / 4,
+    recession_year = n_recession_quarters > 0
+  ) %>%
+  select(-date, -series_id)
+
+
+concurrence_with_president_clean = read_csv('concurrence_with_president_clean.csv')
+
+US_wide = filter(wide_oecd_wdi_data, Country == 'United States') %>%
+  left_join(concurrence_with_president_clean) %>%
+  left_join(us_real_gdp_per_capita) %>%
+  left_join(recession_years) %>%
+  mutate(
+    real_gdp_per_capita_z = (value_real_per_capita_gdp_growth - mean(value_real_per_capita_gdp_growth)) / sd(value_real_per_capita_gdp_growth)
+  )
+
 US_long = filter(stacked_oecd_wdi_data_lags_diffs, Country == 'United States')
-unique(US_long$Indicator)
 
 US_sub = filter(US_long, Indicator %in% c('top_tax_rate', 'TAXINCOME', 'NY.GDP.PCAP.KD.ZG'))
 ggplot(US_sub, aes(Year, value)) +
@@ -299,12 +330,57 @@ ggplot(US_sub, aes(Year, value)) +
 
 ggplot(US_wide, aes(Year)) +
   geom_line(aes(y = diff_value_TAXINCOME), size = 1)  +
-  geom_line(aes(y = diff_value_NY.GDP.MKTP.KD.ZG), colour = 'red') +
+  geom_line(aes(y = value_real_per_capita_gdp_growth), colour = 'red') +
   geom_line(aes(y = diff_value_top_tax_rate), colour = 'blue') +
   geom_line(aes(y = diff_value_GGDEBT), colour = 'orange') +
   geom_line(aes(y = diff_value_GC.DOD.TOTL.GD.ZS), linetype = 'dashed', colour = 'purple4') +
-  geom_line(aes(y = -value_GGNLEND), linetype = 'dotted', size = 1.5, colour = 'steelblue')
-  
+  geom_line(aes(y = -value_GGNLEND), linetype = 'dotted', size = 1.5, colour = 'steelblue') +
+  geom_line(aes(y = total_hs_concurrence), size = 2)
+
+options(na.action = na.exclude)  
+deficit_vs_growth_mod = lm(value_GGNLEND ~ value_NY.GDP.MKTP.KD.ZG, data = US_wide)
+US_wide$deficit_residuals = residuals(deficit_vs_growth_mod)
+
+ggplot(US_wide, aes(value_real_per_capita_gdp_growth, -diff_value_GGNLEND)) +
+  geom_point(aes(shape = president_party)) +
+  stat_smooth() +
+  stat_smooth(method = 'lm') 
+
+ggplot(US_wide, aes(value_real_per_capita_gdp_growth, -diff_value_GGNLEND)) +
+  geom_point(aes(shape = president_party)) +
+  stat_smooth() +
+  stat_smooth(method = 'lm') 
+
+
+ggplot(US_wide, aes(real_gdp_per_capita_z, -diff_value_GGNLEND, colour = recession_year)) +
+  geom_point(aes(shape = president_party, size = pct_of_year_in_recession)) +
+  stat_smooth(method = 'lm', se = F) 
+
+ggplot(US_wide, aes(real_gdp_per_capita_z, -diff_value_GGNLEND, colour = president_party)) +
+  geom_point(aes(shape = recession_year, size = pct_of_year_in_recession)) +
+  stat_smooth(method = 'lm', se = F) +
+  scale_colour_manual(
+    name = "President's Party",
+    values = c('DEM' = 'blue', 'REP' = 'red')
+  ) +
+  labs(
+    y = 'Annual Deficit (% of GDP)',
+    y = 'Real GDP Per Capita Growth\nStandard Deviations (Z Value)'
+  )
+
+
+ggplot(US_wide, aes(total_hs_concurrence, y = -deficit_residuals)) +
+  geom_point(aes(colour = unified_government, shape = president_party)) +
+  stat_smooth() +
+  stat_smooth(method = 'lm')
+
+ggplot(US_wide, aes(Year, y = n_recession_quarters)) +
+  geom_bar(stat = 'identity')
+
+ggplot(US_wide, aes(diff_value_NY.GDP.MKTP.KD.ZG, total_hs_concurrence)) +
+  geom_point() +
+  stat_smooth()
+
 
 ##### Get election results #####
 house_elections = read.csv('1976-2018-house.csv') %>% 
@@ -316,6 +392,10 @@ presidential_elections = read.csv('1976-2016-president.csv') %>% data.table()
 
 
 # count up the members by party for each election to determine control 
+
+head(concurrence_with_president_clean)
+
+
 
 district_winners = house_elections[, {
   candidate_winner = candidate[candidate_votes == max(candidate_votes)]
@@ -330,7 +410,10 @@ district_winners = house_elections[, {
   )
   
 }, by = list(year, state, district)]
+head(district_winners)
 
+table(district_winners$obs)
+filter(district_winners, obs > 3)
 # 
 # the_url = 'https://www.presidency.ucsb.edu/statistics/data/house-and-senate-concurrence-with-presidents'
 # concurrence_table = html_table(GET(the_url) %>% content(), fill = TRUE)
