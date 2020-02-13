@@ -19,22 +19,31 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# Load Data
+```{r, echo = FALSE}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# these datasets are generated in (2)_analyze_US_fiscal_data.r
+load('data/US_political_economic_data.rdata')
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+reg_dat = select(US_wide, Year,  
+                 president_party, 
+                 dem_congress, 
+                 unified_congress, 
+                 unified_government, 
+                 # house_majority, senate_majority,
+                 pct_of_year_in_recession, 
+                 recession_year, 
+                 contains("GGNLEND"), 
+                 contains('gdp_per_capita'),
+                 contains('top_tax_rate'), 
+                 contains('GGEXP'), contains('GGREV')
+                 ) %>% na.omit()
 
-```{r cars}
-summary(cars)
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Run regressions
+
