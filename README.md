@@ -30,3 +30,8 @@ This project includes data and scripts aimed at informing public policy.
 		- https://voteview.com/data
 		- https://electionlab.mit.edu/data
 		- https://www.presidency.ucsb.edu/statistics/data/presidential-job-approval
+		- https://www.brookings.edu/multi-chapter-report/vital-statistics-on-congress/
+
+## Citations
+	+ Tax Rates, Economic Growth, and Fiscal Health
+		- https://www.cbo.gov/sites/default/files/109th-congress-2005-2006/reports/12-01-10percenttaxcut.pdf
