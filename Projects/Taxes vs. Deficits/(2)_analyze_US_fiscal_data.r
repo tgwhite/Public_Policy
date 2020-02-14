@@ -179,7 +179,7 @@ correlation_df =
     ) %>%
   arrange(-correlation_to_net_lending) %>%
   mutate(
-    pretty_variable = factor(str_wrap(pretty_variable, 20), levels = str_wrap(pretty_variable, 20))
+    pretty_variable = factor(str_wrap(pretty_variable, 24), levels = str_wrap(pretty_variable, 24))
   )
 
 range(reg_dat$Year)
@@ -190,13 +190,15 @@ ggplot(correlation_df, aes(pretty_variable, correlation_to_net_lending*-1, fill 
   coord_flip() +
   labs(
     y = 'Correlation', x = '',
-    title = 'Correlation to Changes in the Annual Deficit\nU.S. 1977-2018',
+    title = 'Correlation to Changes to Annual Deficits',
+    subtitle = 'U.S. 1977-2018',
     caption = caption_text
   ) +
-  scale_y_continuous(labels = percent)
+  scale_y_continuous(labels = percent) +
+  theme(axis.text = element_text(size = 14), title = element_text(size = 16), axis.title = element_text(size = 16))
 
 
-ggsave('output/correlations_to_the_deficit.png', height = 8, width = 8.5, units = 'in', dpi = 600)
+ggsave('output/correlations_to_the_deficit.png', height = 8.5, width = 8.75, units = 'in', dpi = 600)
 
 ##### Fit models for difference in net lending #####
 
@@ -233,6 +235,7 @@ interaction_model_president_median = rq(diff_value_GGNLEND ~
 
 summary(interaction_model_president)
 summary(interaction_model_president_median, se = 'boot')
+
 
 # the most important coefficients are very similar between the models
 coef_comparison_table = data.frame(
@@ -305,7 +308,7 @@ ggplot(long_budget_components, aes(Year, value)) +
   scale_colour_manual(guide = F, values = c('DEM'='#00aef3', 'REP' = '#d8171e')) +
   scale_x_continuous(breaks = seq(1977, 2018, by = 2)) +
   geom_text(data = president_starts_stops, 
-            aes(y = 4.5, x = midpoint, label = pres_last_name, colour = president_party), hjust = 0.5) +
+            aes(y = 4.5, x = midpoint, label = pres_last_name, colour = president_party), hjust = 0.5, size = 4.5) +
   geom_segment(data = president_starts_stops, aes(y = 4, yend = 4, x = start_year, xend = end_year)) +
   scale_fill_manual(
     name = '',
@@ -314,7 +317,11 @@ ggplot(long_budget_components, aes(Year, value)) +
   ) +
   theme(
     legend.position = 'bottom',
-    axis.text.x = element_text(angle = 45)
+    axis.text.x = element_text(angle = 45),
+    title = element_text(size = 20),
+    axis.text = element_text(size = 16),
+    axis.title = element_text(size = 18),
+    legend.text = element_text(size = 14)
   ) +
   geom_segment(
     aes(x = 1976, xend = 1976, y = 1.5, yend = 3), 
@@ -327,10 +334,10 @@ ggplot(long_budget_components, aes(Year, value)) +
     size = 1, arrow = arrow(length = unit(0.1, "inches"))
   ) +
   geom_text(
-    aes(x = 1975, y = 2.5, label = 'Decreases Deficit'), angle = 90, hjust = 0.5, size = 4
+    aes(x = 1975, y = 2.5, label = 'Decreases Deficit'), angle = 90, hjust = 0.5, size = 4.5
   ) +
   geom_text(
-    aes(x = 1975, y = -2.5, label = 'Increases Deficit'), angle = 90, hjust = 0.5, size = 4
+    aes(x = 1975, y = -2.5, label = 'Increases Deficit'), angle = 90, hjust = 0.5, size = 4.5
   )
 ggsave('output/contributions_to_deficits.png', height = 8, width = 10, units = 'in', dpi = 600)
 
@@ -368,19 +375,25 @@ ggplot(reg_dat, aes(Year, -rep_dem_diff_GGNLEND)) +
     size = 1, arrow = arrow(length = unit(0.1, "inches"))
   ) +
   geom_text(
-    aes(x = 1975, y = 0.5, label = 'Rep Increase'), angle = 90, hjust = 0, size = 4
+    aes(x = 1975, y = 0.5, label = 'Rep Increase'), angle = 90, hjust = 0, size = 4.5
   ) +
   geom_text(
-    aes(x = 1975, y = -0.5, label = 'Dem Increase'), angle = 90, hjust = 1, size = 4
+    aes(x = 1975, y = -0.5, label = 'Dem Increase'), angle = 90, hjust = 1, size = 4.5
   ) +
   theme(
     axis.text.x = element_text(angle = 45),
-    legend.position = 'bottom') +
+    legend.position = 'bottom',
+      title = element_text(size = 16),
+    axis.text = element_text(size = 16),
+    axis.title = element_text(size = 18),
+    legend.text = element_text(size = 14)
+  ) +
+  
   labs(
-    title = 'Predicted Difference Between Democratic and Republican Deficit Changes',
-    subtitle = '1977-2018',
+    title = 'Predicted Difference, Democratic and Republican Deficit Changes',
+    subtitle = 'U.S. 1977-2018',
     x = '',
-    y = 'Predicted Deficit Difference (% of GDP)',
+    y = 'Predicted Difference in Deficit Changes (% of GDP)',
     caption = caption_text
   ) +
   scale_x_continuous(breaks = seq(1977, 2018, by = 2)) 
@@ -443,3 +456,13 @@ ggsave('output/predicted_vs_actual_deficit_changes.png', height = 6, width = 6, 
 # 
 # ggsave('output/deficits_vs_economic_growth_by_party.png', height = 7, width = 7.5, units = 'in', dpi = 600)
 # 
+
+save(reg_dat,
+  base_model, base_model_president, interaction_model, 
+     interaction_model_president, interaction_model_president_median, 
+     file = 'output/reg_dat_diff_GNLEND_models.rdata')
+
+summary(interaction_model_president_median, se = 'boot')
+
+reg_dat$rep_dem_diff_GGNLEND %>% mean()
+reg_dat$rep_dem_diff_GGNLEND %>% summary()
