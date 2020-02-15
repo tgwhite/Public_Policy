@@ -107,6 +107,8 @@ US_wide = filter(wide_oecd_wdi_data, Country == 'United States') %>%
     tax_increase = diff_value_top_tax_rate > 0
   )
 
+filter(US_wide, diff_value_top_tax_rate != 0) %>% select(Year, President, diff_value_top_tax_rate, value_top_tax_rate) %>% View()
+
 US_long = filter(stacked_oecd_wdi_data_lags_diffs, Country == 'United States')
 
 save(US_wide, US_long, file = 'data/US_political_economic_data.rdata')
@@ -295,7 +297,17 @@ president_starts_stops = group_by(US_wide, President, president_party) %>%
     pres_last_name = str_extract(President, '([ ]{1}[A-Za-z]+)$') %>% str_trim()
   )
 
+
 ggplot(long_budget_components, aes(Year, value)) +
+  geom_rect(data = president_starts_stops, aes(xmin = start_year, xmax = end_year, 
+                                               x = NULL,  y = NULL, ymin = -6, ymax = 4, 
+                                               colour = president_party, fill = president_party), 
+            stat = 'identity', alpha = 0.3, guide = F) +
+  scale_fill_manual(
+    name = '',
+    values = c('diff_value_GGREV' = 'steelblue', 'diff_value_GGEXP' = 'orange', 'DEM' = '#00aef3', 'REP' = '#d8171e'),
+    labels = c('diff_value_GGREV' = 'Revenue/GDP', 'diff_value_GGEXP' = 'Expenditure/GDP')
+  ) +
   geom_bar(aes(fill= name), stat = 'identity', colour = 'black') +
   geom_point(data = reg_dat, aes(Year, diff_value_GGNLEND), size = 2.5, shape = 18) +
   labs(
@@ -306,23 +318,20 @@ ggplot(long_budget_components, aes(Year, value)) +
     subtitle = 'Points Show the Deficit Change for the Year'
   ) +
   scale_colour_manual(guide = F, values = c('DEM'='#00aef3', 'REP' = '#d8171e')) +
-  scale_x_continuous(breaks = seq(1977, 2018, by = 2)) +
+  scale_x_continuous(breaks = seq(1977, 2018, by = 4)) +
   geom_text(data = president_starts_stops, 
             aes(y = 4.5, x = midpoint, label = pres_last_name, colour = president_party), hjust = 0.5, size = 4.5) +
-  geom_segment(data = president_starts_stops, aes(y = 4, yend = 4, x = start_year, xend = end_year)) +
-  scale_fill_manual(
-    name = '',
-    values = c('diff_value_GGREV' = 'steelblue', 'diff_value_GGEXP' = 'orange'),
-    labels = c('diff_value_GGREV' = 'Revenue/GDP', 'diff_value_GGEXP' = 'Expenditure/GDP')
-  ) +
+  # geom_segment(data = president_starts_stops, aes(y = 4, yend = 4, x = start_year, xend = end_year)) +
+  
   theme(
     legend.position = 'bottom',
-    axis.text.x = element_text(angle = 45),
+    axis.text.x = element_text(angle = 0),
     title = element_text(size = 20),
     axis.text = element_text(size = 16),
     axis.title = element_text(size = 18),
     legend.text = element_text(size = 14)
   ) +
+  
   geom_segment(
     aes(x = 1976, xend = 1976, y = 1.5, yend = 3), 
     lineend = 'butt', linejoin = 'mitre',
