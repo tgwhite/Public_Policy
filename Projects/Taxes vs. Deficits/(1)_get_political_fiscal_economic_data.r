@@ -4,7 +4,7 @@
 # https://stackoverflow.com/questions/49033016/plm-or-lme4-for-random-and-fixed-effects-model-on-panel-data
 # https://www.princeton.edu/~otorres/Panel101R.pdf
 # fredr_set_key('d0b9e64aba30b479343a06037a5a10c1')
-?fredr_set_key
+
 library(rvest)
 library(httr)
 library(data.table)
