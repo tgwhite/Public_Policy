@@ -152,7 +152,7 @@ ggplot(summarized_by_year, aes(year, total_difference)) +
     y = 'Change from Prior Year (% of GDP)\n',
     x = '',
     title = 'Contributions to Changes in Budget Deficits\nU.S. 1975-2018',
-    caption = 'Chart: Taylor G. White\nData: OECD, Fred, WDI'
+    caption = 'Chart: Taylor G. White\nData: OECD, FRED, WDI'
   ) +
   scale_colour_manual(guide = F, values = c('DEM'='#00aef3', 'REP' = '#d8171e')) +
   scale_x_continuous(breaks = seq(1977, 2018, by = 4)) +
