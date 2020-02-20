@@ -186,6 +186,7 @@ correlation_df =
 
 range(reg_dat$Year)
 ggplot(correlation_df, aes(pretty_variable, correlation_to_net_lending*-1, fill = positive_correlation)) +
+  theme_bw() +
   geom_bar(stat = 'identity') +
   geom_text(aes(label = percent(correlation_to_net_lending*-1)), hjust = 0) +
   scale_fill_manual(guide = F, values = c('TRUE' = 'steelblue', 'FALSE' = 'firebrick')) + 
@@ -299,10 +300,11 @@ president_starts_stops = group_by(US_wide, President, president_party) %>%
 
 
 ggplot(long_budget_components, aes(Year, value)) +
+  theme_bw() +
   geom_rect(data = president_starts_stops, aes(xmin = start_year, xmax = end_year, 
                                                x = NULL,  y = NULL, ymin = -6, ymax = 4, 
-                                               colour = president_party, fill = president_party), 
-            stat = 'identity', alpha = 0.3, guide = F) +
+                                               colour = president_party), 
+            stat = 'identity', alpha = 0.3, show.legend = F, fill = NA) +
   scale_fill_manual(
     name = '',
     values = c('diff_value_GGREV' = 'steelblue', 'diff_value_GGEXP' = 'orange', 'DEM' = '#00aef3', 'REP' = '#d8171e'),
@@ -371,6 +373,7 @@ reg_dat = mutate(
 dem_rep_diff = pivot_longer(reg_dat, cols = c('predicted_dem_diff_GGNLEND', 'predicted_rep_diff_GGNLEND'))
 
 ggplot(reg_dat, aes(Year, -rep_dem_diff_GGNLEND)) +
+  theme_bw() +
   geom_bar(aes(fill = recession_year), stat = 'identity', colour = 'black') +
   scale_fill_manual(name = 'Recession Year', values = c('TRUE' = 'firebrick', 'FALSE' = 'steelblue')) +
   geom_segment(
@@ -390,7 +393,7 @@ ggplot(reg_dat, aes(Year, -rep_dem_diff_GGNLEND)) +
     aes(x = 1975, y = -0.5, label = 'Dem Increase'), angle = 90, hjust = 1, size = 4.5
   ) +
   theme(
-    axis.text.x = element_text(angle = 45),
+    axis.text.x = element_text(angle = 0),
     legend.position = 'bottom',
       title = element_text(size = 16),
     axis.text = element_text(size = 16),
@@ -405,13 +408,14 @@ ggplot(reg_dat, aes(Year, -rep_dem_diff_GGNLEND)) +
     y = 'Predicted Difference in Deficit Changes (% of GDP)',
     caption = caption_text
   ) +
-  scale_x_continuous(breaks = seq(1977, 2018, by = 2)) 
+  scale_x_continuous(breaks = seq(1977, 2018, by = 4)) 
 
 ggsave('output/dem_rep_difference_deficits.png', height = 8, width = 10, units = 'in', dpi = 600)  
 
 
 #### plot model predictions ####
 ggplot(reg_dat, aes(-predicted_diff_GGNLEND, -diff_value_GGNLEND)) +
+  theme_bw() +
   geom_point(aes(colour = president_party)) +
   stat_smooth(method = 'lm', colour = 'black') +
   labs(

@@ -21,11 +21,18 @@ all_oecd_downloads = list.files('data', pattern = 'DP_LIVE', full.names = T) %>%
   map(read_csv) %>% 
   bind_rows() 
 
+
+
 USA_revenue_expense_deficits = filter(all_oecd_downloads, 
                                       LOCATION == 'USA',
                                       INDICATOR %in% c('GGEXP', 'GGREV', 'GGNLEND'),
                                       MEASURE == 'PC_GDP') %>%
 data.table()
+
+us_defense_only = filter(USA_revenue_expense_deficits, INDICATOR == 'GGEXP', SUBJECT == 'DEF')
+
+ggplot(us_defense_only, aes(TIME, Value)) +
+  geom_line()
 
 # compute YOY differences, push wide 
 USA_revenue_expense_deficits_diffs = USA_revenue_expense_deficits[, {
@@ -49,7 +56,6 @@ USA_revenue_expense_deficits_diffs = USA_revenue_expense_deficits[, {
     values_from = c('value', 'diff_value')
   )
 
-
 # load in existing wide US data
 load('data/US_political_economic_data.rdata')
 
@@ -65,6 +71,19 @@ US_wide_selection =
   filter(!is.na(value_NY.GDP.PCAP.KD.ZG)) %>%
   arrange(year)
 
+iqr_growth = quantile(US_wide_selection$value_NY.GDP.PCAP.KD.ZG, probs = c(0.25, 0.75))
+
+US_wide_selection = mutate(
+  US_wide_selection,
+  growth_desc = ifelse(dplyr::between(value_NY.GDP.PCAP.KD.ZG, iqr_growth[1], iqr_growth[2]), 
+                       'Middle 50%', ifelse(value_NY.GDP.PCAP.KD.ZG < iqr_growth[1], 
+                                            'Bottom 25%', 'Top 25%'))
+)
+group_by(US_wide_selection, growth_desc) %>%
+  summarize(
+    obs = n(),
+    mean_growth = mean(value_NY.GDP.PCAP.KD.ZG)
+  )
 
 descriptions = c(
   'TOT' = 'Total Revenue',
@@ -187,3 +206,55 @@ ggplot(summarized_by_year, aes(year, total_difference)) +
     aes(x = 1973, y = -2.5, label = 'Increases Deficit'), angle = 90, hjust = 0.5, size = 4.5
   )
 ggsave('output/contributions_to_deficits_upd.png', height = 8, width = 10, units = 'in', dpi = 600)
+
+# create the same chart but colored by economic growth
+ggplot(US_wide_selection, aes(year, diff_value_GGNLEND_TOT, fill = growth_desc)) +
+  geom_rect(data = president_starts_stops, aes(xmin = start_year, xmax = end_year, 
+                                               x = NULL,  y = NULL, ymin = -6, ymax = 4 
+                                               ),
+            fill = NA,
+            colour = 'black', linetype = 'dotted',
+            show.legend = F,
+            size = 0.25,
+            stat = 'identity', alpha = 0.3) +
+  theme_bw() +
+  geom_bar(stat = 'identity') +
+  geom_segment(
+    aes(x = 1974, xend = 1974, y = 1.5, yend = 3), 
+    lineend = 'butt', linejoin = 'mitre',
+    size = 1, arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_segment(
+    aes(x = 1974, xend = 1974, y = -1.5, yend = -3), 
+    lineend = 'butt', linejoin = 'mitre',
+    size = 1, arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_text(data = president_starts_stops,
+            aes(y = 4.5, x = midpoint, label = pres_last_name, colour = president_party, fill = NA), hjust = 0.5, size = 4.5) +
+  geom_text(
+    aes(x = 1973, y = 2.5, label = 'Decreased Deficit'), angle = 90, hjust = 0.5, size = 4.5
+  ) +
+  geom_text(
+    aes(x = 1973, y = -2.5, label = 'Increased Deficit'), angle = 90, hjust = 0.5, size = 4.5
+  ) +
+  scale_fill_hue(
+    name = 'Per-Capita Economic Growth'
+  ) +
+  theme(
+    legend.position = 'top',
+    axis.text.x = element_text(angle = 0),
+    title = element_text(size = 20),
+    axis.text = element_text(size = 16),
+    axis.title = element_text(size = 18),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 15)
+  ) +
+  labs(
+    y = 'Deficit Change from Prior Year (% of GDP)\n',
+    x = '',
+    title = 'Changes in Budget Deficits vs. Economic Growth\nU.S. 1975-2018',
+    caption = 'Chart: Taylor G. White\nData: OECD, FRED, WDI'
+  ) +
+  scale_x_continuous(breaks = seq(1977, 2018, by = 4)) +
+  scale_colour_manual(guide = F, values = c('DEM'='#00aef3', 'REP' = '#d8171e')) 
+ggsave('output/contributions_to_deficits_by_growth.png', height = 8, width = 10, units = 'in', dpi = 600)
