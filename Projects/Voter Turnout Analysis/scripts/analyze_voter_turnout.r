@@ -1,10 +1,106 @@
 library(tidyverse)
 library(scales)
 library(readxl)
-
+library(ggforce)
 setwd("~/Public_Policy/Projects/Voter Turnout Analysis")
 
 turnout_dat = read_excel("data/voter turnout by age and ideology.xlsx", 'clean table')
+
+##### get voter turnout / vote share by #####
+reg_vote_dat = read_excel("data/voter turnout by age and ideology.xlsx", '2018 nov midterm reg turnout', skip = 3) %>%
+  filter(
+    !age %in% c('80-84', '85 and over')
+  ) %>%
+  mutate(
+    age_int = ifelse(age == '80+', 80, as.integer(age)),
+    age_group = cut(age_int, breaks = c(18, 29, 44, 64, 80), include.lowest = T, right = T, ordered_result = T)
+  )
+names(reg_vote_dat) = str_replace_all(names(reg_vote_dat), '[ ]', '_')
+
+total_voted = sum(reg_vote_dat$citizen_voted)
+total_citizen_pop = sum(reg_vote_dat$citizen_pop)
+
+reg_vote_dat = mutate(reg_vote_dat, 
+                      share_of_citizen_pop = citizen_pop / total_citizen_pop,
+                      share_of_vote = citizen_voted / total_voted,
+                      influence_ratio = share_of_vote / share_of_citizen_pop
+                      )
+
+long_reg_vote_dat = pivot_longer(reg_vote_dat, cols = c('share_of_citizen_pop', 'share_of_vote')) %>%
+  filter(age_int != 80)
+
+influence_polynomial = lm(influence_ratio ~ age_int + I(age_int^2) + I(age_int^3) + I(age_int^4), data = reg_vote_dat)
+reg_vote_dat$influence_polynomial_pred = predict(influence_polynomial)
+
+summary(influence_polynomial)
+
+
+breakeven_influence = optim(par = c(18), lower=18, upper = 79, fn = function(par){
+  pred_dat = data.frame(age_int = par[1])
+  the_prediction = predict(influence_polynomial, newdata= pred_dat)
+  return((the_prediction - 1)^2)
+}, method = 'Brent')
+
+ggplot(reg_vote_dat, aes(age_int, influence_ratio)) +
+  theme_bw() +
+  geom_point() +
+  geom_line(aes(y = influence_polynomial_pred), size = 1, colour = 'blue') +
+  geom_hline(aes(yintercept = 1), size =  0.75) +
+  geom_vline(aes(xintercept = breakeven_influence$par), size = .75) +
+  scale_x_continuous(breaks = seq(20, 80, by = 5)) +
+  labs(
+    y = 'Influence Ratio\n(vote share / population share)\n', x = '\nAge',
+    title = 'Voter Influence by Age, Nov. 2018 Midterm Election', 
+    subtitle = str_wrap("An influence ratio of 1 means an age group's share of the vote is equal to their share of the population (one person, one vote).", 90)
+  ) +
+  theme(
+    legend.text = element_text(size = 12),
+    title = element_text(size = 16), 
+    text = element_text(size = 14),
+    plot.subtitle = element_text(size = 12)
+  ) 
+ggsave('output/voter_influence_by_age.png', height = 8, width = 8, units = 'in', dpi = 600)
+
+
+ggplot(long_reg_vote_dat, aes(age_int, value, colour = name)) +
+  theme_bw() +
+  geom_point() +
+  stat_smooth(se = F, span = 0.35, size = 1.25) +
+  scale_y_continuous(labels = percent) +
+  scale_x_continuous(breaks = seq(20, 80, by = 5)) +
+  scale_colour_manual(
+    name = '',
+    labels = c('share_of_citizen_pop' = 'Share of Population', 'share_of_vote' = 'Share of Vote'),
+    values = c('share_of_citizen_pop' = 'steelblue', 'share_of_vote' = 'orange')
+  ) +
+  labs(
+    y = 'Percent Share\n', x = '\nAge'
+  ) 
+ggsave('output/share_of_vote_vs_pop_share.png', height = 8, width = 9, units = 'in', dpi = 600)
+
+
+
+stats_by_age_group = group_by(reg_vote_dat, age_group) %>%
+  summarize(
+    tot_citizen_pop = sum(citizen_pop),
+    tot_citizen_registered = sum(citizen_registered),
+    tot_citizen_voted = sum(citizen_voted)
+  ) %>%
+  mutate(
+    share_of_vote = tot_citizen_voted / total_voted
+  )
+
+
+
+ggplot(reg_vote_dat, aes(age_int, citizen_pct_voted)) +
+  geom_point() +
+  stat_smooth()
+
+ggplot(reg_vote_dat, aes(age_int, pct_citizen_registered)) +
+  geom_point() +
+  stat_smooth()
+
+
 
 ##### get partisan leanings by age group #####
 age_pop_by_year = read_excel("data/voter turnout by age and ideology.xlsx", 'age by indv years') %>%
