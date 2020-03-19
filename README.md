@@ -39,3 +39,4 @@ This project includes data and scripts aimed at informing public policy.
 ## Citations
 	+ Tax Rates, Economic Growth, and Fiscal Health
 		- https://www.cbo.gov/sites/default/files/109th-congress-2005-2006/reports/12-01-10percenttaxcut.pdf
+		
