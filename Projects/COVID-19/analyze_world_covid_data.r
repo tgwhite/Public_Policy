@@ -15,12 +15,48 @@ library(lmtest)
 library(WDI)
 library(plotly)
 library(USAboundaries)
+library(sf)
+library(fuzzyjoin)
+library(tigris)
 
-us_cities_shp = us_cities()
+# install.packages('tigris')
+
+# install.packages(c('tidyverse', 'data.table', 'rnaturalearth', 'rgeos', 
+#                    'WDI', 'lmtest', 'gifski', 'gganimate', 'viridisLite'))
+# install.packages(c('plotly', 'rnaturalearthdata', 'USAboundaries', 'countrycode', 'quantmod'))
+# install.packages("remotes")
+# remotes::install_github("ropensci/USAboundariesData")
+
+us_cities_shp = us_cities() %>%
+  mutate(
+    province_state_city = paste0(city, ', ', state_abbr)
+  )
+
+us_counties_shp = us_counties() %>%
+  mutate(
+    province_state_city = ifelse(state_abbr == 'LA', paste0(name, ' Parish, ', state_abbr), paste0(name, ' County, ', state_abbr))
+  )
+us_counties_shp$geometry[1]
+
+county_shp = tigris::counties()
+
 
 johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
-head(johns_hopkins_cases)
+johns_hopkins_deaths = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv')
+johns_hopkins_recovered = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv')
+
 table(johns_hopkins_cases$`Province/State`)
+
+cities_and_counties_and_states = c(state.name, us_cities_shp$province_state_city, us_counties_shp$province_state_city)
+us_cities_provinces = filter(johns_hopkins_cases, `Country/Region` == 'US')
+
+any(!us_cities_provinces %in% cities_and_counties_and_states)
+setdiff(us_cities_provinces$`Province/State`, cities_and_counties_and_states)
+
+stanislaus = filter(johns_hopkins_cases, str_detect(`Province/State`, 'Stanislaus'))
+stan = filter(us_counties_shp, name == 'Stanislaus')
+st_coordinates(stan)
+?us_counties
 
 # pull in COVID data, mostly from WHO
 all_covid_data = read_csv('https://covid.ourworldindata.org/data/full_data.csv') %>%
