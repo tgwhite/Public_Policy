@@ -40,37 +40,6 @@ us_counties_shp$geometry[1]
 
 county_shp = tigris::counties()
 
-
-johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
-johns_hopkins_deaths = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv')
-johns_hopkins_recovered = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv')
-
-table(johns_hopkins_cases$`Province/State`)
-
-cities_and_counties_and_states = c(state.name, us_cities_shp$province_state_city, us_counties_shp$province_state_city)
-us_cities_provinces = filter(johns_hopkins_cases, `Country/Region` == 'US')
-
-any(!us_cities_provinces %in% cities_and_counties_and_states)
-setdiff(us_cities_provinces$`Province/State`, cities_and_counties_and_states)
-
-stanislaus = filter(johns_hopkins_cases, str_detect(`Province/State`, 'Stanislaus'))
-stan = filter(us_counties_shp, name == 'Stanislaus')
-st_coordinates(stan)
-?us_counties
-
-# pull in COVID data, mostly from WHO
-all_covid_data = read_csv('https://covid.ourworldindata.org/data/full_data.csv') %>%
-  arrange(location, date) %>% 
-  mutate_if(is.numeric, function(x) ifelse(is.na(x), 0, x)) %>%
-  filter(location != 'World') %>%
-  mutate(
-    location_type = 'country', 
-    data_source = 'WHO-ourworldindata',
-    location_key = paste(location, location_type, data_source, sep = '|')
-  )
-  
-filter(all_covid_data, location == 'Italy') %>% tail(1)
-
 us_covid_data = read_csv('https://covidtracking.com/api/us/daily.csv') %>%
   mutate(
     date = as.Date(as.character(date), format = '%Y%m%d'),
@@ -107,7 +76,7 @@ us_states_covid_data = read_csv('http://covidtracking.com/api/states/daily.csv')
     new_deaths = total_deaths - lag(total_deaths, 1)
   )
 
-all_covid_data_stacked = bind_rows(all_covid_data, us_covid_data, us_states_covid_data) %>%
+all_covid_data_stacked = bind_rows(us_covid_data, us_states_covid_data) %>%
   arrange(location_key, date) %>%
   pivot_longer(cols = c('new_cases', 'new_deaths', 'total_cases', 'total_deaths'),
                names_to = c('measure'), values_to = 'value') %>%
@@ -169,12 +138,11 @@ daily_growth_stats = group_by(all_covid_data_diffs_dates, days_since_case_100) %
     median_daily_change_deaths = median(pct_change_value_total_deaths, na.rm = T)
   )
 
-table(all_covid_data_diffs_dates$location)
+
 ggplot(all_covid_data_diffs_dates %>% filter(location_type == 'US State'), aes(days_since_case_100, pct_change_value_total_cases)) +
   geom_line(aes(alpha = days_since_case_100, group = location)) +
   geom_line(data = filter(all_covid_data_diffs_dates, location == 'United States', data_source == 'covidtracking.com'),
             colour = 'red', size = 1) +
-  geom_line(data = filter(all_covid_data_diffs_dates, location == 'Italy'), colour = 'forestgreen', size = 1) +
   scale_y_continuous(limits = c(0, 1)) +
   # geom_line(data = daily_growth_stats %>% filter(n_countries >= 5), aes(x = days_since_case_100, y = median_daily_change_cases), size = 1, colour = 'blue')
   scale_alpha(range = c(0.1, 1)) 
@@ -250,41 +218,6 @@ setdiff(latest_data$location, world$geounit)
 head(all_data)
 
 #### get world bank data on each country #####
-WDIsearch('population') %>% View()
-wdi_indicators = c('SP.POP.65UP.TO.ZS', 'SP.URB.TOTL.IN.ZS', 
-                   'SP.URB.MCTY.UR.ZS', 'SH.STA.ACCH.ZS', 
-                   'SH.MED.NURS.ZS', 'SH.STA.DIAB.ZS', 
-                   'SP.POP.65UP.TO.ZS', 'SP.POP.TOTL', 'SP.POP.LAND.ZS', 'SH.XPD.PCAP', 
-                   'SH.MED.CMHW.P3', 'SH.XPD.OOPC.CH.ZS', 'SH.XPD.CHEX.GD.ZS')
-wdi_descriptions = map(wdi_indicators, function(x){
-  WDIsearch(string = x, field = 'indicator', short = F) %>% 
-    t() %>%
-    as.data.frame() %>% 
-    mutate(
-      orig_indicator = x
-    )
-}) %>%
-  bind_rows() %>%
-  filter(
-    indicator == orig_indicator
-  )
-
-WDI_data_long = map(wdi_indicators, function(x){
-  tryCatch({
-    download = WDI(indicator = x, start = 1965, end = 2020, extra = T) %>% 
-      mutate(indicator = x)
-    names(download)[names(download) == x] = 'value'  
-    return(download)
-  }, error = function(e){
-    print(e)
-    cat('error with ', x, '\n')
-    return(NULL)
-  })
-
-})
-
-wdi_data_stacked = bind_rows(WDI_data_long) %>% 
-  left_join(wdi_descriptions) %>% select(-matches('V[0-9]'))
 
 
 #### map everything ####
