@@ -2,6 +2,7 @@
 # https://covidtracking.com/api/
 # https://covid.ourworldindata.org
 
+library(plotly)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(rgeos)
@@ -46,6 +47,7 @@ us_covid_data = read_csv('https://covidtracking.com/api/us/daily.csv') %>%
     data_source = 'covidtracking.com',
     location_key = paste(location, location_type, data_source, sep = '|')
   ) %>%
+  arrange(date) %>%
   rename(
     total_cases = positive,
     total_deaths = death,
@@ -53,7 +55,9 @@ us_covid_data = read_csv('https://covidtracking.com/api/us/daily.csv') %>%
   ) %>%
   mutate(
     new_cases = total_cases - lag(total_cases, 1),
-    new_deaths = total_deaths - lag(total_deaths, 1)
+    new_deaths = total_deaths - lag(total_deaths, 1),
+    t = as.numeric(date - min(date)),
+    potential_real_cases = total_deaths/0.006
   )
 
 us_states_covid_data = read_csv('http://covidtracking.com/api/states/daily.csv') %>%
@@ -74,13 +78,13 @@ us_states_covid_data = read_csv('http://covidtracking.com/api/states/daily.csv')
     new_deaths = total_deaths - lag(total_deaths, 1)
   )
 
-
+us_states_covid_data$state %>% unique()
 all_covid_data_stacked = bind_rows(us_covid_data, us_states_covid_data) %>%
   arrange(location_key, date) %>%
   pivot_longer(cols = c('new_cases', 'new_deaths', 'total_cases', 'total_deaths'),
                names_to = c('measure'), values_to = 'value') %>%
   data.table()
-table(all_covid_data_stacked$location)
+
 
 
 # compute first differences, pct changes, etc. 
@@ -124,47 +128,28 @@ case_100_dates = group_by(all_covid_data_diffs, location_key) %>%
   )
 
 all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_100_dates) %>%
-  # filter(date >= date_case_100) %>%
   mutate(
     days_since_case_100 = as.numeric(date - date_case_100)
   ) %>%
   arrange(location_key, date)
 
-latest_state_data = group_by(all_covid_data_diffs_dates, location_key, location) %>%
+
+latest_state_data = 
+  all_covid_data_diffs_dates %>% filter(location_type == 'US State') %>%
+  group_by(location_key, location) %>%
   summarize(
     last_cases = tail(value_total_cases, 1),
+    new_cases = tail(diff_value_total_cases, 1),
     last_date = max(date)
   )
 
+# create map for all 50 states 
 US_state_data = left_join(us_states_shp, latest_state_data, by = c('state_abbr' = 'location')) %>% 
   left_join(state_geo_center)
-
 
 lower_48 = state.name[!state.name %in% c('Hawaii', 'Alaska')]
 lower_48_state_data = filter(US_state_data, name %in% lower_48)
 
-ggplot() +
-  geom_sf(data = lower_48_state_data, aes(), fill = 'lightgray') +
-  geom_sf(data = lower_48_state_data, aes(fill = log(last_cases)), show.legend = F) +
-  coord_sf(crs = st_crs(2163)) +
-  scale_fill_viridis(option = 'plasma') +
-  geom_sf_text(data = lower_48_state_data, aes(long, lat, label = comma(last_cases, accuracy = 1)),
-               colour = 'black', fontface='bold', size = 2.5) +
-  labs(x = '', y = '',
-       caption = 'Chart: Taylor G. White\nData: covidtracking.com',
-       title = 'U.S. COVID-19 Cases by State', subtitle = sprintf('As of %s',
-                                                                  unique(format(latest_state_data$last_date, '%B %d')))) +
-  theme(
-    axis.ticks = element_blank(),
-    axis.text = element_blank(),
-    title = element_text(size = 16),
-    plot.subtitle = element_text(size = 12),
-    plot.caption = element_text(hjust = 0)
-  )
-
-ggsave('output/latest_cases_by_state.png', height = 6, width = 8, units = 'in', dpi=800)
-
-##### create map for all 50 states #####
 alaska_data = filter(US_state_data, name %in% 'Alaska')
 hawaii_data = filter(US_state_data, name %in% 'Hawaii')
 
@@ -172,15 +157,14 @@ hawaii_data = filter(US_state_data, name %in% 'Hawaii')
 world <- ne_countries(scale = "medium", returnclass = "sf")
 usa <- subset(world, admin == "United States of America")
 
+v_scale = scale_fill_viridis(name = 'Fill', guide = F) 
+
 mainland <- ggplot() +
-  # geom_sf(fill = NA) +  
+  geom_sf(fill = NA) +  
   geom_sf(data = lower_48_state_data, aes(fill = log(last_cases)), show.legend = F) +
   geom_sf_text(data = lower_48_state_data, aes(long, lat, label = comma(last_cases, accuracy = 1)),
                colour = 'black', fontface='bold', size = 2.5) +
-  scale_fill_viridis(name = 'Fill', guide = F, option = 'plasma') +
-  # geom_sf_text(data = latest_state_data, aes(long, lat, label = comma(last_cases, accuracy = 1)),
-  # colour = 'white', fontface='bold', size = 2) +
-  
+  v_scale +
   coord_sf(crs = st_crs(2163), xlim = c(-2500000, 2500000), ylim = c(-2300000,
                                                                      730000)) +
   labs(x = '', y = '',
@@ -190,8 +174,8 @@ mainland <- ggplot() +
   
   theme_map() +
   theme(
-    # axis.ticks = element_blank(),
-    # axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
     title = element_text(size = 16),
     plot.subtitle = element_text(size = 12),
     plot.caption = element_text(hjust = 0)
@@ -201,18 +185,21 @@ alaska <- ggplot() +
   geom_sf(data = alaska_data, aes(fill = log(last_cases))) +
   geom_sf_text(data = alaska_data, aes(long, lat, label = comma(last_cases, accuracy = 1)),
                colour = 'black', fontface='bold', size = 2.5) +
-  scale_fill_viridis(name = 'Fill', guide = F, option = 'plasma') +
+  v_scale +
   coord_sf(crs = st_crs(3467), xlim = c(-2400000, 1600000), ylim = c(200000,
                                                                      2500000), expand = FALSE, datum = NA) +
-  labs(x='', y='')
+  labs(x='', y='') +
+  theme_map() 
+
 hawaii  <- ggplot(data = hawaii_data) +
   geom_sf(data = hawaii_data, aes(fill = log(last_cases))) +
   geom_sf_text(data = hawaii_data, aes(long, lat, label = comma(last_cases, accuracy = 1)),
                colour = 'black', fontface='bold', size = 2.5) +
-  scale_fill_viridis(name = 'Fill', guide = F, option = 'plasma') +
+  v_scale +
   coord_sf(crs = st_crs(4135), xlim = c(-161, -154), ylim = c(18,
                                                               23), expand = FALSE, datum = NA) +
-  labs(x='', y='')
+  labs(x='', y='') +
+  theme_map()
 
 mainland +
   annotation_custom(
@@ -229,14 +216,8 @@ mainland +
     ymin = -2450000,
     ymax = -2450000 + (23 - 18)*120000
   )
-
-ratioAlaska <- (2500000 - 200000) / (1600000 - (-2400000))
-ratioHawaii  <- (23 - 18) / (-154 - (-161))
-
-ggdraw(mainland) +
-  draw_plot(alaska, width = 0.26, height = 0.26 * 10/6 * ratioAlaska,
-            x = 0.05, y = 0.05) +
-  draw_plot(hawaii, width = 0.15, height = 0.15 * 10/6 * ratioHawaii,
-            x = 0.3, y = 0.05)
-
 ggsave('output/latest_cv_state_map_50.png', height = 6, width = 8, units = 'in', dpi = 800)
+
+
+
+
