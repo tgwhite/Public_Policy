@@ -78,7 +78,7 @@ us_states_covid_data = read_csv('http://covidtracking.com/api/states/daily.csv')
     new_deaths = total_deaths - lag(total_deaths, 1)
   )
 
-us_states_covid_data$state %>% unique()
+
 all_covid_data_stacked = bind_rows(us_covid_data, us_states_covid_data) %>%
   arrange(location_key, date) %>%
   pivot_longer(cols = c('new_cases', 'new_deaths', 'total_cases', 'total_deaths'),
@@ -221,3 +221,5 @@ ggsave('output/latest_cv_state_map_50.png', height = 6, width = 8, units = 'in',
 
 
 
+##### draw case plots by state #####
+head(all_covid_data_diffs_dates)

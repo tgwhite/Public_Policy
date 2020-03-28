@@ -1,6 +1,12 @@
 library(tidyverse)
 library(R0)
 library(scales)
+library(earlyR)
+library(incidence)
+# https://cran.r-project.org/web/packages/earlyR/earlyR.pdf
+## example: onsets on days 1, 5, 6 and 12; estimation on day 24
+
+
 
 ##### pull in data ####
 johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv') %>%
@@ -61,3 +67,14 @@ ggplot(us_jh_cases_long, aes(date, value, colour = name)) +
   scale_y_continuous(labels = comma) +
   labs(x = 'Date', y = 'Cases', title = 'Exponential Growth Model vs. Confirmed Cases')
 ggsave('exp_growth_vs_cases.png', height = 6, width = 6, units = 'in', dpi = 600)
+
+
+### estimate R0 with earlyR package ###
+x <- incidence(c(1, 5, 6, 12), last_date = 24)
+x
+as.data.frame(x)
+plot(x)
+res <- get_R(x, disease = "ebola")
+res
+plot(res)
+plot(res, "lambdas")

@@ -28,6 +28,11 @@ library(cowplot)
 
 setwd("~/Public_Policy/Projects/COVID-19")
 
+us_cities_shp = us_cities() %>%
+  mutate(
+    province_state_city = paste0(city, ', ', state_abbr)
+  )
+us_cities_shp %>% View()
 
 us_counties_shp = us_counties() %>%
   mutate(
@@ -36,6 +41,8 @@ us_counties_shp = us_counties() %>%
   )
 
 county_shp = tigris::counties()
+#city_shp = tigris::places(state = 'NY')
+
 
 ##### pull in data ####
 johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv') %>%
@@ -73,6 +80,8 @@ jh_joined = mutate(jh_joined,
 
 entity_types = select(jh_joined, country_region, province_state_fin, is_country, US_state, 
                       US_county, US_city, US_other_geo_entity, long, lat) %>% unique()
+View(entity_types)
+entity_types$country_region %>% unique()
 
 
 jh_last_data_updates = group_by(jh_joined, country_region, province_state_fin) %>%
@@ -83,78 +92,6 @@ jh_last_data_updates = group_by(jh_joined, country_region, province_state_fin) %
   ) %>%
   left_join(entity_types) %>%
   arrange(-last_deaths)
-
-# US_state_jh = left_join(us_states_shp, jh_last_data_updates, by = c('name' = 'province_state_fin'))
-# lower_48 = state.name[!state.name %in% c('Hawaii', 'Alaska')]
-# latest_state_data = filter(US_state_jh, name %in% lower_48)
-# alaska_data = filter(US_state_jh, name %in% 'Alaska')
-# hawaii_data = filter(US_state_jh, name %in% 'Hawaii')
-# 
-# ggplot() +
-#   geom_sf(data = latest_state_data, aes(fill = log(last_cases)), show.legend = F) +
-#   coord_sf(crs = st_crs(2163)) +
-#   scale_fill_viridis_b() +
-#   geom_text(data = latest_state_data, aes(long, lat, label = comma(last_cases, accuracy = 1)), 
-#             colour = 'white', fontface='bold', size = 2) +
-#   labs(x = '', y = '', 
-#        caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
-#        title = 'COVID-19 Cases by State', subtitle = sprintf('As of %s', 
-#                                                              unique(format(jh_last_data_updates$last_update, '%B %d')))) +
-#   theme(
-#     axis.ticks = element_blank(),
-#     axis.text = element_blank(),
-#     title = element_text(size = 16),
-#     plot.subtitle = element_text(size = 12),
-#     plot.caption = element_text(hjust = 0)
-#   ) 
-#   
-# ggsave('output/latest_cases_by_state.png', height = 6, width = 8, units = 'in', dpi=800)
-
-# usa <- subset(world, admin == "United States of America")
-# mainland <- ggplot(data = usa) +
-#     geom_sf(data = latest_state_data, aes(fill = log(last_cases)), show.legend = F) +
-#     scale_fill_viridis_b() +
-#     geom_sf_text(data = latest_state_data, aes(long, lat, label = comma(last_cases, accuracy = 1)),
-#               colour = 'white', fontface='bold', size = 2) +
-#     geom_sf(fill = NA) +
-#     coord_sf(crs = st_crs(2163), xlim = c(-2500000, 2500000), ylim = c(-2300000, 
-#                                                                        730000)) 
-# 
-#     alaska <- ggplot() +
-#     geom_sf(data = alaska_data) +
-#       scale_fill_viridis_b() +
-#     coord_sf(crs = st_crs(3467), xlim = c(-2400000, 1600000), ylim = c(200000, 
-#                                                                        2500000), expand = FALSE, datum = NA)
-# (hawaii  <- ggplot(data = usa) +
-#     geom_sf(fill = "cornsilk") +
-#     coord_sf(crs = st_crs(4135), xlim = c(-161, -154), ylim = c(18, 
-#                                                                 23), expand = FALSE, datum = NA))
-# mainland +
-#   annotation_custom(
-#     grob = ggplotGrob(alaska),
-#     xmin = -2750000,
-#     xmax = -2750000 + (1600000 - (-2400000))/2.5,
-#     ymin = -2450000,
-#     ymax = -2450000 + (2500000 - 200000)/2.5
-#   ) +
-#   annotation_custom(
-#     grob = ggplotGrob(hawaii),
-#     xmin = -1250000,
-#     xmax = -1250000 + (-154 - (-161))*120000,
-#     ymin = -2450000,
-#     ymax = -2450000 + (23 - 18)*120000
-#   )
-# 
-# (ratioAlaska <- (2500000 - 200000) / (1600000 - (-2400000)))
-# (ratioHawaii  <- (23 - 18) / (-154 - (-161)))
-# 
-# ggdraw(mainland) +
-#   draw_plot(alaska, width = 0.26, height = 0.26 * 10/6 * ratioAlaska, 
-#             x = 0.05, y = 0.05) +
-#   draw_plot(hawaii, width = 0.15, height = 0.15 * 10/6 * ratioHawaii, 
-#             x = 0.3, y = 0.05)
-# 
-
 
 
 ##### plot country comparison #####
@@ -172,7 +109,6 @@ US_china_total = filter(jh_joined, country_region %in% c('China')) %>%
     cases = total_cases, 
     deaths = total_deaths
   ) 
-
 
 US_country_comparison = bind_rows(comparator_countries, US_china_total)
 
@@ -199,7 +135,7 @@ key_dates = tibble(
 
 last_date_by_country = group_by(us_states_vs_countries_dates, country_region, measure) %>%
   summarize(
-    last_date = max(date_upd) + 3,
+    last_date = max(date_upd) + 1,
     last_value = value[date_upd == max(date_upd)]
   ) %>%
   rename(date_upd = last_date, value = last_value)
@@ -212,7 +148,7 @@ ggplot(aes(date_upd, value, colour = country_region)) +
   geom_vline(data = key_dates, 
              aes(xintercept = date_upd, colour = country_region), size = 0.5, linetype = 'dashed', show.legend = F) +
   geom_line(size = 1) +
-  geom_text(data = last_date_by_country, aes(label = comma(value, accuracy = 1)), show.legend = F) +
+  geom_text_repel(data = last_date_by_country, aes(label = comma(value, accuracy = 1)), show.legend = F) +
   scale_y_continuous(labels = comma)  +
   theme(
     strip.background = element_rect(fill = 'darkgray'),
@@ -242,8 +178,8 @@ ggplot(aes(date_upd, value, colour = country_region)) +
   guides(colour = guide_legend(override.aes = list(size = 3))) +
   scale_colour_hue(name = 'Country', labels = c('Korea, South' = 'South Korea'))
 
-
 ggsave('output/covid_country_comparison.png', height = 9, width = 9, units = 'in', dpi = 800)
+
 
 ####  show case growth by day since case 100 ####        
 growth_comparison_dat = filter(us_states_vs_countries_dates, measure == 'cases', 
@@ -299,6 +235,8 @@ coronavirus_quotes = read_excel('data/coronavirus quotes.xlsx') %>% mutate(Date 
   rename(date_upd = Date)
 
 us_cases = filter(us_states_vs_countries_dates, country_region %in%  c('US', 'Italy', 'China'), measure == 'cases')
+italy = filter(us_states_vs_countries_dates, country_region ==  'Italy') %>% filter(measure == 'deaths', value > 0)
+italy$date_upd %>% range()
 
 write.csv(us_cases, 'output/us_cases_comparison.csv', row.names = F)
 anim = ggplot(us_cases, aes(date_upd, value, colour = country_region)) + 
@@ -334,42 +272,42 @@ animate(anim, nframes = 300,
 
 ##### get additional statistics by country #####
 
-wdi_indicators = c('SP.POP.65UP.TO.ZS', 'SP.URB.TOTL.IN.ZS', 
-                   'SP.URB.MCTY.UR.ZS', 'SH.STA.ACCH.ZS', 
-                   'SH.MED.NURS.ZS', 'SH.STA.DIAB.ZS', 
-                   'SP.POP.65UP.TO.ZS', 'SP.POP.TOTL', 'SP.POP.LAND.ZS', 'SH.XPD.PCAP', 
-                   'SH.MED.CMHW.P3', 'SH.XPD.OOPC.CH.ZS', 'SH.XPD.CHEX.GD.ZS')
-wdi_descriptions = map(wdi_indicators, function(x){
-  WDIsearch(string = x, field = 'indicator', short = F) %>% 
-    t() %>%
-    as.data.frame() %>% 
-    mutate(
-      orig_indicator = x
-    )
-}) %>%
-  bind_rows() %>%
-  filter(
-    indicator == orig_indicator
-  )
-
-WDI_data_long = map(wdi_indicators, function(x){
-  tryCatch({
-    download = WDI(indicator = x, start = 1965, end = 2020, extra = T) %>% 
-      mutate(indicator = x)
-    names(download)[names(download) == x] = 'value'  
-    return(download)
-  }, error = function(e){
-    print(e)
-    cat('error with ', x, '\n')
-    return(NULL)
-  })
-  
-})
-
-wdi_data_stacked = bind_rows(WDI_data_long) %>% 
-  left_join(wdi_descriptions) %>% select(-matches('V[0-9]'))
-
-
-world <- ne_countries(scale = "medium", returnclass = "sf")
-ggplot(data = world) +
-  geom_sf()
+# wdi_indicators = c('SP.POP.65UP.TO.ZS', 'SP.URB.TOTL.IN.ZS', 
+#                    'SP.URB.MCTY.UR.ZS', 'SH.STA.ACCH.ZS', 
+#                    'SH.MED.NURS.ZS', 'SH.STA.DIAB.ZS', 
+#                    'SP.POP.65UP.TO.ZS', 'SP.POP.TOTL', 'SP.POP.LAND.ZS', 'SH.XPD.PCAP', 
+#                    'SH.MED.CMHW.P3', 'SH.XPD.OOPC.CH.ZS', 'SH.XPD.CHEX.GD.ZS')
+# wdi_descriptions = map(wdi_indicators, function(x){
+#   WDIsearch(string = x, field = 'indicator', short = F) %>% 
+#     t() %>%
+#     as.data.frame() %>% 
+#     mutate(
+#       orig_indicator = x
+#     )
+# }) %>%
+#   bind_rows() %>%
+#   filter(
+#     indicator == orig_indicator
+#   )
+# 
+# WDI_data_long = map(wdi_indicators, function(x){
+#   tryCatch({
+#     download = WDI(indicator = x, start = 1965, end = 2020, extra = T) %>% 
+#       mutate(indicator = x)
+#     names(download)[names(download) == x] = 'value'  
+#     return(download)
+#   }, error = function(e){
+#     print(e)
+#     cat('error with ', x, '\n')
+#     return(NULL)
+#   })
+#   
+# })
+# 
+# wdi_data_stacked = bind_rows(WDI_data_long) %>% 
+#   left_join(wdi_descriptions) %>% select(-matches('V[0-9]'))
+# 
+# 
+# world <- ne_countries(scale = "medium", returnclass = "sf")
+# ggplot(data = world) +
+#   geom_sf()
