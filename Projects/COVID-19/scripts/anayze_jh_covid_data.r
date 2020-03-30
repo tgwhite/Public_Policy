@@ -32,7 +32,6 @@ us_cities_shp = us_cities() %>%
   mutate(
     province_state_city = paste0(city, ', ', state_abbr)
   )
-us_cities_shp %>% View()
 
 us_counties_shp = us_counties() %>%
   mutate(
@@ -77,10 +76,11 @@ jh_joined = mutate(jh_joined,
                    US_other_geo_entity = country_region == 'US' & US_state+US_county+US_city==0,
                    location_key = paste(province_state, country_region, sep = '|')
                      )
+write.csv(jh_joined, 'data/jh_joined.csv', row.names = F)
 
 entity_types = select(jh_joined, country_region, province_state_fin, is_country, US_state, 
                       US_county, US_city, US_other_geo_entity, long, lat) %>% unique()
-View(entity_types)
+
 entity_types$country_region %>% unique()
 
 
@@ -135,10 +135,13 @@ key_dates = tibble(
 
 last_date_by_country = group_by(us_states_vs_countries_dates, country_region, measure) %>%
   summarize(
-    last_date = max(date_upd) + 1,
+    last_date = max(date_upd),
     last_value = value[date_upd == max(date_upd)]
   ) %>%
   rename(date_upd = last_date, value = last_value)
+
+last_vals = inner_join(jh_joined, last_date_by_country, by = c('country_region' = 'country_region', 'date_upd' = 'date_upd'))
+
 
 us_states_vs_countries_dates %>%
   filter(date_upd >= case_100_date) %>%

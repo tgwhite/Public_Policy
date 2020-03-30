@@ -75,8 +75,20 @@ us_states_covid_data = read_csv('http://covidtracking.com/api/states/daily.csv')
   mutate(
     location_key = paste(location, location_type, data_source, sep = '|'),
     new_cases = total_cases - lag(total_cases, 1),
-    new_deaths = total_deaths - lag(total_deaths, 1)
+    new_deaths = total_deaths - lag(total_deaths, 1),
+    percent_positive_cases = total_cases / (total_cases + negative),
+    tests_with_results = negative + total_cases
   )
+head(us_states_covid_data)
+
+filter(us_states_covid_data, location == 'WA') %>% View()
+a = ggplot(us_states_covid_data, aes(date, percent_positive_cases, colour = location)) +
+  geom_line() +
+  geom_point(aes(size = tests_with_results))
+
+ggplotly(a)
+nyt_county_data = read_csv('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+
 
 
 all_covid_data_stacked = bind_rows(us_covid_data, us_states_covid_data) %>%

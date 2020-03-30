@@ -70,11 +70,27 @@ ggsave('exp_growth_vs_cases.png', height = 6, width = 6, units = 'in', dpi = 600
 
 
 ### estimate R0 with earlyR package ###
-x <- incidence(c(1, 5, 6, 12), last_date = 24)
-x
+incidence_dates = rep(us_jh_cases$date, each = us_jh_cases$new_cases)
+date_chr = map(us_jh_cases$date, function(the_date){
+  # the_date = us_jh_cases$date[5]
+  cases = filter(us_jh_cases, date == the_date)$new_cases
+  if (cases == 0) {
+    return('')
+  } else {
+    rep(the_date, each = cases) %>% as.character()  
+  }
+}) %>% unlist()
+
+
+
+x <- incidence(as.Date(incidence_dates), last_date = max(as.Date(incidence_dates)))
+?get_R
 as.data.frame(x)
 plot(x)
-res <- get_R(x, disease = "ebola")
-res
+res <- get_R(us_jh_cases$new_cases, si = mGT)
+install.packages('discrete')
+
 plot(res)
 plot(res, "lambdas")
+names(res)
+dimnames(res)
