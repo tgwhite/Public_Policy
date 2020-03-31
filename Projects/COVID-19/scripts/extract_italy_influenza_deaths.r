@@ -2,7 +2,6 @@ library(tidyverse)
 library(jpeg)
 library(plotly)
 library(readxl)
-library(xgboost)
 library(imager)
 library(randomForest)
 
@@ -86,6 +85,10 @@ ggplotly(interactive_plot)
 # column for vlaue = 15 is roughly 140
 # row for date = 2013-17 is roughly 72
 # row for date = 2017-17 is roughly 364
+# daily_pixels = (364-72) / (4 * 365.25)
+# (217-171) / daily_pixels / 365 
+as.Date('2019-10-07') %>% format('%U')
+
 # row for date = 2017-09 is roughly 343
 # scale start row = 60
 # scale end row = 374

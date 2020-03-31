@@ -1,18 +1,16 @@
 
 library(tidyverse)
-library(jpeg)
 library(plotly)
 library(readxl)
-library(xgboost)
-library(imager)
-library(randomForest)
 library(data.table)
 library(htmltab)
 library(incidence)
 
 # parameters
-start_week = 31
-end_week = 26
+# start_week = 31
+# end_week = 26
+start_week = 40
+end_week = 20
 last_week = 52
 
 # the real ratio is 0.52 but this helps keep things simple coding-wise
@@ -30,7 +28,8 @@ historical_us_flu_burden = htmltab('https://www.cdc.gov/flu/about/burden/past-se
 setwd("~/Public_Policy/Projects/COVID-19")
 
 #### read in excess flu / pneumonia deaths ####
-us_NCHSData12 = read_excel('literature/Italy Influenza vs. COVID.xlsx', 'NCHSData12')
+# us_NCHSData12 = read_excel('literature/Italy Influenza vs. COVID.xlsx', 'NCHSData12')
+us_NCHSData12 = read_csv('https://www.cdc.gov/flu/weekly/weeklyarchives2019-2020/data/NCHSData12.csv')
 names(us_NCHSData12) = str_replace_all(names(us_NCHSData12), '[ ]', '_') %>% str_to_lower()
 
 # get excess italian deaths
@@ -195,12 +194,13 @@ season_diffs_calcs_pct_of_excess %>%
   filter(weeks_since_first_death >= 0,
          excess_deaths > 0, season == 2016) %>%
   ggplot(aes(weeks_since_first_death, excess_deaths)) +
+  theme_bw() +
   labs(
     x = '\nWeeks Since First Death',
     y = 'Excess Deaths\n',
     title = 'Deaths Caused by COVID-19 vs. Typical Flu Season',
-    subtitle = sprintf('U.S. 2016 Flu Season (38,000 Excess Deaths). COVID-19 data through %s.', 
-                       format(max(jh_joined_it_us_stats$date_upd), '%B %d')),
+    subtitle = sprintf('U.S. 2016 Flu Season: 38,000 Excess Deaths. COVID-19: %s deaths through %s.', 
+                       comma(sum(us_weekly_deaths$total_deaths)), format(max(jh_joined_it_us_stats$date_upd), '%B %d')),
     caption = "Chart: Taylor G. White\nData: Johns Hopkins CSSE, CDC"
   ) +
   theme(
@@ -218,16 +218,18 @@ season_diffs_calcs_pct_of_excess %>%
   geom_text(data = us_weekly_deaths %>%
              filter(weeks_since_first_death >=0, obs < 7), 
             aes(weeks_since_first_death, total_deaths, label = paste0(' ', obs, ' out of 7 days in bar')), angle = 90, hjust = 0, size = 2.5) +
-  scale_y_continuous(labels = comma)
-
+  scale_y_continuous(labels = comma) +
+  scale_x_continuous(breaks = seq(0, 30, by = 5)) 
+  
 ggsave('output/U.S. covid_19 vs. 2016 flu season deaths.png', height = 6, width = 8, units = 'in', dpi = 800)
 
 # compare to italy
 
 
 ##### back out coronavirus spread models #####
-covid_total_deaths_us = 2e5
 mean_italian_flu_season = mean(italian_excess_deaths$deaths)
+
+# use shape of US 2016 flu season as proxy for Italian 2014-2015 season
 
 season_comparison = filter(season_diffs_calcs_pct_of_excess,
                            season == 2016) %>%
@@ -247,23 +249,21 @@ season_comparison = filter(season_diffs_calcs_pct_of_excess,
     Virus = 'Influenza'
   )
 
-# hundreds_of_thousands_in_us = 327e6 / 1e5
-# max_deaths = max(season_comparison$total_excess)
-# max_daily_deaths_per_100k = max_deaths / hundreds_of_thousands_in_us / 7
-
 
 season_comparison %>%  
   ggplot(aes(weeks_since_first_death, total_excess)) +
+  theme_bw() +
   geom_bar(aes(fill = Virus), stat = 'identity', alpha = 0.3) +
-  geom_bar(data = italy_weekly_deaths, aes(weeks_since_first_death, projected_deaths, fill = Virus), 
+  geom_bar(data = italy_weekly_deaths, aes(weeks_since_first_death, total_deaths, fill = Virus), 
            alpha = 0.3, stat = 'identity', colour = 'black', size = 0.75) +
+  
   labs(
     x = '\nWeeks Since First Death',
     y = 'Excess Deaths\n',
     title = 'Deaths Caused by COVID-19 vs. Typical Flu Season',
-    subtitle = sprintf('Average Italian Flu Season (17,000 Excess Deaths). COVID-19 data through %s.', 
-                       format(max(jh_joined_it_us_stats$date_upd), '%B %d')),
-    caption = "Chart: Taylor G. White\nData: Johns Hopkins CSSE, CDC"
+    subtitle = sprintf('Average Flu Season in Italy: 17,000 Excess Deaths. COVID-19: %s deaths through %s.', 
+                       comma(sum(italy_weekly_deaths$total_deaths)), format(max(jh_joined_it_us_stats$date_upd), '%B %d')),
+    caption = "Chart: Taylor G. White\nData: Rosano et. al., Johns Hopkins CSSE, CDC"
   ) +
   theme(
     plot.caption = element_text(hjust = 0, size = 10),
@@ -272,10 +272,11 @@ season_comparison %>%
     axis.title = element_text(size = 12),
     legend.text = element_text(size = 12)
   ) +
+  scale_x_continuous(breaks = seq(0, 30, by = 5)) +
   scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
-  scale_y_continuous(labels = comma)
+  scale_y_continuous(labels = comma, breaks = seq(0, 6000, by = 1000)) +
+  geom_text(data = italy_weekly_deaths %>%
+              filter(weeks_since_first_death >=0, obs < 7), 
+            aes(weeks_since_first_death, total_deaths, label = paste0(' ', obs, ' out of 7 days in bar')), angle = 90, hjust = 0, size = 2.5) 
 ggsave('output/average_italian_flu_deaths.png', height = 6, width = 8, units = 'in', dpi = 800)  
-
-
-
 
