@@ -263,7 +263,7 @@ season_comparison %>%
     title = 'Deaths Caused by COVID-19 vs. Typical Flu Season in Italy',
     subtitle = sprintf('Average Flu Season in Italy: 17,000 Excess Deaths. COVID-19: %s deaths through %s.', 
                        comma(sum(italy_weekly_deaths$total_deaths)), format(max(jh_joined_it_us_stats$date_upd), '%B %d')),
-    caption = "Chart: Taylor G. White\nData: Rosano et. al., Johns Hopkins CSSE, CDC"
+    caption = "Chart: Taylor G. White\nData: Rosano et. al. 2019, Johns Hopkins CSSE, CDC"
   ) +
   theme(
     plot.caption = element_text(hjust = 0, size = 10),
