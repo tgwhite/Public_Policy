@@ -142,7 +142,7 @@ season_diffs_calcs = left_join(season_diffs_calcs, historical_us_flu_burden_fin)
 
 
 ### compute excess deaths using this mean baseline number ###
-season_diffs_calcs_pct_of_excess = season_diffs_calcs[season < 2019, {
+season_diffs_calcs_pct_of_excess = season_diffs_calcs[season %in% seasons_to_check, {
   
   # take deaths from pneumonia and influenza and subtract baseline deaths
   excess_deaths = pmax(pn_in_deaths - baseline_deaths, 0)
@@ -260,7 +260,7 @@ season_comparison %>%
   labs(
     x = '\nWeeks Since First Death',
     y = 'Excess Deaths\n',
-    title = 'Deaths Caused by COVID-19 vs. Typical Flu Season',
+    title = 'Deaths Caused by COVID-19 vs. Typical Flu Season in Italy',
     subtitle = sprintf('Average Flu Season in Italy: 17,000 Excess Deaths. COVID-19: %s deaths through %s.', 
                        comma(sum(italy_weekly_deaths$total_deaths)), format(max(jh_joined_it_us_stats$date_upd), '%B %d')),
     caption = "Chart: Taylor G. White\nData: Rosano et. al., Johns Hopkins CSSE, CDC"
