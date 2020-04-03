@@ -86,6 +86,7 @@ italy_weekly_deaths = filter(weekly_deaths, country_region == 'Italy', weeks_sin
     projected_minus_actual = projected_deaths - total_deaths
   )
 
+first_death_dates = filter(jh_joined_it_us_stats, days_since_first_death == 0)
 
 #### compute flu seasons using U.S. season data 
 us_NCHSData12 = arrange(us_NCHSData12, year, week) %>%
@@ -223,13 +224,8 @@ season_diffs_calcs_pct_of_excess %>%
   
 ggsave('output/U.S. covid_19 vs. 2016 flu season deaths.png', height = 6, width = 8, units = 'in', dpi = 800)
 
-# compare to italy
-
-
-##### back out coronavirus spread models #####
-mean_italian_flu_season = mean(italian_excess_deaths$deaths)
-
 # use shape of US 2016 flu season as proxy for Italian 2014-2015 season
+mean_italian_flu_season = mean(italian_excess_deaths$deaths)
 
 season_comparison = filter(season_diffs_calcs_pct_of_excess,
                            season == 2016) %>%
@@ -249,19 +245,34 @@ season_comparison = filter(season_diffs_calcs_pct_of_excess,
     Virus = 'Influenza'
   )
 
+add_extra_bars = function(a_plot) {
+  the_sub = filter(italy_weekly_deaths, weeks_since_first_death >=0, obs < 7)
+  if (nrow(the_sub) == 0) {
+    return(a_plot + geom_blank())
+  } else {
+    comb_plot = a_plot + 
+    geom_bar(data = the_sub, 
+             aes(weeks_since_first_death, projected_deaths, fill = Virus), alpha = 0.3, stat = 'identity') +
+      geom_text(data = the_sub, 
+                aes(weeks_since_first_death, total_deaths, label = paste0(' Projected')), angle = 90, hjust = 0, size = 2.5) 
+    return(comb_plot)
+  }
+}
 
-season_comparison %>%  
+italy_lockdown = filter(jh_joined_it_us_stats, country_region == 'Italy', date_upd == as.Date('2020-03-09')) 
+main_plot = season_comparison %>%  
   ggplot(aes(weeks_since_first_death, total_excess)) +
   theme_bw() +
+  geom_vline(data = italy_lockdown, aes(xintercept = weeks_since_first_death), linetype = 'dashed') +
   geom_bar(aes(fill = Virus), stat = 'identity', alpha = 0.3) +
-  geom_bar(data = italy_weekly_deaths, aes(weeks_since_first_death, total_deaths, fill = Virus), 
-           alpha = 0.3, stat = 'identity', colour = 'black', size = 0.75) +
-  
+  geom_bar(data = italy_weekly_deaths, aes(weeks_since_first_death, total_deaths, fill = Virus, alpha = obs), 
+            stat = 'identity', colour = 'black', size = 0.75) +
+  scale_alpha(guide = F, range = c(0.2, 0.4)) +
   labs(
     x = '\nWeeks Since First Death',
     y = 'Excess Deaths\n',
     title = 'Deaths Caused by COVID-19 vs. Typical Flu Season in Italy',
-    subtitle = sprintf('Average Flu Season in Italy: 17,000 Excess Deaths. COVID-19: %s deaths through %s.', 
+    subtitle = sprintf('Average Flu Season in Italy: 17,000 excess deaths. COVID-19: %s deaths through %s.\nVertical line shows date of country-wide lockdown.', 
                        comma(sum(italy_weekly_deaths$total_deaths)), format(max(jh_joined_it_us_stats$date_upd), '%B %d')),
     caption = "Chart: Taylor G. White\nData: Rosano et. al. 2019, Johns Hopkins CSSE, CDC"
   ) +
@@ -274,9 +285,9 @@ season_comparison %>%
   ) +
   scale_x_continuous(breaks = seq(0, 30, by = 5)) +
   scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
-  scale_y_continuous(labels = comma, breaks = seq(0, 6000, by = 1000)) +
-  geom_text(data = italy_weekly_deaths %>%
-              filter(weeks_since_first_death >=0, obs < 7), 
-            aes(weeks_since_first_death, total_deaths, label = paste0(' ', obs, ' out of 7 days in bar')), angle = 90, hjust = 0, size = 2.5) 
+  scale_y_continuous(labels = comma, breaks = seq(0, 6000, by = 1000)) 
+
+add_extra_bars(main_plot)
+
 ggsave('output/average_italian_flu_deaths.png', height = 6, width = 8, units = 'in', dpi = 800)  
 

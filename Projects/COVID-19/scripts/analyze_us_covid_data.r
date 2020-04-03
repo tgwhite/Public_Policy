@@ -26,9 +26,12 @@ library(cowplot)
 
 setwd("~/Public_Policy/Projects/COVID-19")
 
+us_counties_shp = us_counties()
 us_states_shp = us_states()
 us_map = USAboundaries::us_boundaries()
 us_states_tigris = tigris::states()
+us_counties_tigris = tigris::counties()
+
 
 state_geo_center = us_states_tigris@data %>%
   mutate(
@@ -54,18 +57,19 @@ us_covid_data = read_csv('https://covidtracking.com/api/us/daily.csv') %>%
     total_tests = total
   ) %>%
   mutate(
-    new_cases = total_cases - lag(total_cases, 1),
-    new_deaths = total_deaths - lag(total_deaths, 1),
-    t = as.numeric(date - min(date)),
-    potential_real_cases = total_deaths/0.006
+    percent_positive_cases = total_cases / (total_cases + negative),
+    tests_with_results = negative + total_cases,
+    case_fatality_rate = total_deaths / total_cases
   )
 
 us_states_covid_data = read_csv('http://covidtracking.com/api/states/daily.csv') %>%
   mutate(
     date = as.Date(as.character(date), format = '%Y%m%d'),
     location_type = 'US State', 
-    data_source = 'covidtracking.com'
+    data_source = 'covidtracking.com',
+    location_key = paste(state, location_type, data_source, sep = '|')
   ) %>%
+  arrange(location_key, date) %>%
   rename(
     total_cases = positive,
     total_deaths = death,
@@ -73,35 +77,23 @@ us_states_covid_data = read_csv('http://covidtracking.com/api/states/daily.csv')
     location = state
   ) %>%
   mutate(
-    location_key = paste(location, location_type, data_source, sep = '|'),
-    new_cases = total_cases - lag(total_cases, 1),
-    new_deaths = total_deaths - lag(total_deaths, 1),
     percent_positive_cases = total_cases / (total_cases + negative),
-    tests_with_results = negative + total_cases
+    tests_with_results = negative + total_cases,
+    case_fatality_rate = total_deaths / total_cases
   )
-head(us_states_covid_data)
-
-filter(us_states_covid_data, location == 'WA') %>% View()
-a = ggplot(us_states_covid_data, aes(date, percent_positive_cases, colour = location)) +
-  geom_line() +
-  geom_point(aes(size = tests_with_results))
-
-ggplotly(a)
-nyt_county_data = read_csv('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
-
-
 
 all_covid_data_stacked = bind_rows(us_covid_data, us_states_covid_data) %>%
   arrange(location_key, date) %>%
-  pivot_longer(cols = c('new_cases', 'new_deaths', 'total_cases', 'total_deaths'),
+  pivot_longer(cols = c('total_cases', 'total_deaths', 
+                        'percent_positive_cases', 'case_fatality_rate', 'tests_with_results'),
                names_to = c('measure'), values_to = 'value') %>%
   data.table()
-
 
 
 # compute first differences, pct changes, etc. 
 all_covid_data_diffs = 
   all_covid_data_stacked[, {
+    
     lag_value = lag(value, 1)
     diff_value = value - lag_value
     pct_change_value = diff_value / lag_value
@@ -111,6 +103,7 @@ all_covid_data_diffs =
     lag_6_value = lag(value, 6)
     
     list(
+      time = as.integer(date - min(date)),
       date = date,
       value = value,
       lag_value = lag_value, 
@@ -126,28 +119,110 @@ all_covid_data_diffs =
     
   }, by = list(location_key, location, location_type, data_source, measure)] %>%
   pivot_wider(
-    id_cols = c('location_key', 'location', 'location_type','data_source', 'date'),
+    id_cols = c('location_key', 'location', 'location_type','data_source', 'date', 'time'),
     names_from = 'measure', 
     values_from = c('value', 'lag_value', 'diff_value', 
                     'pct_change_value', 'lag_4_value', 'lag_5_value',
                     'lag_6_value')
-  )
+  ) 
 
 
 case_100_dates = group_by(all_covid_data_diffs, location_key) %>%
   summarize(
-    date_case_100 = min(date[value_total_cases >= 100])
+    date_case_20 = min(date[value_total_cases >= 20])
   )
 
 all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_100_dates) %>%
   mutate(
-    days_since_case_100 = as.numeric(date - date_case_100)
+    days_since_case_20 = as.numeric(date - date_case_20),
+    percent_positive_new_tests = ifelse(time == 0, value_total_cases/value_tests_with_results, diff_value_total_cases / diff_value_tests_with_results)
   ) %>%
   arrange(location_key, date)
+names(all_covid_data_diffs_dates)
 
+us_data = filter(all_covid_data_diffs_dates, days_since_case_20 >= 7)
+ggplot(us_data, aes(percent_positive_new_tests, pct_change_value_total_cases)) + 
+  geom_point(aes(alpha = time, size = time)) +
+  stat_smooth(method = 'gam', formula = y ~ s(x, k=10))
+    # stat_smooth(method = 'lm', formula = y ~ poly(x, 5))
+View(us_data)
+ccf(us_data$percent_positive_new_tests, us_data$diff_value_total_cases)
+us_data$value_total_cases
+
+names(all_covid_data_diffs_dates)
+all_covid_data_diffs_dates$value_percent_positive_cases
+head(all_covid_data_diffs_dates)
+
+filter(all_covid_data_diffs_dates, location =='United States') %>%
+  ggplot(aes(date, percent_positive_new_tests)) +
+  geom_point() +
+  stat_smooth()
+all_covid_data_diffs_dates %>% filter(location %in% c('WA', 'CA', 'NY', 'FL', 'NJ')) %>%
+ggplot() +
+  geom_line(aes(days_since_case_20, pct_change_value_total_cases, fill = location))
+
+filter(all_covid_data_diffs_dates, location %in%  c(
+                                                    'United States',
+                                                    'WA', 'NY', 'CA', 'LA', 'NJ', 'MI', 'FL'
+                                                    # , 'FL', 'CO', 
+                                                    # 'MI', 'IL',' 'LA', 'NJ', 'TX', 'GA'
+                                                    )
+       ) %>% 
+  filter(days_since_case_20 >= 15) %>%
+ggplot(aes(value_percent_positive_cases, value_case_fatality_rate, colour = location)) +
+  geom_point(aes(alpha = days_since_case_20, size = log(value_total_cases))) +
+  scale_size(guide = F, range = c(0, 3)) +
+  scale_alpha(guide = F, range = c(0.3, 1)) +
+  geom_path(aes(alpha = days_since_case_20), size = 0.75) +
+  scale_y_continuous(breaks = seq(0, 0.1, by = 0.01), limits = c(0, 0.05), labels = percent) +
+  scale_x_continuous(labels = percent, breaks = seq(0, 0.4, by = 0.1)) +
+  theme(
+    strip.background = element_rect(fill = 'darkgray'),
+    strip.text = element_text(face = 'bold'),
+    text = element_text(colour = 'white'),
+    axis.text = element_text(colour = 'white'),
+    title = element_text(size = 16, colour = 'white'),
+    axis.title = element_text(size = 14),
+    legend.text = element_text(size = 12),
+    plot.caption = element_text(size = 10, hjust = 0),
+    legend.title = element_text(size = 14),
+    plot.subtitle = element_text(size = 11, face = 'italic'),
+    plot.background = element_rect(fill = 'black'),
+    legend.background = element_rect(fill = 'black'),
+    panel.background = element_rect(fill = 'black'),
+    panel.grid.minor  = element_blank(),
+    panel.grid.major = element_line(size = 0.25),
+    legend.position = 'bottom'
+  ) +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  scale_colour_hue(name = '') +
+  labs(
+    x = '\nPercent Positive Cases', y = 'Case Fatality Rate\n', 
+    title = 'Paths of Case Fatality Rates and Positive Test Rates',
+    subtitle = 'U.S. and Selected States'
+  )
+ggsave('output/positive_cases_vs_case_fatality_rate.png', height = 8, width = 8, units = 'in', dpi = 800)
+
+
+cfr_states = filter(all_covid_data_diffs_dates, days_since_case_20 >= 0, location_type == 'US State') %>%
+ggplot( aes(days_since_case_20, value_case_fatality_rate)) +
+  geom_hline(aes(yintercept = 0.02), colour = 'black', size = 1.25) +
+  # geom_hline(aes(yintercept = 0.01), colour = 'orange', size = 1) +
+  geom_line(aes(group = location), alpha = 0.2) + 
+  scale_y_continuous(labels = percent, breaks = seq(0, 0.25, by = 0.01)) +
+  geom_line(data = filter(all_covid_data_diffs_dates, days_since_case_20 >= 0, location_type != 'US State'), colour = 'red', size = 1) +
+  geom_point(data = filter(all_covid_data_diffs_dates, days_since_case_20 >= 0, location_type != 'US State'), colour = 'red', size = 1) 
+ggplotly(cfr_states)
+
+ggplot(aes(days_since_case_20, diff_value_total_deaths)) +
+  geom_bar(stat = 'identity')
+
+
+
+all_covid_data_diffs_dates$value_total_cases
 
 latest_state_data = 
-  all_covid_data_diffs_dates %>% filter(location_type == 'US State') %>%
+  all_covid_data_diffs_dates %>%
   group_by(location_key, location) %>%
   summarize(
     last_cases = tail(value_total_cases, 1),
@@ -233,5 +308,54 @@ ggsave('output/latest_cv_state_map_50.png', height = 6, width = 8, units = 'in',
 
 
 
-##### draw case plots by state #####
-head(all_covid_data_diffs_dates)
+##### analyze county level information from NYT #####
+# https://transportgeography.org/?page_id=8565
+# https://en.wikipedia.org/wiki/Gravity_model_of_trade
+# use county by county commute flows as distance estimate or input to gravitational model
+# what proportion of the combined counties' population flows between the two counties? 
+# what proportion of the combined counties' commuters flows between the two counties? 
+# flights between cities
+# https://www.researchgate.net/profile/N_Pavlis/publication/226883469_A_Preliminary_Gravitational_Model_to_Degree_2160/links/53ff0a6c0cf283c3583c3ff9.pdf
+
+nyt_county_data = read_csv('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv') %>%
+  arrange(county, state, fips, date)
+
+latest_county_data = group_by(nyt_county_data, county, state, fips) %>%
+  summarize(
+    latest_date = max(date),
+    latest_cases = tail(cases, 1),
+    latest_deaths = tail(deaths, 1)
+  )
+
+all_county_data_geo = left_join(us_counties_tigris@data, nyt_county_data, by = c('GEOID' = 'fips')) %>%
+  mutate(
+    lat = as.numeric(INTPTLAT),
+    long = as.numeric(INTPTLON)
+  )
+
+latest_county_data_geo = left_join(us_counties_tigris@data, latest_county_data, by = c('GEOID' = 'fips')) %>%
+  mutate(
+    lat = as.numeric(INTPTLAT),
+    long = as.numeric(INTPTLON)
+  )
+
+
+ggplot() +
+  geom_sf(data = us_states_shp %>% filter(name %in% lower_48), fill = 'lightgray') +
+  geom_sf(data = us_counties_shp %>% filter(state_name %in% lower_48)) +
+  geom_point(data = latest_county_data_geo %>% filter(state %in% lower_48), aes(long, lat, colour = log(latest_cases))) +
+  transition_states(
+    date,
+    transition_length = 2,
+    state_length = 1
+  ) +
+  labs(subtitle = 'Date: {frame_time}', x = '', y = '') 
+  # transition_time(date) +
+  ease_aes('linear')
+?transition_time
+anim <- ggplot(airquality, aes(Day, Temp)) +
+  geom_point(aes(colour = factor(Month))) +
+  transition_time(Day)
+airquality$Day
+head(all_county_data_geo)
+graphics.off()

@@ -39,6 +39,8 @@ us_counties_shp = us_counties() %>%
     county_state = paste0(name, ', ', state_abbr)
   )
 
+
+
 county_shp = tigris::counties()
 #city_shp = tigris::places(state = 'NY')
 
@@ -60,31 +62,15 @@ jh_joined = left_join(johns_hopkins_cases, johns_hopkins_deaths) %>%
 
 names(jh_joined) = names(jh_joined) %>% tolower() %>% str_replace('[\\/]', '_')
 
+jh_joined = mutate(jh_joined, is_country = is.na(province_state))
+write.csv(jh_joined, 'data/jh_joined.csv', row.names = F)
 
 #### classify whether city/state/county #### 
 
-jh_joined = mutate(jh_joined, 
-                   is_country = is.na(province_state),
-                   US_state = country_region == 'US' & province_state %in% us_states_shp$name,
-                   US_county = country_region == 'US' & province_state %in% us_counties_shp$province_state_city,
-                   US_city = country_region == 'US' & !US_state & !US_county & province_state %in% us_cities_shp$province_state_city,
-                   other_county = country_region == 'US' & !US_state & !US_county & !US_city & province_state %in% us_counties_shp$county_state,
-                   other_county_name = ifelse(other_county, str_replace(province_state, ',', '%s,'), province_state) %>%
-                     sprintf(' County'),
-                   US_county = US_county | other_county,
-                   province_state_fin = ifelse(other_county & str_detect(province_state, ', LA'), str_replace(other_county_name, ' County', ' Parish'), other_county_name),
-                   US_other_geo_entity = country_region == 'US' & US_state+US_county+US_city==0,
-                   location_key = paste(province_state, country_region, sep = '|')
-                     )
-write.csv(jh_joined, 'data/jh_joined.csv', row.names = F)
-
-entity_types = select(jh_joined, country_region, province_state_fin, is_country, US_state, 
-                      US_county, US_city, US_other_geo_entity, long, lat) %>% unique()
-
-entity_types$country_region %>% unique()
+entity_types = select(jh_joined, country_region, province_state, is_country,long, lat) %>% unique()
 
 
-jh_last_data_updates = group_by(jh_joined, country_region, province_state_fin) %>%
+jh_last_data_updates = group_by(jh_joined, country_region, province_state) %>%
   summarize(
     last_update = max(date_upd),
     last_cases = cases[date_upd == max(date_upd)],
@@ -96,7 +82,9 @@ jh_last_data_updates = group_by(jh_joined, country_region, province_state_fin) %
 
 ##### plot country comparison #####
 
-comparator_countries = filter(jh_joined, country_region %in% c('US', 'Korea, South', 'Italy', 'Spain')) 
+
+orig_countries = c('US', 'Korea, South', 'Italy', 'Spain')
+comparator_countries = filter(jh_joined, country_region %in% c('US', 'Korea, South', 'Italy', 'Spain', 'Germany', 'UK')) 
 
 US_china_total = filter(jh_joined, country_region %in% c('China')) %>%
   group_by(country_region, date_upd) %>%
@@ -144,7 +132,7 @@ last_vals = inner_join(jh_joined, last_date_by_country, by = c('country_region' 
 
 
 us_states_vs_countries_dates %>%
-  filter(date_upd >= case_100_date) %>%
+  filter(date_upd >= case_100_date, country_region %in% orig_countries) %>%
 ggplot(aes(date_upd, value, colour = country_region)) +
   theme_bw() +
   facet_wrap(~str_to_title(measure), ncol = 1, scales = 'free_y') +
@@ -182,6 +170,48 @@ ggplot(aes(date_upd, value, colour = country_region)) +
   scale_colour_hue(name = 'Country', labels = c('Korea, South' = 'South Korea'))
 
 ggsave('output/covid_country_comparison.png', height = 9, width = 9, units = 'in', dpi = 800)
+head(us_states_vs_countries_dates)
+
+us_states_vs_countries_dates %>%
+  filter(date_upd >= case_100_date) %>%
+  ggplot(aes(days_since_case_100, value, colour = country_region)) +
+  theme_bw() +
+  geom_line()
+  facet_wrap(~str_to_title(measure), ncol = 1, scales = 'free_y') +
+  geom_vline(data = key_dates, 
+             aes(xintercept = date_upd, colour = country_region), size = 0.5, linetype = 'dashed', show.legend = F) +
+  geom_line(size = 1) +
+  geom_text_repel(data = last_date_by_country, aes(label = comma(value, accuracy = 1)), show.legend = F) +
+  scale_y_continuous(labels = comma)  +
+  theme(
+    strip.background = element_rect(fill = 'darkgray'),
+    strip.text = element_text(face = 'bold'),
+    text = element_text(colour = 'white'),
+    axis.text = element_text(colour = 'white'),
+    title = element_text(size = 16, colour = 'white'),
+    axis.title = element_text(size = 14),
+    legend.text = element_text(size = 12),
+    plot.caption = element_text(size = 10, hjust = 0),
+    legend.title = element_text(size = 14),
+    plot.subtitle = element_text(size = 11, face = 'italic'),
+    plot.background = element_rect(fill = 'black'),
+    legend.background = element_rect(fill = 'black'),
+    panel.background = element_rect(fill = 'black'),
+    panel.grid.minor  = element_blank(),
+    panel.grid.major = element_line(size = 0.25),
+    legend.position = 'bottom'
+  ) +
+  labs(
+    x = '\nDate of 100th Case', 
+    y = '', 
+    title = paste0('COVID-19 Country Comparison, Through ', format(max(us_states_vs_countries_dates$date_upd), '%B %d')), 
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
+    subtitle = str_wrap('Vertical lines show date of first regional lockdown. China locked down Hubei a day after their 100th case. Italy and the U.S. acted more slowly, with Lombardy locked down 13 days after their 100th case and California, 16 days later. South Korea opted for a mass-testing and targeted quarantine strategy instead of locking down entire regions.', 100)
+  ) +
+  guides(colour = guide_legend(override.aes = list(size = 3))) +
+  scale_colour_hue(name = 'Country', labels = c('Korea, South' = 'South Korea'))
+
+ggsave('output/covid_country_comparison_day100.png', height = 9, width = 9, units = 'in', dpi = 800)
 
 
 ####  show case growth by day since case 100 ####        
