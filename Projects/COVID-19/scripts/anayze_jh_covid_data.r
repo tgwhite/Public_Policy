@@ -26,6 +26,8 @@ library(transformr)
 library(ggrepel)
 library(cowplot)
 
+generate_gifs = F
+
 setwd("~/Public_Policy/Projects/COVID-19")
 
 us_cities_shp = us_cities() %>%
@@ -121,8 +123,10 @@ key_dates = tibble(
     days_since_case_100 = as.numeric(date_upd - case_100_date),
   )
 
+
 last_date_by_country = group_by(us_states_vs_countries_dates, country_region, measure) %>%
   summarize(
+    last_days_since_case_100 = max(days_since_case_100),
     last_date = max(date_upd),
     last_value = value[date_upd == max(date_upd)]
   ) %>%
@@ -170,18 +174,16 @@ ggplot(aes(date_upd, value, colour = country_region)) +
   scale_colour_hue(name = 'Country', labels = c('Korea, South' = 'South Korea'))
 
 ggsave('output/covid_country_comparison.png', height = 9, width = 9, units = 'in', dpi = 800)
-head(us_states_vs_countries_dates)
+
+
+
 
 us_states_vs_countries_dates %>%
-  filter(date_upd >= case_100_date) %>%
+  filter(date_upd >= case_100_date, days_since_case_100 <= 45) %>%
   ggplot(aes(days_since_case_100, value, colour = country_region)) +
   theme_bw() +
-  geom_line()
-  facet_wrap(~str_to_title(measure), ncol = 1, scales = 'free_y') +
-  geom_vline(data = key_dates, 
-             aes(xintercept = date_upd, colour = country_region), size = 0.5, linetype = 'dashed', show.legend = F) +
   geom_line(size = 1) +
-  geom_text_repel(data = last_date_by_country, aes(label = comma(value, accuracy = 1)), show.legend = F) +
+  facet_wrap(~str_to_title(measure), ncol = 1, scales = 'free_y') +
   scale_y_continuous(labels = comma)  +
   theme(
     strip.background = element_rect(fill = 'darkgray'),
@@ -198,7 +200,8 @@ us_states_vs_countries_dates %>%
     legend.background = element_rect(fill = 'black'),
     panel.background = element_rect(fill = 'black'),
     panel.grid.minor  = element_blank(),
-    panel.grid.major = element_line(size = 0.25),
+    panel.grid.major.x = element_line(size = 0.25),
+    panel.grid.major.y = element_blank(),
     legend.position = 'bottom'
   ) +
   labs(
@@ -209,99 +212,108 @@ us_states_vs_countries_dates %>%
     subtitle = str_wrap('Vertical lines show date of first regional lockdown. China locked down Hubei a day after their 100th case. Italy and the U.S. acted more slowly, with Lombardy locked down 13 days after their 100th case and California, 16 days later. South Korea opted for a mass-testing and targeted quarantine strategy instead of locking down entire regions.', 100)
   ) +
   guides(colour = guide_legend(override.aes = list(size = 3))) +
+  geom_segment(data = last_date_by_country, aes(xend = max(last_days_since_case_100), x = last_days_since_case_100, yend = value, group = country_region), linetype = 2, colour = 'grey') +
+  geom_text_repel(data = last_date_by_country, aes(x = max(last_days_since_case_100), label = comma(value, accuracy = 1)), show.legend = F) + 
   scale_colour_hue(name = 'Country', labels = c('Korea, South' = 'South Korea'))
 
 ggsave('output/covid_country_comparison_day100.png', height = 9, width = 9, units = 'in', dpi = 800)
 
 
+
+
 ####  show case growth by day since case 100 ####        
-growth_comparison_dat = filter(us_states_vs_countries_dates, measure == 'cases', 
-                  country_region %in%  c('US', 'Italy', 'China', 'Korea, South', 'Spain'))
 
-anim = 
-growth_comparison_dat %>% filter(days_since_case_100 >=0) %>%
-ggplot(aes(days_since_case_100, value, colour = country_region)) + 
-  geom_line(size = 1) + 
-  geom_point(size = 2) + 
-  transition_reveal(days_since_case_100) + 
-  coord_cartesian(clip = 'off') + 
-  labs(
-    title = paste0('COVID-19 Cases by Day, Through ', format(max(growth_comparison_dat$date_upd), '%B %d')), 
-    y = 'Case Count\n', 
-       x = '\nDays Since Case 100', 
-       subtitle = 'Diverging paths illustrate the varied effectiveness of public health responses.',
-       caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE') + 
-  theme_minimal() + 
-  scale_y_continuous(labels = comma) +
-  scale_x_continuous(breaks = seq(0, 60, by = 10)) +
-  theme(
-    plot.caption = element_text(size = 10, hjust = 0),
-    legend.position = 'bottom'
-  ) +
-  theme(plot.margin = margin(5.5, 10, 5.5, 5.5), plot.subtitle = element_text(size=11, face = 'italic')) +
-  scale_colour_hue(name = 'Country', labels = c('Korea, South' = 'South Korea')) +
-  geom_segment(aes(xend = max(days_since_case_100) + 1, yend = value, group = country_region), linetype = 2, colour = 'grey') + 
-  geom_point(size = 2) + 
-  geom_text_repel(aes(x = max(days_since_case_100) + 1, label = comma(value)), hjust = 0, size = 3, 
-                  vjust = -0.5,
-                  show.legend = F) +
-  geom_text_repel(data = key_dates, aes(x =days_since_case_100, y = c(60000, 70000, 80000), label = action), hjust = 0, size = 3, 
-                  vjust = -0.5,
-                  show.legend = F) +
-  geom_vline(data = key_dates, 
-             aes(xintercept = days_since_case_100, colour = country_region), size = 0.5, linetype = 'dashed', show.legend = F) 
 
-animate(anim, nframes = 300,
-        renderer = gifski_renderer("output/covid_case_growth_comparison.gif"), 
-        height = 6, width = 6, units = 'in',  type = 'cairo-png', res = 200)
-
-#### US cases vs. presidential quotes #####
-
-coronavirus_quotes = read_excel('data/coronavirus quotes.xlsx') %>% mutate(Date = as.Date(Date)) %>%
-  filter(`Person/Organization` == 'Donald Trump', Show == 1) %>%
-  mutate(
-    odd_row = 1:length(Date) %% 2,
-    row_yval = ifelse(odd_row, .25, -0.25),
-    measure = c('timeline'),
-    country_region = 'US'
-  ) %>%
-  rename(date_upd = Date)
-
-us_cases = filter(us_states_vs_countries_dates, country_region %in%  c('US', 'Italy', 'China'), measure == 'cases')
-italy = filter(us_states_vs_countries_dates, country_region ==  'Italy') %>% filter(measure == 'deaths', value > 0)
-italy$date_upd %>% range()
-
-write.csv(us_cases, 'output/us_cases_comparison.csv', row.names = F)
-anim = ggplot(us_cases, aes(date_upd, value, colour = country_region)) + 
-  geom_line(size = 1) + 
-  geom_segment(aes(xend = max(date_upd) + 1, yend = value, group = country_region), linetype = 2, colour = 'grey') + 
-  geom_point(size = 2) + 
-  geom_text_repel(aes(x = max(date_upd) + 1, label = comma(value)), hjust = 0, size = 3, 
-                  vjust = -0.5,
-                  show.legend = F) + 
-  geom_text(data = coronavirus_quotes, aes(x = as.Date('2020-03-01'), y = 30000, 
-                                           label = paste0(str_wrap(Quote, 24), '\n', format(date_upd, '%B %d')) 
-  ), colour = 'black', show.legend=F, size = 4.5) +
+if (generate_gifs) {
+  growth_comparison_dat = filter(us_states_vs_countries_dates, measure == 'cases', 
+                                 country_region %in%  c('US', 'Italy', 'China', 'Korea, South', 'Spain'))
   
-  transition_reveal(date_upd) + 
-  coord_cartesian(clip = 'off') + 
-  labs(
-    title = paste0('COVID-19 Cases by Day, Through ', format(max(us_cases$date_upd), '%B %d')), 
-    y = 'Case Count\n', x = '', subtitle = 'Quotes from President Trump superimposed.',
-    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE\nQuotes: David Leonhardt, NYT'
-  ) + 
-  theme_minimal() + 
-  scale_y_continuous(labels = comma) +
-  scale_x_date(breaks = seq(as.Date('2020-01-22'), max(us_cases$date_upd), by = 7), date_labels = "%b %d") +
-  theme(
-    legend.position = 'bottom',
-    plot.caption = element_text(size = 10, hjust = 0),
-    plot.margin = margin(5.5, 10, 5.5, 5.5), plot.subtitle = element_text(size=11, face = 'italic')) +
-  scale_colour_hue(name = 'Country')
-
-animate(anim, nframes = 300,
-        renderer = gifski_renderer("output/us_covid_cases_by_day.gif"), 
-        height = 6, width = 6, units = 'in',  type = 'cairo-png', res = 200)
+  anim = 
+    growth_comparison_dat %>% filter(days_since_case_100 >=0) %>%
+    ggplot(aes(days_since_case_100, value, colour = country_region)) + 
+    geom_line(size = 1) + 
+    geom_point(size = 2) + 
+    transition_reveal(days_since_case_100) + 
+    coord_cartesian(clip = 'off') + 
+    labs(
+      title = paste0('COVID-19 Cases by Day, Through ', format(max(growth_comparison_dat$date_upd), '%B %d')), 
+      y = 'Case Count\n', 
+      x = '\nDays Since Case 100', 
+      subtitle = 'Diverging paths illustrate the varied effectiveness of public health responses.',
+      caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE') + 
+    theme_minimal() + 
+    scale_y_continuous(labels = comma) +
+    scale_x_continuous(breaks = seq(0, 60, by = 10)) +
+    theme(
+      plot.caption = element_text(size = 10, hjust = 0),
+      legend.position = 'bottom'
+    ) +
+    theme(plot.margin = margin(5.5, 10, 5.5, 5.5), plot.subtitle = element_text(size=11, face = 'italic')) +
+    scale_colour_hue(name = 'Country', labels = c('Korea, South' = 'South Korea')) +
+    geom_segment(aes(xend = max(days_since_case_100) + 1, yend = value, group = country_region), linetype = 2, colour = 'grey') + 
+    geom_point(size = 2) + 
+    geom_text_repel(aes(x = max(days_since_case_100) + 1, label = comma(value)), hjust = 0, size = 3, 
+                    vjust = -0.5,
+                    show.legend = F) +
+    geom_text_repel(data = key_dates, aes(x =days_since_case_100, y = c(60000, 70000, 80000), label = action), hjust = 0, size = 3, 
+                    vjust = -0.5,
+                    show.legend = F) +
+    geom_vline(data = key_dates, 
+               aes(xintercept = days_since_case_100, colour = country_region), size = 0.5, linetype = 'dashed', show.legend = F) 
+  
+  animate(anim, nframes = 300,
+          renderer = gifski_renderer("output/covid_case_growth_comparison.gif"), 
+          height = 6, width = 6, units = 'in',  type = 'cairo-png', res = 200)
+  
+  #### US cases vs. presidential quotes #####
+  
+  coronavirus_quotes = read_excel('data/coronavirus quotes.xlsx') %>% mutate(Date = as.Date(Date)) %>%
+    filter(`Person/Organization` == 'Donald Trump', Show == 1) %>%
+    mutate(
+      odd_row = 1:length(Date) %% 2,
+      row_yval = ifelse(odd_row, .25, -0.25),
+      measure = c('timeline'),
+      country_region = 'US'
+    ) %>%
+    rename(date_upd = Date)
+  
+  us_cases = filter(us_states_vs_countries_dates, country_region %in%  c('US', 'Italy', 'China'), measure == 'cases')
+  italy = filter(us_states_vs_countries_dates, country_region ==  'Italy') %>% filter(measure == 'deaths', value > 0)
+  italy$date_upd %>% range()
+  
+  write.csv(us_cases, 'output/us_cases_comparison.csv', row.names = F)
+  anim = ggplot(us_cases, aes(date_upd, value, colour = country_region)) + 
+    geom_line(size = 1) + 
+    geom_segment(aes(xend = max(date_upd) + 1, yend = value, group = country_region), linetype = 2, colour = 'grey') + 
+    geom_point(size = 2) + 
+    geom_text_repel(aes(x = max(date_upd) + 1, label = comma(value)), hjust = 0, size = 3, 
+                    vjust = -0.5,
+                    show.legend = F) + 
+    geom_text(data = coronavirus_quotes, aes(x = as.Date('2020-03-01'), y = 30000, 
+                                             label = paste0(str_wrap(Quote, 24), '\n', format(date_upd, '%B %d')) 
+    ), colour = 'black', show.legend=F, size = 4.5) +
+    
+    transition_reveal(date_upd) + 
+    coord_cartesian(clip = 'off') + 
+    labs(
+      title = paste0('COVID-19 Cases by Day, Through ', format(max(us_cases$date_upd), '%B %d')), 
+      y = 'Case Count\n', x = '', subtitle = 'Quotes from President Trump superimposed.',
+      caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE\nQuotes: David Leonhardt, NYT'
+    ) + 
+    theme_minimal() + 
+    scale_y_continuous(labels = comma) +
+    scale_x_date(breaks = seq(as.Date('2020-01-22'), max(us_cases$date_upd), by = 7), date_labels = "%b %d") +
+    theme(
+      legend.position = 'bottom',
+      plot.caption = element_text(size = 10, hjust = 0),
+      plot.margin = margin(5.5, 10, 5.5, 5.5), plot.subtitle = element_text(size=11, face = 'italic')) +
+    scale_colour_hue(name = 'Country')
+  
+  animate(anim, nframes = 300,
+          renderer = gifski_renderer("output/us_covid_cases_by_day.gif"), 
+          height = 6, width = 6, units = 'in',  type = 'cairo-png', res = 200)
+  
+}
 
 ##### get additional statistics by country #####
 
