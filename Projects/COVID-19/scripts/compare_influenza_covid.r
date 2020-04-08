@@ -197,7 +197,7 @@ the_plot = ggplot(season_diffs_calcs_pct_of_excess, aes(week_of_season, pct_of_e
 # us_incidence_obj = as.incidence(x = us_incidence$new_deaths, dates = us_incidence$date_upd)
 # a = fit(us_incidence_obj)
 
-add_extra_bars = function(a_plot, weekly_stats) {
+add_extra_bars = function(a_plot, weekly_stats, the_hjust = 0.5, the_angle = 0, projected_label = ' Projected') {
   the_sub = filter(weekly_stats, weeks_since_first_death >=0, obs < 7)
   if (nrow(the_sub) == 0) {
     return(a_plot + geom_blank())
@@ -206,7 +206,7 @@ add_extra_bars = function(a_plot, weekly_stats) {
       geom_bar(data = the_sub, 
                aes(weeks_since_first_death, projected_deaths, fill = Virus), alpha = 0.3, stat = 'identity') +
       geom_text(data = the_sub, 
-                aes(weeks_since_first_death, projected_deaths/2, label = paste0(' Projected')), angle = 90, hjust = 0, size = 2.5) 
+                aes(weeks_since_first_death, projected_deaths, label = projected_label), hjust = the_hjust, size = 2.5, angle = the_angle) 
     return(comb_plot)
   }
 }
@@ -290,13 +290,13 @@ main_plot = season_comparison %>%
     plot.subtitle = element_text(size = 11, face='italic'),
     title = element_text(size = 16),
     axis.title = element_text(size = 12),
-    legend.text = element_text(size = 12)
+    legend.text = element_text(size = 11)
   ) +
   scale_x_continuous(breaks = seq(0, 30, by = 5)) +
   scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
   scale_y_continuous(labels = comma, breaks = seq(0, 6000, by = 1000)) 
 
-add_extra_bars(main_plot, italy_weekly_deaths)
+add_extra_bars(main_plot, italy_weekly_deaths, the_hjust = 1, the_angle = 90, projected_label = 'Projected      ')
 
 ggsave('output/average_italian_flu_deaths.png', height = 6, width = 8, units = 'in', dpi = 800)  
 

@@ -25,8 +25,25 @@ us_jh_cases = filter(johns_hopkins_cases, country_region == 'US') %>%
   )
 
 # fit a simple exponnetial model using non-linear least squares
-simple_exponential_model = nls(cases ~  case_networks * r0^(t/5), data = us_jh_cases, 
+simple_exponential_model = nls(cases ~  case_networks * r0^(t/6.4), data = us_jh_cases, 
                                start = list(case_networks = 1, r0 = 2.5))
+summary(simple_exponential_model)
+
+confint(simple_exponential_model)
+
+# Formula: cases ~ case_networks * r0^(t/6.4)
+# 
+# Parameters:
+#   Estimate Std. Error t value Pr(>|t|)    
+# case_networks  9.14908    2.09934   4.358 4.17e-05 ***
+#   r0             2.48856    0.05072  49.063  < 2e-16 ***
+#   ---
+#   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 8936 on 74 degrees of freedom
+# 
+# Number of iterations to convergence: 9 
+# Achieved convergence tolerance: 7.431e-06
 
 # Formula: cases ~ case_networks * r0^(t/5)
 # 
@@ -47,11 +64,16 @@ simple_exponential_model = nls(cases ~  case_networks * r0^(t/5), data = us_jh_c
 # this is the generation time or incubation period
 # https://annals.org/aim/fullarticle/2762808/incubation-period-coronavirus-disease-2019-covid-19-from-publicly-reported
 
-mGT <- generation.time("gamma", c(5, 1.5))
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7014672/
+# mGT <- generation.time("gamma", c(6.5, 2.6))
+mGT <- generation.time("weibull", c(6.4, 2.3))
 plot(mGT$time, mGT$GT)
 lines(mGT$time, mGT$GT)
 
+
 est.R0.EG(us_jh_cases$new_cases, mGT, begin=as.integer(1), end=as.integer(length(us_jh_cases$new_cases)))
+
+
 # Reproduction number estimate using  Exponential Growth  method.
 # R :  3.836266[ 3.799067 , 3.873994 ]
 
@@ -69,28 +91,3 @@ ggplot(us_jh_cases_long, aes(date, value, colour = name)) +
 ggsave('exp_growth_vs_cases.png', height = 6, width = 6, units = 'in', dpi = 600)
 
 
-### estimate R0 with earlyR package ###
-incidence_dates = rep(us_jh_cases$date, each = us_jh_cases$new_cases)
-date_chr = map(us_jh_cases$date, function(the_date){
-  # the_date = us_jh_cases$date[5]
-  cases = filter(us_jh_cases, date == the_date)$new_cases
-  if (cases == 0) {
-    return('')
-  } else {
-    rep(the_date, each = cases) %>% as.character()  
-  }
-}) %>% unlist()
-
-
-
-x <- incidence(as.Date(incidence_dates), last_date = max(as.Date(incidence_dates)))
-?get_R
-as.data.frame(x)
-plot(x)
-res <- get_R(us_jh_cases$new_cases, si = mGT)
-install.packages('discrete')
-
-plot(res)
-plot(res, "lambdas")
-names(res)
-dimnames(res)
