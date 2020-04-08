@@ -496,7 +496,7 @@ all_covid_data_diffs_dates %>% filter(location %in% c('NY', 'CA', 'WA'), !is.na(
   labs(
     y = 'Estimated Seven-Day R0 of New Cases', x = '',
     title = 'COVID-19 Transmission Rates for Early U.S. States',
-    subtitle = sprintf('Through %s. Dashed line shows average COVID-19 reproduction number (R0), red solid line shows R0=1, below which a pandemic slows.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')),
+    subtitle = sprintf('Through %s. Dashed line shows average COVID-19 reproduction number (R0), red solid line shows R0=1, below which a pandemic slows.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')) %>% str_wrap(100),
     caption = 'Chart: Taylor G. White\nData: covidtracking.com'
     ) +
   theme(
@@ -550,11 +550,11 @@ filter(location_sub, days_since_case_20 >= 5) %>%
 
 free_plot = main_plot +
   facet_wrap(~factor(location_name, levels = location_levels), ncol = 4, scales = 'free_y') 
-ggsave('output/effective_r0_top_12_states_free.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = free_plot)
+# ggsave('output/effective_r0_top_12_states_free.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = free_plot)
 
 same_scale_plot = main_plot +
   facet_wrap(~factor(location_name, levels = location_levels), ncol = 4)
-ggsave('output/effective_r0_top_12_states.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = same_scale_plot)
+# ggsave('output/effective_r0_top_12_states.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = same_scale_plot)
 
 
 # select(all_covid_data_diffs_dates, has_30_days, date, location_name, diff_value_total_tests, value_total_tests, new_tests_per_100k) %>% View()
