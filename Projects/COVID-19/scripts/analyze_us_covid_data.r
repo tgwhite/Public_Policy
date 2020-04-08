@@ -494,9 +494,9 @@ all_covid_data_diffs_dates %>% filter(location %in% c('NY', 'CA', 'WA'), !is.na(
   scale_y_continuous(breaks = seq(0, 25, by = 1)) +
   # stat_smooth(method = 'gam') +
   labs(
-    y = 'Seven-Day R0 of New Cases', x = '',
+    y = 'Estimated Seven-Day R0 of New Cases', x = '',
     title = 'COVID-19 Transmission Rates for Early U.S. States',
-    subtitle = sprintf('Through %s. Dashed line shows average COVID-19 R0, red solid line shows R0=1, below which a pandemic slows.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')),
+    subtitle = sprintf('Through %s. Dashed line shows average COVID-19 reproduction number (R0), red solid line shows R0=1, below which a pandemic slows.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')),
     caption = 'Chart: Taylor G. White\nData: covidtracking.com'
     ) +
   theme(
