@@ -282,10 +282,17 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
   rolling_sum_new_results = c(rep(NA, 6), roll_sum(cum_diff_value_tests_with_results, 7))
   percent_positive_new_tests_rolling_7 = rolling_sum_new_cases / rolling_sum_new_results
   
+  # there is some thinking that there is a severe lag in case reporting, use a weeklong lag
+  # the reason we use lead 
+  r0_rolling_lead_7 = lead(r0_rolling, 7)
+  effective_r0_interpolated_lead_7 = lead(effective_r0_interpolated, 7)
+  
   list(
     date = date,
     effective_r0_interpolated = effective_r0_interpolated_lead,
+    effective_r0_interpolated_lead_7 = effective_r0_interpolated_lead_7,
     r0_rolling = r0_rolling,
+    r0_rolling_lead_7 = r0_rolling_lead_7, 
     percent_positive_new_tests = percent_positive_new_tests,
     percent_positive_new_tests_rolling_7 = percent_positive_new_tests_rolling_7
   )
@@ -339,8 +346,7 @@ write.csv(all_covid_data_diffs_dates, 'data/us_covid_data_by_state_with_calcs.cs
 
 latest_state_data = filter(all_covid_data_diffs_dates, location != 'United States', date == max(date)) %>% 
   arrange(-value_total_cases)
-latest_state_data_sub = head(latest_state_data, 12)
-latest_state_data$lockdown_end
+
 
 ## compute stats by lockdown period
 state_lockdown_period_calcs = group_by(all_covid_data_diffs_dates, location, lockdown_period) %>%
@@ -415,47 +421,8 @@ all_covid_data_diffs_dates %>% filter(location %in% c('NY', 'CA', 'WA', 'United 
 
 ##### plot effective r0 versus lockdown dates #####
 
-group_by(all_covid_data_diffs_dates, location, lockdown_period) %>%
-  summarize(
-    median_r0 = median(r0_rolling, na.rm = T)
-  ) %>%
-  arrange(-median_r0) %>% as.data.frame()
-
-selected_early_states = filter(all_covid_data_diffs_dates, location %in% c('CA'))
-
-ggplot(selected_early_states, aes(date, r0_rolling)) +
+selected_early_states = filter(all_covid_data_diffs_dates, location %in% c('CA', 'NY', 'WA'))
   
-  # geom_line(aes(y = r0_rolling)) +
-  geom_point(aes(colour = weekend_ind))  +
-  # stat_smooth(method = 'gam', se = F) +
-  geom_line() +
-  geom_hline(aes(yintercept = 2.5)) +
-  geom_hline(aes(yintercept = 1)) +
-  geom_vline(data = us_lockdown_dates %>% filter(location_name %in% unique(selected_early_states$location_name)), aes(xintercept = lockdown_start)) 
-  
-
-# how effective are lockdowns?
-lockdown_r0_stats = group_by(all_covid_data_diffs_dates, lockdown_period) %>%
-  summarize(
-    mean_effective_r0 = mean(effective_r0_interpolated, na.rm = T),
-    median_effective_r0 = median(effective_r0_interpolated, na.rm = T),
-    median_r0_rolling = median(r0_rolling, na.rm = T),
-    mean_r0_rolling = mean(r0_rolling, na.rm = T)
-  )
-
-
-ggplot(all_covid_data_diffs_dates, aes(lockdown_period, r0_rolling, fill = lockdown_period))+
-  geom_boxplot(weight = 0, colour = 'gray') +
-  scale_y_continuous(limits = c(0, 30)) +
-  theme_bw() +
-  labs(x = '', y = '7-Day R0', title = 'COVID-19 Rolling 7-Day R0 by Lockdown Status', 
-       subtitle = sprintf('U.S. States, through %s', max(all_covid_data_diffs_dates$date) %>% format('%B %d'))
-       ) +
-  geom_text(data = lockdown_r0_stats, aes(y = median_r0_rolling, label = round(median_r0_rolling, 2)), size = 3.5, fontface = 'bold') +
-  scale_fill_hue(guide = F) 
-ggsave('output/effective_r0_by_lockdown_status.png', height = 6, width = 6, units = 'in', dpi = 800)  
-
-
 
 
 all_covid_data_diffs_dates %>% filter(location %in% c('NY', 'CA', 'WA'), !is.na(r0_rolling), days_since_case_20 >= 5) %>%
@@ -475,46 +442,6 @@ all_covid_data_diffs_dates %>% filter(location %in% c('NY', 'CA', 'WA'), !is.na(
   geom_vline(data = latest_state_data %>% filter(location %in% c('NY', 'CA', 'WA')), aes(xintercept = lockdown_start)) 
 ggsave('output/rolling_ro_by_early_states.png', height = 4, width = 9, units = 'in', dpi = 800)
 
-
-latest_state_data$pre_lockdown_midpoint = with(latest_state_data, lockdown_start - as.numeric(lockdown_start - as.Date('2020-03-09'))/2)
-latest_state_data$post_lockdown_midpoint = latest_state_data$lockdown_start + as.numeric(max(latest_state_data$date) - r0_window_size + 3 - latest_state_data$lockdown_start)/2
-
-all_covid_data_diffs_dates %>% filter(location %in% c('NY', 'CA', 'WA'), !is.na(r0_rolling), days_since_case_20 >= 5) %>%
-  ggplot(aes(date, r0_rolling)) +
-  theme_bw() +
-  facet_wrap(~location_name) +
-  geom_vline(data = latest_state_data %>% filter(location %in% c('NY', 'CA', 'WA')), aes(xintercept = lockdown_start), size = 0.75, colour = 'gray50') +
-  geom_bar(stat = 'identity', aes(alpha = cum_diff_value_total_cases, fill = weekend_ind)) +
-  scale_alpha(name = 'Daily New Cases', range = c(0.4, 1)) +
-  # scale_fill_viridis_d(name ='', option = 'D') +
-  scale_fill_manual(name = '', values = c('Week Day' = 'steelblue', 'Weekend' = 'orange')) +
-  # scale_fill_viridis(name = 'Daily New Cases', option = 'C') +
-  geom_hline(aes(yintercept = 1), colour = 'red', size = 0.5) +
-  geom_hline(aes(yintercept = 2.28), linetype = 'dashed', colour = 'black', size = 0.5) +
-  scale_y_continuous(breaks = seq(0, 25, by = 1)) +
-  # stat_smooth(method = 'gam') +
-  labs(
-    y = 'Estimated Seven-Day R0 of New Cases', x = '',
-    title = 'COVID-19 Transmission Rates for Early U.S. States',
-    subtitle = sprintf('Through %s. Dashed line shows average COVID-19 reproduction number (R0), red solid line shows R0=1, below which a pandemic slows.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')) %>% str_wrap(100),
-    caption = 'Chart: Taylor G. White\nData: covidtracking.com'
-    ) +
-  theme(
-    legend.position = 'bottom',
-    strip.text = element_text(face = 'bold', colour = 'white'),
-    strip.background = element_rect(fill = 'black'),
-    plot.subtitle = element_text(size = 11, face = 'italic'),
-    plot.caption = element_text(hjust = 0, face = 'italic', size = 10),
-    plot.title = element_text(size = 16),
-    panel.grid.minor = element_blank()
-    # plot.background = element_rect(fill = 'black'),
-    # panel.background = element_rect(fill = 'black'),
-    # panel.grid.minor = element_blank()
-  ) +
-  geom_text(data = latest_state_data %>% filter(location %in% c('NY', 'CA', 'WA')), aes(x = pre_lockdown_midpoint , y = 23, label = 'Pre-Lockdown'), fontface = 'italic', size = 3) + 
-  geom_text(data = latest_state_data %>% filter(location %in% c('NY', 'CA', 'WA')), aes(x = post_lockdown_midpoint , y = 23, label = 'Post-Lockdown'), fontface = 'italic', size = 3, hjust = 0.5) + 
-  geom_text(data = latest_state_data %>% filter(location %in% c('NY', 'CA', 'WA')), aes(x = lockdown_start, y = 15, label = format(lockdown_start, '%B %d')), fontface = 'bold', size = 3.5) 
-ggsave('output/rolling_ro_by_early_states.png', height = 6, width = 9, units = 'in', dpi = 800)
 
 
 
@@ -555,7 +482,6 @@ free_plot = main_plot +
 same_scale_plot = main_plot +
   facet_wrap(~factor(location_name, levels = location_levels), ncol = 4)
 # ggsave('output/effective_r0_top_12_states.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = same_scale_plot)
-
 
 # select(all_covid_data_diffs_dates, has_30_days, date, location_name, diff_value_total_tests, value_total_tests, new_tests_per_100k) %>% View()
 
@@ -816,7 +742,41 @@ filter(all_covid_data_diffs_dates, days_since_case_20 >= 0, location_type == 'US
   scale_colour_manual(name = '', labels = c('United States' = 'U.S. Overall'), values = c('#d95f02'))
 ggsave('output/case_fatality_rate_by_state.png', height = 7, width = 7, units = 'in', dpi = 800)
 
+#### estimate effects of reduced transmission on case load ####
 
+ny_data = all_covid_data_diffs_dates %>% filter(location %in% c('CA')) 
+
+# https://stats.stackexchange.com/questions/160552/why-is-nls-giving-me-singular-gradient-matrix-at-initial-parameter-estimates
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6962332/
+# https://www.medrxiv.org/content/10.1101/2020.04.02.20051466v1.full.pdf
+get_r0_nls = function(df) {
+  model.0 = lm(log(value_total_cases) ~ I(time/6.4), data = df)
+  simple_exponential_model = nls(value_total_cases ~  case_networks * r0^(time/6.4), data = df, 
+                                 start = list(case_networks = exp(coef(model.0)[1]), r0 = coef(model.0)[2]))  
+  return(simple_exponential_model)
+}
+
+pre_lockdown = get_r0_nls(ny_data)
+# summary(pre_lockdown)
+# est_r0_window(ny_data$cum_diff_value_total_cases)
+
+ny_data$pred = predict(pre_lockdown)
+ggplot(ny_data, aes(time)) +
+  geom_line(aes(y=pred)) +
+  geom_line(aes(y = value_total_cases), colour = 'red')
+
+
+
+# Solve and plot.
+
+
+
+# pars vector with 2 values: the transmission and recovery rates. The names of these
+# values must be "beta", and "gamma", respectively.
+# init vector with 3 values: the initial proportion of susceptibles, infectious and recovered. The names of these values must be "S", "I" and "R", respectively.
+# time time sequence for which output is wanted; the first value of times must be the
+# initial time.
+# ... further arguments passed to ode function.
 
 
 ##### load and clean county covid data #####
@@ -851,3 +811,5 @@ latest_county_data_geo = left_join(us_counties_tigris@data, latest_county_data, 
     lat = as.numeric(INTPTLAT),
     long = as.numeric(INTPTLON)
   )
+
+

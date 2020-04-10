@@ -296,7 +296,8 @@ main_plot = season_comparison %>%
   scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
   scale_y_continuous(labels = comma, breaks = seq(0, 6000, by = 1000)) 
 
-add_extra_bars(main_plot, italy_weekly_deaths, the_hjust = 1, the_angle = 90, projected_label = 'Projected      ')
+# add_extra_bars(main_plot, italy_weekly_deaths, the_hjust = 1, the_angle = 90, projected_label = 'Projected      ')
+add_extra_bars(main_plot, italy_weekly_deaths, the_hjust = 0.5, the_angle = 90, projected_label = 'Projected       ')
 
 ggsave('output/average_italian_flu_deaths.png', height = 6, width = 8, units = 'in', dpi = 800)  
 

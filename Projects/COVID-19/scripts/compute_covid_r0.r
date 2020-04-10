@@ -1,12 +1,16 @@
 library(tidyverse)
 library(R0)
 library(scales)
-library(earlyR)
 library(incidence)
+library(EpiDynamics)
+
 # https://cran.r-project.org/web/packages/earlyR/earlyR.pdf
 ## example: onsets on days 1, 5, 6 and 12; estimation on day 24
 
 
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7014672/
+weibull_mean = 6.4
+weibull_sd = 2.3
 
 ##### pull in data ####
 johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv') %>%
@@ -27,9 +31,12 @@ us_jh_cases = filter(johns_hopkins_cases, country_region == 'US') %>%
 # fit a simple exponnetial model using non-linear least squares
 simple_exponential_model = nls(cases ~  case_networks * r0^(t/6.4), data = us_jh_cases, 
                                start = list(case_networks = 1, r0 = 2.5))
+
 summary(simple_exponential_model)
 
-confint(simple_exponential_model)
+# https://web.stanford.edu/~jhj1/teachingdocs/Jones-Epidemics050308.pdf
+# λ(t) = λ(0)e^(Λt)
+# Λ = ν(R0 − 1)
 
 # Formula: cases ~ case_networks * r0^(t/6.4)
 # 
@@ -38,7 +45,7 @@ confint(simple_exponential_model)
 # case_networks  9.14908    2.09934   4.358 4.17e-05 ***
 #   r0             2.48856    0.05072  49.063  < 2e-16 ***
 #   ---
-#   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 # 
 # Residual standard error: 8936 on 74 degrees of freedom
 # 
@@ -91,3 +98,129 @@ ggplot(us_jh_cases_long, aes(date, value, colour = name)) +
 ggsave('exp_growth_vs_cases.png', height = 6, width = 6, units = 'in', dpi = 600)
 
 
+# get shape/scale for weibull distribution
+fit_weibull = function(pars) {
+  shape = pars[1]
+  scale = pars[2]
+  the_dist = rweibull(10000, shape, scale)
+  the_sd = abs(sd(the_dist) - 2.3)
+  the_mean =  abs(mean(the_dist) - 6.4)
+  return(
+    the_sd * the_mean
+  )
+}
+the_solution = optim(par = c(3, 7), fn = fit_weibull)
+# 
+# > the_solution$par
+# [1] 3.005484 7.201339
+the_weibull = rweibull(1000, the_solution$par[1], the_solution$par[2])
+# 
+# r0_dist = map_dbl(the_weibull, function(gen_time){
+#   return_val = NA
+#   tryCatch({
+#     simple_exponential_model = nls(cases ~  case_networks * r0^(t/gen_time), data = us_jh_cases, 
+#                                    start = list(case_networks = 1, r0 = 2.5))
+#     
+#     return_val = coef(simple_exponential_model)[2]  
+#   }, error = function(e){
+#     return(return_val)
+#   })
+#   
+#   return(return_val)
+# })
+summary(r0_dist)
+
+cumulative_dist = tibble(
+  time = mGT$time,
+  proportion = mGT$GT,
+  cum_prop = cumsum(proportion)
+)
+
+?SIR
+
+# covid
+parameters <- c(beta = 2.5/5, gamma = 1/5)
+initials <- c(S = 1 - 1e-06, I = 1e-06, R = 1 - (1 - 1e-06 - 1e-06))
+
+covid_sir <- SIR(pars = parameters, init = initials, time = 0:180)
+
+# flu
+parameters <- c(beta = 1.3/5, gamma = 1/5)
+initials <- c(S = 1 - 1e-06, I = 1e-06, R = 1 - (1 - 1e-06 - 1e-06))
+
+# Solve and plot.
+flu_sir <- SIR(pars = parameters, init = initials, time = 0:180)
+# PlotMods(sir)
+
+distancing_effect = 0.6
+
+comb_sirs = tibble(
+  time = covid_sir$time, 
+  covid_s = covid_sir$results$S * 15e6,
+  new_cases = round(lag(covid_s, 1) - covid_s),
+  covid_i = covid_sir$results$I,
+  flu_i = flu_sir$results$I
+) %>%
+  mutate(
+    new_cases = ifelse(is.na(new_cases), 0, new_cases),
+    deaths = rbinom(length(comb_sirs$new_cases), comb_sirs$new_cases, prob = 0.004)
+  )
+
+comb_sirs$deaths
+sum(comb_sirs$new_cases, na.rm = T) / 60e6
+sum(comb_sirs$deaths, na.rm = T)
+
+filter(comb_sirs, time <= 42) %>% pull(deaths) %>% sum(na.rm=T)
+
+ggplot(comb_sirs, aes(time, deaths)) +
+  geom_point()
+
+sum(comb_sirs$covid_i * 19e6)
+
+sum(comb_sirs$flu_deaths)
+sum(comb_sirs$covid_deaths)
+
+ggplot(comb_sirs, aes(time)) +
+  geom_line(aes(y = covid_i)) +
+  geom_line(aes(y = flu_i))
+sum(comb_sirs$covid_i)
+
+# http://rstudio-pubs-static.s3.amazonaws.com/6852_c59c5a2e8ea3456abbeb017185de603e.html
+
+library(deSolve)
+
+## Create an SIR function
+sir <- function(time, state, parameters) {
+  
+  with(as.list(c(state, parameters)), {
+    
+    dS <- -beta * S * I
+    dI <-  beta * S * I - gamma * I
+    dR <-                 gamma * I
+    
+    return(list(c(dS, dI, dR)))
+  })
+}
+
+### Set parameters
+## Proportion in each compartment: Susceptible 0.999999, Infected 0.000001, Recovered 0
+init       <- c(S = 1-1e-6, I = 1e-6, R = 0.0)
+## beta: infection parameter; gamma: recovery parameter
+parameters <- c(beta = 1.4247, gamma = 0.14286)
+## Time frame
+times      <- seq(0, 70, by = 1)
+
+## Solve using ode (General Solver for Ordinary Differential Equations)
+out <- ode(y = init, times = times, func = sir, parms = parameters)
+## change to data frame
+out <- as.data.frame(out)
+## Delete time variable
+out$time <- NULL
+## Show data
+head(out, 10)
+sum(out$I)
+max(out$I)
+min(out$S)
+
+2.5 / 6.4
+2.5/10
