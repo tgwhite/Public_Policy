@@ -34,6 +34,14 @@ simple_exponential_model = nls(cases ~  case_networks * r0^(t/6.4), data = us_jh
 
 summary(simple_exponential_model)
 
+mGT <- generation.time("weibull", c(6.4, 2.3))
+plot(mGT$time, mGT$GT)
+lines(mGT$time, mGT$GT)
+
+
+est.R0.EG(us_jh_cases$new_cases, mGT, begin=as.integer(1), end=as.integer(length(us_jh_cases$new_cases)))
+
+
 # https://web.stanford.edu/~jhj1/teachingdocs/Jones-Epidemics050308.pdf
 # λ(t) = λ(0)e^(Λt)
 # Λ = ν(R0 − 1)
@@ -73,12 +81,6 @@ summary(simple_exponential_model)
 
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7014672/
 # mGT <- generation.time("gamma", c(6.5, 2.6))
-mGT <- generation.time("weibull", c(6.4, 2.3))
-plot(mGT$time, mGT$GT)
-lines(mGT$time, mGT$GT)
-
-
-est.R0.EG(us_jh_cases$new_cases, mGT, begin=as.integer(1), end=as.integer(length(us_jh_cases$new_cases)))
 
 
 # Reproduction number estimate using  Exponential Growth  method.
@@ -187,40 +189,19 @@ sum(comb_sirs$covid_i)
 
 # http://rstudio-pubs-static.s3.amazonaws.com/6852_c59c5a2e8ea3456abbeb017185de603e.html
 
-library(deSolve)
+# simulate proportion of deaths
+# x1 = 1:(30*6)
+# 
+# z = 0.15 + 0.015*x1 
+# pr = 1/(1+exp(-z))         # pass through an inv-logit function
+# y = rbinom(length(x1),1,pr)      # bernoulli response variable
+# 
+# #now feed it to glm:
+# df = data.frame(y=y,x1=x1)
+# mod = glm( y~x1,data=df,family="binomial")
+# 
+# plot(x1, predict(mod, type = 'response'))   
+# summary(pr)
+# 
+# 
 
-## Create an SIR function
-sir <- function(time, state, parameters) {
-  
-  with(as.list(c(state, parameters)), {
-    
-    dS <- -beta * S * I
-    dI <-  beta * S * I - gamma * I
-    dR <-                 gamma * I
-    
-    return(list(c(dS, dI, dR)))
-  })
-}
-
-### Set parameters
-## Proportion in each compartment: Susceptible 0.999999, Infected 0.000001, Recovered 0
-init       <- c(S = 1-1e-6, I = 1e-6, R = 0.0)
-## beta: infection parameter; gamma: recovery parameter
-parameters <- c(beta = 1.4247, gamma = 0.14286)
-## Time frame
-times      <- seq(0, 70, by = 1)
-
-## Solve using ode (General Solver for Ordinary Differential Equations)
-out <- ode(y = init, times = times, func = sir, parms = parameters)
-## change to data frame
-out <- as.data.frame(out)
-## Delete time variable
-out$time <- NULL
-## Show data
-head(out, 10)
-sum(out$I)
-max(out$I)
-min(out$S)
-
-2.5 / 6.4
-2.5/10

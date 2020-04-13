@@ -278,9 +278,13 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
   
   # get rolling average positive tests for last seven days
   percent_positive_new_tests = cum_diff_value_total_cases / cum_diff_value_tests_with_results
-  rolling_sum_new_cases = c(rep(NA, 6), roll_sum(cum_diff_value_total_cases, 7))
-  rolling_sum_new_results = c(rep(NA, 6), roll_sum(cum_diff_value_tests_with_results, 7))
-  percent_positive_new_tests_rolling_7 = rolling_sum_new_cases / rolling_sum_new_results
+  
+  lag_percent_positive_new_tests = lag(percent_positive_new_tests, 1)
+  delta_percent_positive_new_tests = percent_positive_new_tests - lag_percent_positive_new_tests
+  
+  rolling3_percent_positive_new_tests = c(rep(NA, 2), roll_mean(percent_positive_new_tests, 3))
+  rolling7_percent_positive_new_tests = c(rep(NA, 6), roll_mean(percent_positive_new_tests, 7))
+  delta_roll_3_7 = rolling3_percent_positive_new_tests - rolling7_percent_positive_new_tests
   
   # there is some thinking that there is a severe lag in case reporting, use a weeklong lag
   # the reason we use lead 
@@ -294,7 +298,11 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
     r0_rolling = r0_rolling,
     r0_rolling_lead_7 = r0_rolling_lead_7, 
     percent_positive_new_tests = percent_positive_new_tests,
-    percent_positive_new_tests_rolling_7 = percent_positive_new_tests_rolling_7
+    lag_percent_positive_new_tests = lag_percent_positive_new_tests, 
+    delta_percent_positive_new_tests = delta_percent_positive_new_tests,
+    rolling3_percent_positive_new_tests = rolling3_percent_positive_new_tests,
+    rolling7_percent_positive_new_tests = rolling7_percent_positive_new_tests,
+    delta_roll_3_7_percent_positive_new_tests = delta_roll_3_7
   )
 }, by = list(location_key, location)] 
 
@@ -319,7 +327,10 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
     deaths_per_100k = value_total_deaths / pop_100k,
     diff_value_avg_3_total_tests_per_100k = diff_value_avg_3_total_tests / pop_100k,
     week_day = lubridate::wday(date),
-    weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day")
+    weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
+    cum_diff_value_total_cases_adj = pmax(cum_diff_value_total_cases, 0),
+    cum_diff_value_tests_with_results_adj = pmax(cum_diff_value_total_cases_adj, cum_diff_value_tests_with_results, 0),
+    cum_diff_value_tests_with_results_adj = ifelse(cum_diff_value_tests_with_results_adj == 0, NA, cum_diff_value_tests_with_results_adj)
   ) %>%
   arrange(location_key, date) %>%
   filter(
@@ -327,6 +338,28 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
   )
 
 write.csv(all_covid_data_diffs_dates, 'data/us_covid_data_by_state_with_calcs.csv', row.names = F)
+
+
+latest_state_data = filter(all_covid_data_diffs_dates, location != 'United States', date == max(date)) %>% 
+  arrange(-value_total_cases) %>%
+  mutate(
+    location_factor = factor(location, levels = location)
+  )
+select(latest_state_data, location, value_total_cases)
+all_covid_data_diffs_dates$location_factor = factor(all_covid_data_diffs_dates$location, 
+                                                    levels = latest_state_data$location)
+
+filter(all_covid_data_diffs_dates, 
+       location %in% head(latest_state_data, 50)$location, date >= as.Date('2020-03-11')) %>%
+  ggplot() +
+  facet_wrap(~location_factor, scales = 'free_y', ncol = 5) +
+  geom_area(aes(date, rolling7_percent_positive_new_tests), fill = 'black', alpha = .4) +
+  geom_line(aes(date, rolling3_percent_positive_new_tests), colour = 'blue', size = 0.75) +
+  # geom_point(aes(date, rolling3_percent_positive_new_tests), colour = 'blue') +
+  # geom_point(aes(date, rolling3_percent_positive_new_tests, size = new_cases_per_100k), colour = 'red') +
+  scale_size(range = c(1, 5)) +
+  theme_minimal()
+ggsave('output/three_vs_seven_day_avg_positive_tests.png', height = 8, width = 10, units = 'in', dpi = 800)  
 
 
 # get last data by state
@@ -343,9 +376,6 @@ write.csv(all_covid_data_diffs_dates, 'data/us_covid_data_by_state_with_calcs.cs
 #   ) %>%
 #   arrange(-last_cases) %>%
 #   ungroup() 
-
-latest_state_data = filter(all_covid_data_diffs_dates, location != 'United States', date == max(date)) %>% 
-  arrange(-value_total_cases)
 
 
 ## compute stats by lockdown period
@@ -577,6 +607,30 @@ ggplot() +
 
 ggsave('output/latest_cv_state_map_50.png', height = 6, width = 8, units = 'in', dpi = 800)
 
+# show changes in test results
+US_state_data$rolling7_percent_positive_new_tests
+ggplot() +
+  geom_sf(data = US_state_data, aes(fill = delta_roll_3_7_percent_positive_new_tests/rolling7_percent_positive_new_tests), alpha = 0.75, size = 0.25) +
+  # scale_fill_viridis(guide = F, option = 'D') +
+  scale_fill_gradient2(guide = F, low='blue', high = 'red', mid = 'purple4', midpoint = 0) +
+  geom_sf_text(data = US_state_data, aes(long, lat, label = percent(delta_roll_3_7_percent_positive_new_tests/rolling7_percent_positive_new_tests, accuracy = 1)),
+               colour = 'black', fontface='bold', size = 2) +
+  theme_map() +
+  labs(x = '', y = '',
+       caption = 'Chart: Taylor G. White\nData: covidtracking.com',
+       title = 'U.S. COVID-19 Cases by State, Per 100k Population', subtitle = sprintf('As of %s',
+                                                                                       unique(format(latest_state_data$date, '%B %d')))) +
+  theme(
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    title = element_text(size = 16),
+    plot.subtitle = element_text(size = 11),
+    plot.caption = element_text(hjust = 0, face = 'italic', size = 10)
+  )
+
+# ggsave('output/latest_cv_state_map_50.png', height = 6, width = 8, units = 'in', dpi = 800)
+
+
 # world <- ne_countries(scale = "medium", returnclass = "sf")
 # usa <- subset(world, admin == "United States of America")
 
@@ -744,27 +798,27 @@ ggsave('output/case_fatality_rate_by_state.png', height = 7, width = 7, units = 
 
 #### estimate effects of reduced transmission on case load ####
 
-ny_data = all_covid_data_diffs_dates %>% filter(location %in% c('CA')) 
+# ny_data = all_covid_data_diffs_dates %>% filter(location %in% c('CA')) 
 
 # https://stats.stackexchange.com/questions/160552/why-is-nls-giving-me-singular-gradient-matrix-at-initial-parameter-estimates
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6962332/
 # https://www.medrxiv.org/content/10.1101/2020.04.02.20051466v1.full.pdf
-get_r0_nls = function(df) {
-  model.0 = lm(log(value_total_cases) ~ I(time/6.4), data = df)
-  simple_exponential_model = nls(value_total_cases ~  case_networks * r0^(time/6.4), data = df, 
-                                 start = list(case_networks = exp(coef(model.0)[1]), r0 = coef(model.0)[2]))  
-  return(simple_exponential_model)
-}
-
-pre_lockdown = get_r0_nls(ny_data)
-# summary(pre_lockdown)
-# est_r0_window(ny_data$cum_diff_value_total_cases)
-
-ny_data$pred = predict(pre_lockdown)
-ggplot(ny_data, aes(time)) +
-  geom_line(aes(y=pred)) +
-  geom_line(aes(y = value_total_cases), colour = 'red')
-
+# get_r0_nls = function(df) {
+#   model.0 = lm(log(value_total_cases) ~ I(time/6.4), data = df)
+#   simple_exponential_model = nls(value_total_cases ~  case_networks * r0^(time/6.4), data = df, 
+#                                  start = list(case_networks = exp(coef(model.0)[1]), r0 = coef(model.0)[2]))  
+#   return(simple_exponential_model)
+# }
+# 
+# pre_lockdown = get_r0_nls(ny_data)
+# # summary(pre_lockdown)
+# # est_r0_window(ny_data$cum_diff_value_total_cases)
+# 
+# ny_data$pred = predict(pre_lockdown)
+# ggplot(ny_data, aes(time)) +
+#   geom_line(aes(y=pred)) +
+#   geom_line(aes(y = value_total_cases), colour = 'red')
+# 
 
 
 # Solve and plot.

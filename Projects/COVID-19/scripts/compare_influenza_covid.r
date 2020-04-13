@@ -1,4 +1,6 @@
 
+
+
 library(tidyverse)
 library(plotly)
 library(readxl)
@@ -16,8 +18,124 @@ library(incidence)
 # https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1001051
 start_week = 40
 end_week = 20
-
 last_week = 52
+
+italy_start_week = 30
+
+# get excess italian deaths
+# https://www.sciencedirect.com/science/article/pii/S1201971219303285#bib0025
+
+italian_excess_deaths = tibble(
+  season = c(2013:2016),
+  deaths = c(7027, 20259, 15801, 24981),
+  population = c(345168/0.00572, 375579/.00618, 354513/0.00584, 381578/.00628)
+)
+
+setwd("~/Public_Policy/Projects/COVID-19")
+
+# read in extracted plot data from Rosano 2019
+rosano_webplot_extracts = read_csv("literature/wpd_datasets.csv", skip = 1) %>%
+  mutate(
+    excess_deaths_date = as.Date(X, format = '%m/%d/%Y'),
+    baseline_date = as.Date(X_1, format = '%m/%d/%Y'),
+    diff_excess_deaths_date = c(NA, diff(excess_deaths_date)),
+    diff_baseline_date = c(NA, diff(baseline_date))
+  ) %>% 
+  rename(
+    excess_deaths_val = Y,
+    baseline_deaths_val = Y_1
+  ) 
+
+# use loess smoother for full date range for both plots 
+full_date_range = c(rosano_webplot_extracts$excess_deaths_date, 
+                    rosano_webplot_extracts$baseline_date) %>%
+  range(na.rm = T)
+
+date_df = data.frame(
+  the_date = seq(full_date_range[1], full_date_range[2], by = 1)
+)
+
+
+
+ggplot(rosano_webplot_extracts) +
+  # geom_point(aes(excess_deaths_date, excess_deaths_val)) +
+  stat_smooth(aes(excess_deaths_date, excess_deaths_val), span= 0.1, se = F) +
+  # geom_point(aes(baseline_date, baseline_deaths_val)) +
+  stat_smooth(aes(baseline_date, baseline_deaths_val), span= 0.1, colour = 'black', se = F) 
+
+excess_deaths_loess = loess(excess_deaths_val ~ as.numeric(excess_deaths_date), data = rosano_webplot_extracts %>% filter(), span = 0.1)
+background_deaths_loess = loess(baseline_deaths_val ~ as.numeric(baseline_date), data = rosano_webplot_extracts %>% filter(), span = 0.1)
+
+date_df$excess_deaths_smoothed = predict(excess_deaths_loess, 
+                                         newdata = mutate(date_df, excess_deaths_date = the_date))
+
+date_df$background_deaths_smoothed = predict(background_deaths_loess, 
+                                         newdata = mutate(date_df, baseline_date = the_date))
+
+date_df = mutate(date_df, 
+                 excess_deaths_smoothed = pmax(excess_deaths_smoothed, background_deaths_smoothed),
+                 year_week = format(the_date, '%Y-%U')
+                 )
+
+all_date_data_long = pivot_longer(date_df, cols = c('excess_deaths_smoothed', 'background_deaths_smoothed'))
+ggplot(all_date_data_long, aes(the_date, value, colour = name)) +
+  geom_line()
+
+weekly_vals = group_by(all_date_data_long, year_week, name) %>%
+  summarize(
+    start_date = min(the_date),
+    value = head(value, 1)
+  )
+
+ggplot(weekly_vals, aes(start_date, value, colour = name)) +
+  geom_point()
+
+wide_vals = pivot_wider(weekly_vals, id_cols = c('year_week', 'start_date'),
+                        values_from = 'value', names_from = 'name') %>%
+  mutate(
+    excess_deaths_over_baseline = excess_deaths_smoothed - background_deaths_smoothed,
+    year = year(start_date),
+    week = format(start_date, '%U') %>% as.numeric(),
+    season = ifelse(week>= italy_start_week, year, ifelse(week <= end_week, year-1, NA))
+  ) %>%
+  left_join(italian_excess_deaths) %>%
+  mutate(
+    count_excess_deaths_over_baseline = excess_deaths_over_baseline * ( population/1e5)
+  )
+
+totals_by_season = group_by(wide_vals, season) %>%
+  summarize(
+    sum_count_excess_deaths_over_baseline = sum(count_excess_deaths_over_baseline, na.rm = T),
+    mean_weekly_excess_deaths_over_baseline = mean(excess_deaths_over_baseline, na.rm = T),
+    obs = n(),
+    total_excess_deaths_per_100k = sum(excess_deaths_over_baseline, na.rm = T)
+  ) %>%
+  left_join(italian_excess_deaths) %>%
+  mutate(
+    ratio = sum_count_excess_deaths_over_baseline / deaths
+  )
+
+wide_vals$count_excess_deaths_over_baseline_adj = wide_vals$count_excess_deaths_over_baseline / mean(totals_by_season$ratio, na.rm = T)
+
+group_by(wide_vals, season) %>%
+  summarize(
+    sum_count_excess_deaths_over_baseline = sum(count_excess_deaths_over_baseline_adj, na.rm = T)
+  )
+
+ggplot(wide_vals, aes(start_date, count_excess_deaths_over_baseline_adj)) +
+  geom_line() 
+  
+
+
+ggplot(wide_vals, aes(start_date)) +
+  geom_line(aes(y = excess_deaths_smoothed)) +
+  geom_line(aes(y = background_deaths_smoothed)) +
+  geom_point(aes(y = background_deaths_smoothed + excess_deaths_over_baseline, colour = factor(season))) +
+  scale_x_date(date_labels = '%Y-%U', date_breaks = '6 months')
+
+# https://apps.automeris.io/wpd/
+# as.Date('2013-04-28') %>% format('%U')
+# as.Date('2017-04-23') %>% format('%U')
 
 # the real ratio is 0.52 but this helps keep things simple coding-wise
 # r0_flu_covid_ratio = 0.5 
@@ -31,20 +149,13 @@ historical_us_flu_burden = htmltab('https://www.cdc.gov/flu/about/burden/past-se
     season = str_extract(Season, '[0-9]{4}') %>% as.numeric()
   )
 
-setwd("~/Public_Policy/Projects/COVID-19")
+
 
 #### read in excess flu / pneumonia deaths ####
 # us_NCHSData12 = read_excel('literature/Italy Influenza vs. COVID.xlsx', 'NCHSData12')
 us_NCHSData12 = read_csv('https://www.cdc.gov/flu/weekly/weeklyarchives2019-2020/data/NCHSData12.csv')
 names(us_NCHSData12) = str_replace_all(names(us_NCHSData12), '[ ]', '_') %>% str_to_lower()
 
-# get excess italian deaths
-# https://www.sciencedirect.com/science/article/pii/S1201971219303285#bib0025
-
-italian_excess_deaths = tibble(
-  season = c(2013:2016),
-  deaths = c(7027, 20259, 15801, 24981)
-)
 
 # read in latest john's hopkins covid case / death data 
 jh_joined_it_us = read_csv('data/jh_joined.csv') %>%
