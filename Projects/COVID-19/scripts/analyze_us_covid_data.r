@@ -467,7 +467,7 @@ ggplot(lockdown_states, aes(days_since_lockdown_start, median_r0_rolling_7, fill
     x = 'Days Pre/Post Lockdown', y = 'Rolling 7-Day R0',
     caption = 'Chart: Taylor G. White\nData: covidtracking.com',
     title = 'COVID-19 Rolling 7-Day Reproduction Number (R0) by Lockdown Status',
-    subtitle = sprintf('U.S. states, through %s. Lockdowns are associated with a %s decrease in COVID-19 transmission.', 
+    subtitle = sprintf('U.S. states, through %s. Lockdowns are associated with a %s decrease in COVID-19 transmission, though many areas saw decreased transmission pre-lockdown because other states shut down.', 
                        max(all_covid_data_diffs_dates$date) %>% format('%B %d'), 
                        percent(lockdown_effect, accuracy = 1))
   ) +
