@@ -25,7 +25,7 @@ library(usmap)
 library(cowplot)
 library(RcppRoll)
 library(sqldf)
-
+library(albersusa)
 
 # questions to answer: 
 # how have case / death rates changed recently?
@@ -74,9 +74,15 @@ state_economic_data = dbGetQuery(fred_sqlite, 'select * from state_economic_data
   unique(by = c('state_name', 'title_clean', 'date'))
 
 
-population_by_state = filter(state_economic_data, title_clean == 'Resident Population')
-population_by_state = filter(population_by_state, date == max(date))
+annual_population_by_state = filter(state_economic_data, title_clean == 'Resident Population') %>%
+  mutate(
+    year = year(date)
+  ) 
+
+population_by_state = filter(annual_population_by_state, date == max(date))
 us_population = sum(population_by_state$value)
+
+
 
 ## get shapefile data ## 
 us_counties_shp = us_counties()
@@ -88,7 +94,7 @@ us_counties_tigris = tigris::counties()
 
 # remotes::install_git("https://git.sr.ht/~hrbrmstr/albersusa")
 # https://github.com/hrbrmstr/albersusa
-library(albersusa)
+
 us_sf <- usa_sf("laea")
 cty_sf <- counties_sf("aeqd")
 
@@ -278,6 +284,9 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
   
   # get rolling average positive tests for last seven days
   percent_positive_new_tests = cum_diff_value_total_cases / cum_diff_value_tests_with_results
+  rolling3_tests_with_results = c(rep(NA, 2), roll_mean(cum_diff_value_tests_with_results, 3))
+  rolling7_tests_with_results = c(rep(NA, 6), roll_mean(cum_diff_value_tests_with_results, 7))
+  rolling3_new_cases = c(rep(NA, 2), roll_mean(cum_diff_value_total_cases, 3))
   
   lag_percent_positive_new_tests = lag(percent_positive_new_tests, 1)
   delta_percent_positive_new_tests = percent_positive_new_tests - lag_percent_positive_new_tests
@@ -300,6 +309,9 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
     percent_positive_new_tests = percent_positive_new_tests,
     lag_percent_positive_new_tests = lag_percent_positive_new_tests, 
     delta_percent_positive_new_tests = delta_percent_positive_new_tests,
+    rolling3_new_cases = rolling3_new_cases,
+    rolling3_tests_with_results = rolling3_tests_with_results, 
+    rolling7_tests_with_results = rolling7_tests_with_results,
     rolling3_percent_positive_new_tests = rolling3_percent_positive_new_tests,
     rolling7_percent_positive_new_tests = rolling7_percent_positive_new_tests,
     delta_roll_3_7_percent_positive_new_tests = delta_roll_3_7
@@ -339,13 +351,12 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
 
 write.csv(all_covid_data_diffs_dates, 'data/us_covid_data_by_state_with_calcs.csv', row.names = F)
 
-
 latest_state_data = filter(all_covid_data_diffs_dates, location != 'United States', date == max(date)) %>% 
   arrange(-value_total_cases) %>%
   mutate(
     location_factor = factor(location, levels = location)
   )
-select(latest_state_data, location, value_total_cases)
+
 all_covid_data_diffs_dates$location_factor = factor(all_covid_data_diffs_dates$location, 
                                                     levels = latest_state_data$location)
 
@@ -353,8 +364,9 @@ filter(all_covid_data_diffs_dates,
        location %in% head(latest_state_data, 50)$location, date >= as.Date('2020-03-11')) %>%
   ggplot() +
   facet_wrap(~location_factor, scales = 'free_y', ncol = 5) +
-  geom_area(aes(date, rolling7_percent_positive_new_tests), fill = 'black', alpha = .4) +
-  geom_line(aes(date, rolling3_percent_positive_new_tests), colour = 'blue', size = 0.75) +
+  geom_area(aes(date, rolling7_tests_with_results), fill = 'black', alpha = .4) +
+  # geom_area(aes(date, rolling7_percent_positive_new_tests), fill = 'black', alpha = .4) +
+  geom_line(aes(date, rolling3_new_cases), colour = 'blue', size = 0.75) +
   # geom_point(aes(date, rolling3_percent_positive_new_tests), colour = 'blue') +
   # geom_point(aes(date, rolling3_percent_positive_new_tests, size = new_cases_per_100k), colour = 'red') +
   scale_size(range = c(1, 5)) +
