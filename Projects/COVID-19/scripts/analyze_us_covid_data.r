@@ -467,9 +467,12 @@ ggplot(lockdown_states, aes(days_since_lockdown_start, median_r0_rolling_7, fill
     x = 'Days Pre/Post Lockdown', y = 'Rolling 7-Day R0',
     caption = 'Chart: Taylor G. White\nData: covidtracking.com',
     title = 'COVID-19 Rolling 7-Day Reproduction Number (R0) by Lockdown Status',
-    subtitle = sprintf('U.S. states, through %s. Lockdowns are associated with a %s decrease in COVID-19 transmission, though many areas saw decreased transmission pre-lockdown because other states shut down.', 
+    subtitle = sprintf('U.S. states, through %s. State lockdowns are associated with a %s decrease in COVID-19 transmission (median R0 of %s down to %s), though many areas experienced decreased transmission pre-lockdown because other states shut down. Lines show median R0 and ribbons represent the 25th and 75th percentiles.', 
                        max(all_covid_data_diffs_dates$date) %>% format('%B %d'), 
-                       percent(lockdown_effect, accuracy = 1))
+                       percent(lockdown_effect, accuracy = 1),
+                       round(lockdown_effects_wide$`Pre-Lockdown`, 2),
+                       round(lockdown_effects_wide$`Post-Lockdown`, 2)
+                       ) %>% str_wrap(115)
   ) +
   theme(
     panel.grid.minor = element_blank(),
@@ -485,7 +488,7 @@ ggplot(lockdown_states, aes(days_since_lockdown_start, median_r0_rolling_7, fill
   scale_y_continuous(breaks = seq(0, 20, by = 1)) + 
   scale_x_continuous(limits = c(-30, max(lockdown_states$days_since_lockdown_start, na.rm = T)), 
                      breaks = seq(-30, max(lockdown_states$days_since_lockdown_start, na.rm = T), by = 2)) +
-  annotation_custom(ggplotGrob(r0_boxplot), xmin = -10, xmax = 12, ymin = 9, ymax = 17)
+  annotation_custom(ggplotGrob(r0_boxplot), xmin = -10, xmax = 12, ymin = 8, ymax = 17)
 
 ggsave('output/rolling_r0_by_lockdown_period.png', height = 7, width = 9, units = 'in', dpi = 800)
 
