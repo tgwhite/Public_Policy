@@ -2,6 +2,8 @@
 library(jsonlite)
 library(ggmap)
 
+run_geocode = F
+
 ### get IMHE data ###
 
 library(tidyverse)
@@ -25,37 +27,40 @@ file.copy(the_csv, 'data/imhe_zip/most_recent_imhe_projections.csv')
 unlink(new_dirs, recursive = T)
 
 # clean up testing sites # 
-
-test_sites_in = fromJSON("data/EVIVE_scarped_COVID19TestingSites.json")
-
-stacked_testing_info = map(test_sites_in, function(inner_list){
-  if ('data.frame' %in% class(inner_list)) {
-    if ('location' %in% names(inner_list)) {
-      return(inner_list)
+if (run_geocode) {
+  
+  test_sites_in = fromJSON("data/EVIVE_scarped_COVID19TestingSites.json")
+  
+  stacked_testing_info = map(test_sites_in, function(inner_list){
+    if ('data.frame' %in% class(inner_list)) {
+      if ('location' %in% names(inner_list)) {
+        return(inner_list)
+      } else {
+        return(NULL)
+      }
     } else {
       return(NULL)
     }
-  } else {
-    return(NULL)
-  }
-}) %>% 
-  bind_rows()
-
-
-locations_with_addresses = filter(stacked_testing_info, 
-                                  str_detect(location, '[0-9]+'))
-
-# geocoded_testing_sites = geocode(locations_with_addresses$location, output = 'more')
+  }) %>% 
+    bind_rows()
   
-locations_with_addresses_lat_long = bind_cols(locations_with_addresses, geocoded_testing_sites)
-
-stacked_testing_info_geocoded = left_join(
-  stacked_testing_info, locations_with_addresses_lat_long
-) %>%
-  mutate(
-    state_zip = str_extract(address, '[a-z]{2} [0-9]{5}'),
-    state_abbr = str_extract(state_zip, '[a-z]{2}') %>% toupper(),
-    zip = str_extract(state_zip, '[0-9]{5}')
-  )
-
-write.csv(stacked_testing_info_geocoded, 'data/cleaned_testing_sites.csv', row.names = F)
+  
+  locations_with_addresses = filter(stacked_testing_info, 
+                                    str_detect(location, '[0-9]+'))
+  
+  # geocoded_testing_sites = geocode(locations_with_addresses$location, output = 'more')
+  
+  locations_with_addresses_lat_long = bind_cols(locations_with_addresses, geocoded_testing_sites)
+  
+  stacked_testing_info_geocoded = left_join(
+    stacked_testing_info, locations_with_addresses_lat_long
+  ) %>%
+    mutate(
+      state_zip = str_extract(address, '[a-z]{2} [0-9]{5}'),
+      state_abbr = str_extract(state_zip, '[a-z]{2}') %>% toupper(),
+      zip = str_extract(state_zip, '[0-9]{5}')
+    )
+  
+  write.csv(stacked_testing_info_geocoded, 'data/cleaned_testing_sites.csv', row.names = F)
+  
+}
