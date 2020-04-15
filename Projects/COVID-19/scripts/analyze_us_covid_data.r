@@ -27,7 +27,7 @@ library(RcppRoll)
 library(sqldf)
 library(albersusa)
 library(RColorBrewer)
-
+library(quantreg)
 # display.brewer.all(n=NULL, type="all", select=NULL, exact.n=TRUE,
 #                    colorblindFriendly=FALSE)
 
@@ -341,6 +341,8 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
     lockdown_period = ifelse(is.na(lockdown_start), 'No Lockdown', ifelse(days_since_lockdown_start < 0, 'Pre-Lockdown', 'Post-Lockdown')) %>%
       factor() %>% relevel(ref = 'Pre-Lockdown'),
     days_since_case_20 = as.numeric(date - date_case_20),
+    days_since_first_state_lockdown = as.numeric(date - min(lockdown_start, na.rm = T)),
+    post_first_lockdown = days_since_first_state_lockdown >= 0,
     new_tests_per_100k = cum_diff_value_total_tests / pop_100k,
     tests_per_100k = value_total_tests / pop_100k,
     cases_per_100k = value_total_cases / pop_100k,
@@ -359,6 +361,58 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
   )
 
 write.csv(all_covid_data_diffs_dates, 'data/us_covid_data_by_state_with_calcs.csv', row.names = F)
+
+all_covid_data_diffs_dates$r0_rolling_lead_7
+r0_mean_model = lm(log(r0_rolling_lead_7) ~ lockdown_period + post_first_lockdown + as.numeric(date), data = all_covid_data_diffs_dates)
+r0_median_model = rq(log(r0_rolling_lead_7) ~ lockdown_period + post_first_lockdown + as.numeric(date), data = all_covid_data_diffs_dates, tau = 0.5)
+summary(r0_median_model)
+
+
+r0_stats_by_date = group_by(all_covid_data_diffs_dates, date, lockdown_period) %>%
+  summarize(
+    obs = n(),
+    median_r0 = median(r0_rolling_lead_7, na.rm = T),
+    mean_r0 = mean(r0_rolling_lead_7, na.rm = T),
+    q25 = quantile(r0_rolling_lead_7, probs = 0.25, na.rm = T),
+    q75 = quantile(r0_rolling_lead_7, probs = 0.75, na.rm = T)
+  ) %>%
+  filter(!is.na(median_r0)) %>%
+  mutate(
+    pct_of_states = obs/sum(obs)
+  )
+
+ggplot(r0_stats_by_date, aes(date, median_r0, colour = lockdown_period)) +
+  geom_hline(aes(yintercept = 1), colour = 'firebrick', size = 0.75, linetype = 'dashed') +
+  # geom_ribbon(aes(ymin = q25, ymax = q75, fill = lockdown_period), alpha = 0.3) +
+  # facet_wrap(~lockdown_period, ncol = 1) +
+  theme_bw() +
+  geom_line(size = 0.75) +
+  
+  # geom_point(aes(size = pct_of_states)) +
+  labs(
+    x = '', y = 'Median Rolling 7-Day R0',
+    caption = 'Chart: Taylor G. White\nData: covidtracking.com',
+    title = 'COVID-19 Rolling 7-Day Reproduction Number (R0) by Lockdown Status',
+    subtitle = sprintf('U.S. states, through %s. Data is lagged by one week for case delay and one week to observe follow-on cases for R0 computation. R0 < 1 means the rate of new cases is decreasing.', 
+                       max(all_covid_data_diffs_dates$date) %>% format('%B %d')
+    ) %>% str_wrap(115)
+  ) +
+  theme(
+    panel.grid.minor = element_blank(),
+    legend.text = element_text(size = 12),
+    title = element_text(size = 14),
+    plot.subtitle = element_text(size = 11, face = 'italic'),
+    plot.caption = element_text(size = 10, face = 'italic', hjust = 0),
+    legend.position = 'right'
+  ) +
+  scale_size(name = '% of States', range = c(1, 4), labels = percent) +
+  scale_colour_hue(name = 'Period') +
+  scale_y_continuous(breaks = seq(0, 15, by = 1)) 
+ 
+ggsave('output/rolling_ro_trend_by_lockdown_status.png', height = 8, width = 10, units = 'in', dpi = 800)
+
+
+
 
 latest_state_data = filter(all_covid_data_diffs_dates, location != 'United States', date == max(date)) %>% 
   arrange(-value_total_cases) %>%
@@ -404,6 +458,7 @@ wide_state_lockdown_period_calcs = pivot_wider(state_lockdown_period_calcs,
                                                values_from = c('period_r0', 'period_end','period_daily_geometric_growth', 'starting_cases', 'ending_cases'))
 names(wide_state_lockdown_period_calcs) = str_replace_all(names(wide_state_lockdown_period_calcs), '[ \\-]', '_')
 
+#### compute stats by lockdown status #####
 
 lockdown_period_stats = group_by(all_covid_data_diffs_dates, lockdown_period) %>% 
   summarize(
@@ -492,6 +547,8 @@ ggplot(lockdown_states, aes(days_since_lockdown_start, median_r0_rolling_7, fill
 
 ggsave('output/rolling_r0_by_lockdown_period.png', height = 7, width = 9, units = 'in', dpi = 800)
 
+
+#### plot across date scale ####
 
 
 
