@@ -259,7 +259,8 @@ avg_by_date = group_by(smoothed_pct_of_predicted, date) %>%
   )
 ggplot(avg_by_date, aes(avg_smoothed_percent_of_predicted, avg_mobility)) +
   geom_point()
-
+library(RColorBrewer)
+the_pal = brewer.pal(3, 'Set1')
 
 last_vals_by_country = group_by(smoothed_pct_of_predicted, entity_name) %>%
   summarize(
@@ -270,15 +271,19 @@ last_vals_by_country = group_by(smoothed_pct_of_predicted, entity_name) %>%
     last_smoothed_percent_of_predicted = smoothed_percent_of_predicted[date == last_date]
   )
 
-original_plot = ggplot(smoothed_pct_of_predicted, aes(date, mobility, colour = entity_name)) +
+original_plot = ggplot(smoothed_pct_of_predicted, aes(date, mobility, group = entity_name)) +
   theme_bw() +
-  geom_line(size = 0.25, show.legend = F) +
-  geom_line(data = avg_by_date, aes(y = avg_mobility), colour = 'black', size = 1) +
+  geom_line(size = 0.25, show.legend = F, alpha = 0.3) +
+  geom_line(data = avg_by_date, aes(y = avg_mobility, group = NULL), colour = the_pal[1], size = 1) +
   labs(
     x = '', y = 'Mobility Index', 
     title = 'Reported Mobility Index (Walking)'
   ) +
-    theme(panel.grid.minor = element_blank()) +
+    theme(
+      # plot.background = element_rect(fill = 'black'),
+      # panel.background = element_rect(fill = 'black'),
+      # panel.grid = element_line(colour = 'white'),
+      panel.grid.minor = element_blank()) +
     scale_y_continuous(breaks = seq(0, 350, by = 50))
 
 selected_entities = c('United States', 'Italy', 'South Korea')
@@ -289,26 +294,35 @@ original_with_predictions =
   geom_line(aes(y = mobility), size = 0.25, show.legend = F) +
   scale_colour_hue(guide = F) +
   labs(x = '', y = 'Mobility Index',
-       title = 'Actual Mobility Index vs. Predicted Without COVID-19'
+       title = 'Actual Mobility Index vs. Predicted Without COVID-19, Selected Countries'
        ) +
-  theme(panel.grid.minor = element_blank()) +
+  theme(
+    # plot.background = element_rect(fill = 'black'),
+    # panel.background = element_rect(fill = 'black'),
+    # panel.grid = element_line(colour = 'white'),
+    panel.grid.minor = element_blank()) +
   scale_y_continuous(breaks = seq(0, 200, by = 50)) +
-  geom_line(aes(y = predicted_walking_baseline), linetype = 'dashed', show.legend = T) +
+  geom_line(aes(y = predicted_walking_baseline), linetype = 'dashed', show.legend = T) 
   # geom_text_repel(data = last_vals_by_country %>% filter(entity_name %in% selected_entities), 
                   # aes(x = last_date + 4, y = last_predicted_walking_baseline, label = paste(entity_name, '(Predicted)'))) +
-  geom_text_repel(data = last_vals_by_country %>% filter(entity_name %in% selected_entities), 
-                  aes(x = last_date + 4, y = last_mobility, label = paste(entity_name, '(Actual)')))
-    
+  # geom_text_repel(data = last_vals_by_country %>% filter(entity_name %in% selected_entities), 
+                  # aes(x = last_date + 4, y = last_mobility, label = paste(entity_name, '(Actual)')))
 
-smoothed_plot = ggplot(smoothed_pct_of_predicted, aes(date, smoothed_percent_of_predicted, colour = entity_name)) +
-  geom_line(size = 0.25, show.legend = F) + 
-  geom_line(data = avg_by_date, aes(y = avg_smoothed_percent_of_predicted), colour = 'black', size = 1) +
+
+smoothed_plot = ggplot(smoothed_pct_of_predicted, aes(date, smoothed_percent_of_predicted, group = entity_name)) +
+  geom_line(size = 0.25, show.legend = F, alpha = 0.3) + 
+  geom_line(data = avg_by_date, aes(y = avg_smoothed_percent_of_predicted, group = NULL), colour = the_pal[1], size = 1) +
   theme_bw() +
   labs(
-    x = '', y = 'Percent of Baseline Mobility Index',
+    x = '', y = 'Percent of Predicted Baseline Mobility Index',
     title = 'Smoothed Mobility Index, All Available Countries'
   ) +
-  theme(panel.grid.minor = element_blank()) +
+  theme(
+    panel.grid.minor = element_blank()
+        # plot.background = element_rect(fill = 'black'),
+        # panel.background = element_rect(fill = 'black'),
+        # panel.grid = element_line(colour = 'white')
+        ) +
   scale_y_continuous(labels = percent, limits = c(0, 1.3), breaks = seq(0, 1.3, by = 0.2))
 
 smoothed_sub = 
@@ -317,13 +331,20 @@ smoothed_sub =
   theme_bw() +
   geom_line(aes(y = smoothed_percent_of_predicted), size = 0.25, show.legend = F) +
   labs(
-    x = '', y = 'Percent of Baseline Mobility Index', 
+    x = '', y = 'Percent of Predicted Baseline Mobility Index', 
     title = 'Smoothed Mobility Index, Selected Countries'
   ) +
-  theme(panel.grid.minor = element_blank()) +
+  theme(
+    # plot.background = element_rect(fill = 'black'),
+    # panel.background = element_rect(fill = 'black'),
+    # panel.grid = element_line(colour = 'white'),
+    panel.grid.minor = element_blank()) +
   scale_y_continuous(labels = percent, limits = c(0, 1.3), breaks = seq(0, 1.3, by = 0.2)) +
   geom_text_repel(data = last_vals_by_country %>% filter(entity_name %in% selected_entities), 
-                  aes(x = last_date + 4, y = last_smoothed_percent_of_predicted, label = paste(entity_name, percent(last_smoothed_percent_of_predicted, accuracy = 1))), show.legend = F)
+                  aes(x = last_date , y = 
+                        last_smoothed_percent_of_predicted, label = paste(entity_name, percent(last_smoothed_percent_of_predicted, accuracy = 1))), 
+                  show.legend = F, hjust=1, nudge_x = 4, 
+                  direction = 'y', segment.colour = 'gray', size = 2)
 
 
 comb_plot = plot_grid(original_plot, original_with_predictions, smoothed_plot, smoothed_sub)
@@ -348,8 +369,9 @@ final_plot = plot_grid(
   rel_heights = c(0.05, 1)
 )
 
-
-save_plot('output/smoothed_mobility_index_data.png', plot = final_plot, base_height = 10, 
+# final_plot
+save_plot('output/smoothed_mobility_index_data.png', plot = final_plot, 
+          base_height = 12, 
            base_width = 14, units = 'in', dpi = 800)
 
 
