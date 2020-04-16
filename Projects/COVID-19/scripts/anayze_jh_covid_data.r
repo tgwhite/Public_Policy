@@ -317,41 +317,59 @@ if (generate_gifs) {
 
 ##### get additional statistics by country #####
 
-# wdi_indicators = c('SP.POP.65UP.TO.ZS', 'SP.URB.TOTL.IN.ZS', 
-#                    'SP.URB.MCTY.UR.ZS', 'SH.STA.ACCH.ZS', 
-#                    'SH.MED.NURS.ZS', 'SH.STA.DIAB.ZS', 
-#                    'SP.POP.65UP.TO.ZS', 'SP.POP.TOTL', 'SP.POP.LAND.ZS', 'SH.XPD.PCAP', 
-#                    'SH.MED.CMHW.P3', 'SH.XPD.OOPC.CH.ZS', 'SH.XPD.CHEX.GD.ZS')
-# wdi_descriptions = map(wdi_indicators, function(x){
-#   WDIsearch(string = x, field = 'indicator', short = F) %>% 
-#     t() %>%
-#     as.data.frame() %>% 
-#     mutate(
-#       orig_indicator = x
-#     )
-# }) %>%
-#   bind_rows() %>%
-#   filter(
-#     indicator == orig_indicator
-#   )
-# 
-# WDI_data_long = map(wdi_indicators, function(x){
-#   tryCatch({
-#     download = WDI(indicator = x, start = 1965, end = 2020, extra = T) %>% 
-#       mutate(indicator = x)
-#     names(download)[names(download) == x] = 'value'  
-#     return(download)
-#   }, error = function(e){
-#     print(e)
-#     cat('error with ', x, '\n')
-#     return(NULL)
-#   })
-#   
-# })
-# 
-# wdi_data_stacked = bind_rows(WDI_data_long) %>% 
-#   left_join(wdi_descriptions) %>% select(-matches('V[0-9]'))
-# 
+
+wdi_indicators = c(
+  'SP.POP.TOTL'
+  # 'SP.POP.65UP.TO.ZS', 'SP.URB.TOTL.IN.ZS',
+  #                  'SP.URB.MCTY.UR.ZS', 'SH.STA.ACCH.ZS',
+  #                  'SH.MED.NURS.ZS', 'SH.STA.DIAB.ZS',
+  #                  'SP.POP.65UP.TO.ZS', 'SP.POP.TOTL', 'SP.POP.LAND.ZS', 'SH.XPD.PCAP',
+  #                  'SH.MED.CMHW.P3', 'SH.XPD.OOPC.CH.ZS', 'SH.XPD.CHEX.GD.ZS'
+  )
+wdi_descriptions = map(wdi_indicators, function(x){
+  
+  a = WDIsearch(string = x, field = 'indicator', short = F) %>%
+    as.data.frame() %>%
+    mutate(
+      orig_indicator = x
+    )
+  return(a)
+}) %>%
+  bind_rows() %>%
+  filter(
+    indicator == orig_indicator
+  )
+
+WDI_data_long = map(wdi_indicators, function(x){
+  tryCatch({
+    download = WDI(indicator = x, start = 1965, end = 2020, extra = T) %>%
+      mutate(indicator = x)
+    names(download)[names(download) == x] = 'value'
+    return(download)
+  }, error = function(e){
+    print(e)
+    cat('error with ', x, '\n')
+    return(NULL)
+  })
+
+})
+
+wdi_data_stacked = bind_rows(WDI_data_long) %>%
+  left_join(wdi_descriptions) %>% 
+  select(-matches('V[0-9]'), -description, -contains('source'))
+
+latest_country_pop = filter(wdi_data_stacked, indicator == 'SP.POP.TOTL',region != 'Aggregates') %>%
+  group_by(country) %>%
+  summarize(
+    latest_year = max(year[!is.na(value)]),
+    population = value[year == latest_year]
+  ) %>%
+  rename(
+    year = latest_year
+  )
+
+write.csv(latest_country_pop, 'data/latest_country_pop.csv', row.names = F)
+
 # 
 # world <- ne_countries(scale = "medium", returnclass = "sf")
 # ggplot(data = world) +
