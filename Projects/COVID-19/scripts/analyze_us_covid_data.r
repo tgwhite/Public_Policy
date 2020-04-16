@@ -113,7 +113,7 @@ state_geo_center = us_states_tigris@data %>%
   )
 
 ### get lockdown dates ###
-  us_lockdown_dates = read_csv('https://covid19-lockdown-tracker.netlify.com/lockdown_dates.csv') %>% 
+  us_lockdown_dates = read_csv('data/lockdown_dates.csv') %>% 
   filter(Country == 'United States', Level == 'State') %>%
     select(-Country, -Confirmed, -Level) %>%
   rename(location_name = Place, lockdown_start = `Start date`, lockdown_end = `End date`)
@@ -362,10 +362,8 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
 
 write.csv(all_covid_data_diffs_dates, 'data/us_covid_data_by_state_with_calcs.csv', row.names = F)
 
-all_covid_data_diffs_dates$r0_rolling_lead_7
-r0_mean_model = lm(log(r0_rolling_lead_7) ~ lockdown_period + post_first_lockdown + as.numeric(date), data = all_covid_data_diffs_dates)
-r0_median_model = rq(log(r0_rolling_lead_7) ~ lockdown_period + post_first_lockdown + as.numeric(date), data = all_covid_data_diffs_dates, tau = 0.5)
-summary(r0_median_model)
+r0_mean_model = lm(log(r0_rolling_lead_7) ~ lockdown_period  + as.numeric(date), data = all_covid_data_diffs_dates)
+r0_median_model = rq(log(r0_rolling_lead_7) ~ lockdown_period  + as.numeric(date), data = all_covid_data_diffs_dates, tau = 0.5)
 
 
 r0_stats_by_date = group_by(all_covid_data_diffs_dates, date, lockdown_period) %>%
@@ -433,8 +431,12 @@ filter(all_covid_data_diffs_dates,
   # geom_point(aes(date, rolling3_percent_positive_new_tests), colour = 'blue') +
   # geom_point(aes(date, rolling3_percent_positive_new_tests, size = new_cases_per_100k), colour = 'red') +
   scale_size(range = c(1, 5)) +
-  theme_minimal()
-ggsave('output/three_vs_seven_day_avg_positive_tests.png', height = 8, width = 10, units = 'in', dpi = 800)  
+  scale_y_continuous(labels = comma) +
+  theme_classic() +
+  labs(
+    y = '3 Day Average of New Cases', x = ''
+  )
+ggsave('output/three_vs_seven_day_avg_positive_tests.png', height = 16, width = 16, units = 'in', dpi = 800)  
 
 
 
