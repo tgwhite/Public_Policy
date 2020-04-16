@@ -287,16 +287,27 @@ original_plot = ggplot(smoothed_pct_of_predicted, aes(date, mobility, group = en
     scale_y_continuous(breaks = seq(0, 350, by = 50))
 
 selected_entities = c('United States', 'Italy', 'South Korea')
+linetype_data = data.frame(vals = c('Actual', 'Predicted'), date = rep(baseline_period_end, 2), mobility = rep(100, 2)) 
+  
+
+ggplot() +
+  geom_line(data = linetype_data, aes(x = date, y = mobility, linetype = vals, colour = NULL), alpha = 0) +
+  guides(linetype = guide_legend(override.aes = list(alpha = 1)))
+
 original_with_predictions = 
   smoothed_pct_of_predicted %>% filter(entity_name %in% selected_entities) %>%
   ggplot(aes(date, colour = entity_name)) +
   theme_bw() +
-  geom_line(aes(y = mobility), size = 0.25, show.legend = F) +
+  scale_linetype(name = '') +
+  geom_line(aes(y = mobility), size = 0.5, show.legend = F) +
   scale_colour_hue(guide = F) +
+  geom_line(data = linetype_data, aes(x = date, y = mobility, linetype = vals, colour = NULL), alpha = 0) +
+  guides(linetype = guide_legend(override.aes = list(alpha = 1))) +
   labs(x = '', y = 'Mobility Index',
        title = 'Actual Mobility Index vs. Predicted Without COVID-19, Selected Countries'
        ) +
   theme(
+    legend.position = c(0.1, 0.25),
     # plot.background = element_rect(fill = 'black'),
     # panel.background = element_rect(fill = 'black'),
     # panel.grid = element_line(colour = 'white'),
@@ -329,22 +340,25 @@ smoothed_sub =
   smoothed_pct_of_predicted %>% filter(entity_name %in% selected_entities) %>%
   ggplot(aes(date, colour = entity_name)) +
   theme_bw() +
-  geom_line(aes(y = smoothed_percent_of_predicted), size = 0.25, show.legend = F) +
+  geom_line(aes(y = smoothed_percent_of_predicted), size = 0.75, show.legend = T) +
   labs(
     x = '', y = 'Percent of Predicted Baseline Mobility Index', 
     title = 'Smoothed Mobility Index, Selected Countries'
   ) +
   theme(
+    legend.position = c(0.1, 0.25),
     # plot.background = element_rect(fill = 'black'),
     # panel.background = element_rect(fill = 'black'),
     # panel.grid = element_line(colour = 'white'),
     panel.grid.minor = element_blank()) +
-  scale_y_continuous(labels = percent, limits = c(0, 1.3), breaks = seq(0, 1.3, by = 0.2)) +
-  geom_text_repel(data = last_vals_by_country %>% filter(entity_name %in% selected_entities), 
-                  aes(x = last_date , y = 
-                        last_smoothed_percent_of_predicted, label = paste(entity_name, percent(last_smoothed_percent_of_predicted, accuracy = 1))), 
-                  show.legend = F, hjust=1, nudge_x = 4, 
-                  direction = 'y', segment.colour = 'gray', size = 2)
+  scale_colour_hue(name = '') +
+  guides(colour = guide_legend(override.aes = list(size = 1))) +
+  scale_y_continuous(labels = percent, limits = c(0, 1.3), breaks = seq(0, 1.3, by = 0.2)) 
+  # geom_text_repel(data = last_vals_by_country %>% filter(entity_name %in% selected_entities), 
+  #                 aes(x = last_date , y = 
+  #                       last_smoothed_percent_of_predicted, label = paste(entity_name, percent(last_smoothed_percent_of_predicted, accuracy = 1))), 
+  #                 show.legend = F, hjust=1, nudge_x = 4, 
+  #                 direction = 'y', segment.colour = 'gray', size = 2)
 
 
 comb_plot = plot_grid(original_plot, original_with_predictions, smoothed_plot, smoothed_sub)
