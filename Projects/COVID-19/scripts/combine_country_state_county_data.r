@@ -499,6 +499,7 @@ covid_cases_mobility_stringency = fread('data/covid_cases_mobility_stringency.cs
   mutate(
     date = as.Date(date),
     country = country_name.x,
+    country = recode(country, `Korea, South` = "South Korea"),
     state = as.character(NA),
     location = entity_name,
     location_type = ifelse(country == location, 'country', 'County')
@@ -516,11 +517,13 @@ fips_by_area = group_by(covid_cases_mobility_stringency, location) %>%
 
 covid_cases_mobility_stringency_fin = left_join(covid_cases_mobility_stringency %>% select(-fips), fips_by_area)
 
+
 # final, clean dataset with all sorts of calculations complete #
 all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_dates) %>%
   left_join(effective_r0_dat) %>%
   mutate(
     location = recode(location, `Korea, South` = "South Korea"),
+    country = recode(country, `Korea, South` = "South Korea"),
     location = ifelse(location_type == 'US State', state, location)
   ) %>%
   full_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type', 'country')) %>%
