@@ -509,18 +509,6 @@ fips_by_area = group_by(covid_cases_mobility_stringency, location) %>%
   )
 
 covid_cases_mobility_stringency_fin = left_join(covid_cases_mobility_stringency %>% select(-fips), fips_by_area)
-head(lockdown_dates)
-
-
-table(lockdown_dates$location_type)
-
-filter(lockdown_dates, location == 'Italy')
-head(lockdown_dates)
-View(lockdown_dates)
-select(all_covid_data_diffs_dates, location, location_type, date, contains('lockdown')) %>% filter(!is.na(lockdown_start)) %>%
-  View()
-
-lockdown_dates %>% View()
 
 # final, clean dataset with all sorts of calculations complete #
 all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_20_dates) %>%
@@ -545,8 +533,11 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_20_dates
       diff_value_avg_3_total_tests_per_100k = diff_value_avg_3_total_tests / pop_100k,
       week_day = lubridate::wday(date),
       weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
-    
   ) %>%
-  arrange(location_key, date) 
+  arrange(location_key, date) %>%
+  select(-fips.y) %>% 
+  rename(
+    fips = fips.x
+  )
 
 write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
