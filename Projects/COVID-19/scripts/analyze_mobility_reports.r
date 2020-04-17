@@ -8,6 +8,10 @@ library(fuzzyjoin)
 library(mgcv)
 library(ggrepel)
 library(cowplot)
+library(sf)
+library(RColorBrewer)
+library(viridisLite)
+library(scales)
 
 ##### pull in case data ####
 johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv') %>%
@@ -43,11 +47,9 @@ names(weather_country_list) = c('country', 'country_name')
 
 weather_2020_fin = left_join(weather_2020, weather_country_list) %>% data.table()
 setkey(weather_2020_fin, country_name, type)
-cases_weather_country_list = intersect(country_list$country_name, johns_hopkins_cases$country_name)
+cases_weather_country_list = intersect(weather_country_list$country_name, johns_hopkins_cases$country_name)
 
 weather_sub = weather_2020_fin[J(cases_weather_country_list), ]
-filter(weather_2020_fin, country == 'CN')
-View(weather_country_list)
 rm(weather_2020)
 gc()
 
@@ -72,6 +74,7 @@ map_dbl(stations, function(x){sum(is.na(x))})
 setwd("~/Public_Policy/Projects/COVID-19")
 
 us_cities_shp = us_cities()
+
 us_cities_coord = st_coordinates(us_cities_shp) %>% as.data.frame()
 names(us_cities_coord) = c('longitude', 'latitude')
 us_cities_shp_fin = bind_cols(us_cities_shp, us_cities_coord)
@@ -143,7 +146,7 @@ johns_hopkins_cases_dt_agg = johns_hopkins_cases_dt[, {
   )
 
 #### read in mobility data and join everything else on ####
-apple_mobility_dat = read_csv('data/applemobilitytrends-2020-04-13.csv') %>%
+apple_mobility_dat = read_csv('data/applemobilitytrends-2020-04-15.csv') %>%
   pivot_longer(cols = matches('^([0-9+]{4})'), names_to = 'date') %>%
   mutate(
     date = as.Date(date),
@@ -259,7 +262,7 @@ avg_by_date = group_by(smoothed_pct_of_predicted, date) %>%
   )
 ggplot(avg_by_date, aes(avg_smoothed_percent_of_predicted, avg_mobility)) +
   geom_point()
-library(RColorBrewer)
+
 the_pal = brewer.pal(3, 'Set1')
 
 last_vals_by_country = group_by(smoothed_pct_of_predicted, entity_name) %>%
@@ -270,30 +273,29 @@ last_vals_by_country = group_by(smoothed_pct_of_predicted, entity_name) %>%
     last_predicted_walking_baseline = predicted_walking_baseline[date == last_date],
     last_smoothed_percent_of_predicted = smoothed_percent_of_predicted[date == last_date]
   )
+smoothed_pct_of_predicted$StringencyIndex
 
-original_plot = ggplot(smoothed_pct_of_predicted, aes(date, mobility, group = entity_name)) +
+original_plot = ggplot(smoothed_pct_of_predicted, aes(date, mobility, group = entity_name, colour = StringencyIndex)) +
   theme_bw() +
-  geom_line(size = 0.25, show.legend = F, alpha = 0.3) +
-  geom_line(data = avg_by_date, aes(y = avg_mobility, group = NULL), colour = the_pal[1], size = 1) +
+  scale_colour_viridis_c(name = 'Stringency Index', option = 'C') +
+  geom_line(size = 0.25, alpha = 0.6) +
+  # geom_line(data = avg_by_date, aes(y = avg_mobility, group = NULL), colour = the_pal[1], size = 1) +
   labs(
     x = '', y = 'Mobility Index', 
     title = 'Reported Mobility Index (Walking)'
   ) +
     theme(
+      legend.position = c(0.85, 0.8),
       # plot.background = element_rect(fill = 'black'),
       # panel.background = element_rect(fill = 'black'),
       # panel.grid = element_line(colour = 'white'),
       panel.grid.minor = element_blank()) +
     scale_y_continuous(breaks = seq(0, 350, by = 50))
 
-selected_entities = c('United States', 'Italy', 'South Korea')
+
+selected_entities = c('United States', 'Italy', 'South Korea', 'Germany')
 linetype_data = data.frame(vals = c('Actual', 'Predicted'), date = rep(baseline_period_end, 2), mobility = rep(100, 2)) 
   
-
-ggplot() +
-  geom_line(data = linetype_data, aes(x = date, y = mobility, linetype = vals, colour = NULL), alpha = 0) +
-  guides(linetype = guide_legend(override.aes = list(alpha = 1)))
-
 original_with_predictions = 
   smoothed_pct_of_predicted %>% filter(entity_name %in% selected_entities) %>%
   ggplot(aes(date, colour = entity_name)) +
@@ -320,14 +322,16 @@ original_with_predictions =
                   # aes(x = last_date + 4, y = last_mobility, label = paste(entity_name, '(Actual)')))
 
 
-smoothed_plot = ggplot(smoothed_pct_of_predicted, aes(date, smoothed_percent_of_predicted, group = entity_name)) +
-  geom_line(size = 0.25, show.legend = F, alpha = 0.3) + 
-  geom_line(data = avg_by_date, aes(y = avg_smoothed_percent_of_predicted, group = NULL), colour = the_pal[1], size = 1) +
+smoothed_plot = ggplot(smoothed_pct_of_predicted, aes(date, smoothed_percent_of_predicted, group = entity_name, colour = StringencyIndex)) +
+  geom_line(size = 0.25, show.legend = F, alpha = 0.6) + 
+  # geom_line(data = avg_by_date, aes(y = avg_smoothed_percent_of_predicted, group = NULL), colour = the_pal[1], size = 1) +
   theme_bw() +
+  scale_colour_viridis_c(name = 'Stringency Index', option = 'C') +
   labs(
     x = '', y = 'Percent of Predicted Baseline Mobility Index',
     title = 'Smoothed Mobility Index, All Available Countries'
   ) +
+  
   theme(
     panel.grid.minor = element_blank()
         # plot.background = element_rect(fill = 'black'),
@@ -362,12 +366,12 @@ smoothed_sub =
 
 
 comb_plot = plot_grid(original_plot, original_with_predictions, smoothed_plot, smoothed_sub)
-comb_plot_sub = add_sub(comb_plot, "Chart: Taylor G. White\nData: Apple, Johns Hopkins CSSE, NYT, NOAA", 
+comb_plot_sub = add_sub(comb_plot, "Chart: Taylor G. White\nData: Apple (Mobility), Oxford (Stringency), Johns Hopkins CSSE, NYT, NOAA", 
                x = 0.05, y = 0.35, hjust = 0, size = 10, fontface = 'italic')
 
 title <- ggdraw() + 
   draw_label(
-    "The Month the Earth Stood Still: Reduction in Movement Associated with COVID-19",
+    "The Month the Earth Stood Still: Reduction in Movement Associated with COVID-19 and Government Restrictions",
     x = 0,
     hjust = 0
   ) +
@@ -386,7 +390,7 @@ final_plot = plot_grid(
 # final_plot
 save_plot('output/smoothed_mobility_index_data.png', plot = final_plot, 
           base_height = 12, 
-           base_width = 14, units = 'in', dpi = 800)
+           base_width = 14, units = 'in', dpi = 400)
 
 
 # smoothed_pct_of_predicted %>%
