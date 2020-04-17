@@ -520,9 +520,10 @@ covid_cases_mobility_stringency_fin = left_join(covid_cases_mobility_stringency 
 all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_dates) %>%
   left_join(effective_r0_dat) %>%
   mutate(
+    location = recode(location, `Korea, South` = "South Korea"),
     location = ifelse(location_type == 'US State', state, location)
   ) %>%
-  left_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type', 'country')) %>%
+  full_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type', 'country')) %>%
   mutate(location_type = recode(location_type, `country` = 'Country')) %>%
   left_join(lockdown_dates_fin %>% select(location, country, lockdown_start, lockdown_end, location_type),
             by = c('location', 'location_type', 'country')) %>%
