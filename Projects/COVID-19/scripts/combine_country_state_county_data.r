@@ -131,13 +131,33 @@ state_geo_center = us_states_tigris@data %>%
 head(state_geo_center)
 ### get lockdown dates ###
 lockdown_dates = read_csv('data/lockdown_dates.csv') %>% 
-  # filter(Country == 'United States', Level == 'State') %>%
-  select(-Country, -Confirmed, -Level) %>%
-  rename(location = Place, lockdown_start = `Start date`, lockdown_end = `End date`)
+  rename(location = Place, 
+         country = Country,
+         lockdown_start = `Start date`, lockdown_end = `End date`, level = Level) %>%
+  mutate(
+    level = recode(level, National = 'Country'),
+    location = ifelse(is.na(location), country, location),
+    location_type = ifelse(is.na(location), 'Country', 
+                           ifelse(location %in% state.name & level == 'State', 'US State', level))
+  )
 
 names(lockdown_dates) = names(lockdown_dates) %>% str_replace_all(' ', '_')
 
+all_countries = unique(lockdown_dates$country)
+countries_with_lockdown_dates = filter(lockdown_dates, location_type == 'Country') %>% pull(country)
+countries_wo_lockdown_dates = setdiff(all_countries, countries_with_lockdown_dates)
 
+lockdowns_by_country = lockdown_dates %>% filter(country %in% countries_wo_lockdown_dates) %>%
+group_by( country) %>%
+  summarize(
+    lockdown_start = min(lockdown_start, na.rm = T),
+    lockdown_end = max(lockdown_end)
+  ) %>%
+  mutate(
+    location_type = 'Country', location = country
+  )
+
+lockdown_dates_fin = bind_rows(lockdown_dates, lockdowns_by_country)
 
 ##### country data ####
 johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv') %>%
@@ -489,33 +509,44 @@ fips_by_area = group_by(covid_cases_mobility_stringency, location) %>%
   )
 
 covid_cases_mobility_stringency_fin = left_join(covid_cases_mobility_stringency %>% select(-fips), fips_by_area)
+head(lockdown_dates)
 
+
+table(lockdown_dates$location_type)
+
+filter(lockdown_dates, location == 'Italy')
+head(lockdown_dates)
+View(lockdown_dates)
+select(all_covid_data_diffs_dates, location, location_type, date, contains('lockdown')) %>% filter(!is.na(lockdown_start)) %>%
+  View()
+
+lockdown_dates %>% View()
 
 # final, clean dataset with all sorts of calculations complete #
 all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_20_dates) %>%
-  left_join(effective_r0_dat) %>%
-  left_join(lockdown_dates) %>%
   mutate(
-    days_since_lockdown_start = as.numeric(date - lockdown_start),
-    lockdown_period = ifelse(is.na(lockdown_start), 'No Lockdown', ifelse(days_since_lockdown_start < 0, 'Pre-Lockdown', 'Post-Lockdown')) %>%
-      factor() %>% relevel(ref = 'Pre-Lockdown'),
-    days_since_case_20 = as.numeric(date - date_case_20),
-    days_since_first_state_lockdown = as.numeric(date - min(lockdown_start, na.rm = T)),
-    post_first_lockdown = days_since_first_state_lockdown >= 0,
-    new_tests_per_100k = cum_diff_value_total_tests / pop_100k,
-    tests_per_100k = value_total_tests / pop_100k,
-    cases_per_100k = value_total_cases / pop_100k,
-    new_cases_per_100k = cum_diff_value_total_cases / pop_100k,
-    deaths_per_100k = value_total_deaths / pop_100k,
-    diff_value_avg_3_total_tests_per_100k = diff_value_avg_3_total_tests / pop_100k,
-    week_day = lubridate::wday(date),
-    weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day")
+    location = ifelse(location_type == 'US State', state, location)
   ) %>%
+  left_join(effective_r0_dat) %>%
+  mutate(location_type = recode(location_type, `country` = 'Country')) %>%
+  left_join(lockdown_dates_fin %>% select(location, country, lockdown_start, lockdown_end, location_type),
+            by = c('location', 'location_type', 'country')) %>%
   left_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type', 'country')) %>%
-  arrange(location_key, date) %>%
-  mutate(
-    location_type = recode(location_type, `country` = 'Country')
-  )
+    mutate(
+      days_since_lockdown_start = as.numeric(date - lockdown_start),
+      lockdown_period = ifelse(is.na(lockdown_start), 'No Lockdown', ifelse(days_since_lockdown_start < 0, 'Pre-Lockdown', 'Post-Lockdown')) %>%
+        factor() %>% relevel(ref = 'Pre-Lockdown'),
+      days_since_case_20 = as.numeric(date - date_case_20),
+      new_tests_per_100k = cum_diff_value_total_tests / pop_100k,
+      tests_per_100k = value_total_tests / pop_100k,
+      cases_per_100k = value_total_cases / pop_100k,
+      new_cases_per_100k = cum_diff_value_total_cases / pop_100k,
+      deaths_per_100k = value_total_deaths / pop_100k,
+      diff_value_avg_3_total_tests_per_100k = diff_value_avg_3_total_tests / pop_100k,
+      week_day = lubridate::wday(date),
+      weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
+    
+  ) %>%
+  arrange(location_key, date) 
 
-
-# write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
+write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
