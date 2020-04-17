@@ -528,10 +528,10 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_20_dates
     location = ifelse(location_type == 'US State', state, location)
   ) %>%
   left_join(effective_r0_dat) %>%
+  left_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type', 'country')) %>%
   mutate(location_type = recode(location_type, `country` = 'Country')) %>%
   left_join(lockdown_dates_fin %>% select(location, country, lockdown_start, lockdown_end, location_type),
             by = c('location', 'location_type', 'country')) %>%
-  left_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type', 'country')) %>%
     mutate(
       days_since_lockdown_start = as.numeric(date - lockdown_start),
       lockdown_period = ifelse(is.na(lockdown_start), 'No Lockdown', ifelse(days_since_lockdown_start < 0, 'Pre-Lockdown', 'Post-Lockdown')) %>%
