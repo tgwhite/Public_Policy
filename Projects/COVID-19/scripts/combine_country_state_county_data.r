@@ -44,7 +44,6 @@ us_states_shp = us_states()
 us_map = USAboundaries::us_boundaries()
 us_states_tigris = tigris::states()
 us_counties_tigris = tigris::counties()
-head(us_states_tigris@data)
 
 ## population by area ## 
 
@@ -340,7 +339,7 @@ all_covid_data_diffs =
   ) 
 
 
-id_cols = select(all_covid_data_stacked, location_key, location, location_type, fips, state, country, data_source) %>% unique()
+id_cols = select(all_covid_data_stacked, location_key, location, location_type, fips, state, country, data_source, latitude, longitude) %>% unique()
 # add on population # 
 all_covid_data_diffs_clean = 
   all_covid_data_diffs %>%
@@ -470,6 +469,26 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
 }, by = list(location_key, location)] 
 
 
+covid_cases_mobility_stringency = fread('data/covid_cases_mobility_stringency.csv') %>%
+  mutate(
+    date = as.Date(date),
+    country = country_name.x,
+    state = as.character(NA),
+    location = entity_name,
+    location_type = ifelse(country == location, 'country', 'County')
+  ) %>% 
+  select(
+    date, country, state, location, location_type, StringencyIndex, mobility, predicted_walking_baseline,
+    percent_of_predicted, smoothed_percent_of_predicted, fips
+  )
+
+fips_by_area = group_by(covid_cases_mobility_stringency, location) %>%
+  summarize(
+    fips = fips[!is.na(fips)][1] %>% as.character()
+  )
+
+covid_cases_mobility_stringency_fin = left_join(covid_cases_mobility_stringency %>% select(-fips), fips_by_area)
+
 
 # final, clean dataset with all sorts of calculations complete #
 all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_20_dates) %>%
@@ -491,8 +510,7 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_20_dates
     week_day = lubridate::wday(date),
     weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day")
   ) %>%
+  left_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type')) %>%
   arrange(location_key, date) 
 
-write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
-
-
+# write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
