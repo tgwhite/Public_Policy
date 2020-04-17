@@ -148,7 +148,7 @@ countries_with_lockdown_dates = filter(lockdown_dates, location_type == 'Country
 countries_wo_lockdown_dates = setdiff(all_countries, countries_with_lockdown_dates)
 
 lockdowns_by_country = lockdown_dates %>% filter(country %in% countries_wo_lockdown_dates) %>%
-group_by( country) %>%
+  group_by( country) %>%
   summarize(
     lockdown_start = min(lockdown_start, na.rm = T),
     lockdown_end = max(lockdown_end)
@@ -187,9 +187,12 @@ jh_summary_by_country = group_by(jh_joined, country, date) %>%
   ) %>%
   ungroup() %>%
   rename(
-    total_deaths = n_deaths, total_cases = n_cases
+    total_deaths = n_deaths, 
+    total_cases = n_cases
   ) %>%
   mutate(
+    total_tests = total_cases,
+    tests_with_results = total_cases,
     state = NA,
     location = ifelse(is.na(state), country, state),
     location_type = ifelse(is.na(state), 'country', 'state/province'),
@@ -238,7 +241,7 @@ us_states_covid_data = read_csv('http://covidtracking.com/api/states/daily.csv')
     location_type = 'US State', 
     country = 'United States',
     data_source = 'covidtracking.com'  
-    ) %>%
+  ) %>%
   rename(
     total_cases = positive,
     total_deaths = death,
@@ -281,23 +284,25 @@ nyt_county_data = read_csv('https://raw.githubusercontent.com/nytimes/covid-19-d
 nyt_county_data[nyt_county_data$location == 'New York City','fips'] = '36061'
 
 
-
-all_covid_data_stacked = bind_rows(us_covid_data, us_states_covid_data, nyt_county_data, jh_summary_by_country) %>%
+all_covid_data_stacked = bind_rows(
+  us_states_covid_data   
+  , us_covid_data,
+  
+  nyt_county_data,
+  jh_summary_by_country
+) %>%
   arrange(location_key, date) %>%
   select(-percent_positive_cases, -case_fatality_rate) %>%
   pivot_longer(cols = c('total_cases', 'total_deaths', 'total_tests', 
-                         'tests_with_results'),
+                        'tests_with_results'),
                names_to = c('measure'), values_to = 'value') %>%
   data.table() 
-
-
-
 
 # compute first differences, pct changes, etc. by state
 all_covid_data_diffs = 
   all_covid_data_stacked[, {
     # the_dat = filter(all_covid_data_stacked, location_key == 'United States|Alaska|County|Kodiak Island Borough|NYT',
-                     # measure=='total_cases')
+    # measure=='total_cases')
     # attach(the_dat)
     # detach(the_dat)
     # cat("\nkey ==",.BY[[1]],"\n\n")
@@ -358,8 +363,9 @@ all_covid_data_diffs =
                     'cum_lag_6_diff_value', 'cum_diff_value')
   ) 
 
+id_cols = dplyr::select(all_covid_data_stacked, location_key, 
+                        location, location_type, fips, state, country, data_source, latitude, longitude) %>% unique()
 
-id_cols = select(all_covid_data_stacked, location_key, location, location_type, fips, state, country, data_source, latitude, longitude) %>% unique()
 # add on population # 
 all_covid_data_diffs_clean = 
   all_covid_data_diffs %>%
@@ -384,21 +390,22 @@ all_covid_data_diffs_clean =
 
 
 ### get timing of when the 20th case occurred ### 
-case_dates = group_by(all_covid_data_diffs, location_key) %>%
+case_dates = group_by(all_covid_data_diffs_clean, location_key) %>%
   summarize(
     date_case_20 = min(date[value_total_cases >= 20]),
     date_case_100 = min(date[value_total_cases >= 100])
   )
 
-all_covid_data_diffs_dt = data.table(all_covid_data_diffs_clean)
-
+covid_data_diffs_excl_county = filter(all_covid_data_diffs_clean, location_type != 'County') %>% data.table()
 
 ### one more set of by-state computations, to get r0 and other stats ###
-effective_r0_dat = all_covid_data_diffs_dt[, {
-  # ny = filter(all_covid_data_diffs_dt, location == 'NY')
+
+effective_r0_dat = covid_data_diffs_excl_county[, {
+  # ny = filter(covid_data_diffs_excl_county, location == 'NY')
+# attach(ny)
+  
   # the_dat = filter(all_covid_data_diffs_dt, location_key == 'United States|Alaska|County|Nome Census Area|NYT')
-  
-  
+
   cat("\nkey ==",.BY[[1]],"\n\n")
   # cat("\nmeasure ==",.BY[[2]],"\n\n")
   
@@ -466,9 +473,9 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
   lag_percent_positive_new_tests = lag(percent_positive_new_tests, 1)
   delta_percent_positive_new_tests = percent_positive_new_tests - lag_percent_positive_new_tests
   
-  # there is some thinking that there is a severe lag in case reporting, use a weeklong lag
-  # the reason we use lead 
-  
+  # limit R0 to 30 max and 0 min
+  r0_rolling_lead_7 = pmin(r0_rolling_lead_7, 30)
+  r0_rolling_lead_7 = pmax(r0_rolling_lead_7, 0)
   
   list(
     date = date,
@@ -487,7 +494,6 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
     delta_roll_3_7_percent_positive_new_tests = delta_roll_3_7
   )
 }, by = list(location_key, location)] 
-
 
 covid_cases_mobility_stringency = fread('data/covid_cases_mobility_stringency.csv') %>%
   mutate(
@@ -511,28 +517,29 @@ fips_by_area = group_by(covid_cases_mobility_stringency, location) %>%
 covid_cases_mobility_stringency_fin = left_join(covid_cases_mobility_stringency %>% select(-fips), fips_by_area)
 
 # final, clean dataset with all sorts of calculations complete #
-all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_20_dates) %>%
+all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_dates) %>%
+  left_join(effective_r0_dat) %>%
   mutate(
     location = ifelse(location_type == 'US State', state, location)
   ) %>%
-  left_join(effective_r0_dat) %>%
   left_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type', 'country')) %>%
   mutate(location_type = recode(location_type, `country` = 'Country')) %>%
   left_join(lockdown_dates_fin %>% select(location, country, lockdown_start, lockdown_end, location_type),
             by = c('location', 'location_type', 'country')) %>%
-    mutate(
-      days_since_lockdown_start = as.numeric(date - lockdown_start),
-      lockdown_period = ifelse(is.na(lockdown_start), 'No Lockdown', ifelse(days_since_lockdown_start < 0, 'Pre-Lockdown', 'Post-Lockdown')) %>%
-        factor() %>% relevel(ref = 'Pre-Lockdown'),
-      days_since_case_20 = as.numeric(date - date_case_20),
-      new_tests_per_100k = cum_diff_value_total_tests / pop_100k,
-      tests_per_100k = value_total_tests / pop_100k,
-      cases_per_100k = value_total_cases / pop_100k,
-      new_cases_per_100k = cum_diff_value_total_cases / pop_100k,
-      deaths_per_100k = value_total_deaths / pop_100k,
-      diff_value_avg_3_total_tests_per_100k = diff_value_avg_3_total_tests / pop_100k,
-      week_day = lubridate::wday(date),
-      weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
+  mutate(
+    days_since_lockdown_start = as.numeric(date - lockdown_start),
+    lockdown_period = ifelse(is.na(lockdown_start), 'No Lockdown', ifelse(days_since_lockdown_start < 0, 'Pre-Lockdown', 'Post-Lockdown')) %>%
+      factor() %>% relevel(ref = 'Pre-Lockdown'),
+    days_since_case_20 = as.numeric(date - date_case_20),
+    days_since_case_100 = as.numeric(date - date_case_100),
+    new_tests_per_100k = cum_diff_value_total_tests / pop_100k,
+    tests_per_100k = value_total_tests / pop_100k,
+    cases_per_100k = value_total_cases / pop_100k,
+    new_cases_per_100k = cum_diff_value_total_cases / pop_100k,
+    deaths_per_100k = value_total_deaths / pop_100k,
+    diff_value_avg_3_total_tests_per_100k = diff_value_avg_3_total_tests / pop_100k,
+    week_day = lubridate::wday(date),
+    weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
   ) %>%
   arrange(location_key, date) %>%
   select(-fips.y) %>% 
@@ -541,3 +548,4 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_20_dates
   )
 
 write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
+

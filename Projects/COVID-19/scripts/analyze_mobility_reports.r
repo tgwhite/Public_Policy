@@ -390,7 +390,7 @@ final_plot = plot_grid(
 # final_plot
 save_plot('output/smoothed_mobility_index_data.png', plot = final_plot, 
           base_height = 12, 
-           base_width = 14, units = 'in', dpi = 400)
+           base_width = 14, units = 'in', dpi = 600)
 
 
 # smoothed_pct_of_predicted %>%
