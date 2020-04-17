@@ -551,5 +551,6 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_dates) %
     fips = fips.x
   )
 
+filter(all_covid_data_diffs_dates, country == 'South Korea') %>% select(location, country, StringencyIndex, date, contains('mobility'), location_type)
 write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
 
