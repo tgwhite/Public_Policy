@@ -28,6 +28,7 @@ library(sqldf)
 library(albersusa)
 library(RColorBrewer)
 library(quantreg)
+library(ggrepel)
 # display.brewer.all(n=NULL, type="all", select=NULL, exact.n=TRUE,
 #                    colorblindFriendly=FALSE)
 
