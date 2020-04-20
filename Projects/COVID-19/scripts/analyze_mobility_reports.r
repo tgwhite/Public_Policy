@@ -119,7 +119,9 @@ selected_counties_cases = filter(nyt_county_data,
 setwd("~/Public_Policy/Projects/COVID-19")
 
 ### read oxford stringency data ###
-oxford_stringency_index = read.csv('data/OxCGRT_Download_160420_155758_Full.csv') %>%
+
+
+oxford_stringency_index = read.csv("https://ocgptweb.azurewebsites.net/CSVDownload") %>%
   rename(
     entity_name = CountryName
   ) %>%
@@ -146,7 +148,7 @@ johns_hopkins_cases_dt_agg = johns_hopkins_cases_dt[, {
   )
 
 #### read in mobility data and join everything else on ####
-apple_mobility_dat = read_csv('data/applemobilitytrends-2020-04-15.csv') %>%
+apple_mobility_dat = read_csv('data/applemobilitytrends-2020-04-18.csv') %>%
   pivot_longer(cols = matches('^([0-9+]{4})'), names_to = 'date') %>%
   mutate(
     date = as.Date(date),
