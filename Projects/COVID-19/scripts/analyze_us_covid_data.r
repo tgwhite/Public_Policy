@@ -237,8 +237,8 @@ all_covid_data_diffs =
   ) %>%
   mutate(
     location_name = ifelse(is.na(state_name), location, state_name),
-    population = ifelse(is.na(state_pop), us_pop, state_pop),
-    pop_100k = population/1000,
+    population = ifelse(is.na(state_pop), us_pop, state_pop) * 1000,
+    pop_100k = population/100000,
     state_pop = NULL, us_pop = NULL
   )
 
@@ -250,9 +250,6 @@ case_20_dates = group_by(all_covid_data_diffs, location_key) %>%
   )
 
 all_covid_data_diffs_dt = data.table(all_covid_data_diffs)
-
-
-
 
 
 ### one more set of by-state computations, to get r0 and other stats ###
@@ -363,9 +360,6 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
 
 write.csv(all_covid_data_diffs_dates, 'data/us_covid_data_by_state_with_calcs.csv', row.names = F)
 
-r0_mean_model = lm(log(r0_rolling_lead_7) ~ lockdown_period  + as.numeric(date), data = all_covid_data_diffs_dates)
-r0_median_model = rq(log(r0_rolling_lead_7) ~ lockdown_period  + as.numeric(date), data = all_covid_data_diffs_dates, tau = 0.5)
-
 
 r0_stats_by_date = group_by(all_covid_data_diffs_dates, date, lockdown_period) %>%
   summarize(
@@ -409,8 +403,6 @@ ggplot(r0_stats_by_date, aes(date, median_r0, colour = lockdown_period)) +
   scale_y_continuous(breaks = seq(0, 15, by = 1)) 
  
 ggsave('output/rolling_ro_trend_by_lockdown_status.png', height = 8, width = 10, units = 'in', dpi = 800)
-
-
 
 
 latest_state_data = filter(all_covid_data_diffs_dates, location != 'United States', date == max(date)) %>% 
@@ -677,19 +669,20 @@ all_covid_data_diffs_dates %>%
 
 all_covid_data_diffs_dates %>%
   filter(days_since_case_20 >= 0, location == 'United States') %>%
-  ggplot(aes(days_since_case_20, new_tests_per_100k)) +
+  ggplot(aes(date, new_tests_per_100k)) +
   theme_bw() +
   geom_bar(stat = 'identity') +
-  geom_line(aes(y = diff_value_avg_3_total_tests_per_100k), colour = 'red', size = 1) +
+  geom_line(aes(y = rolling7_tests_with_results/pop_100k), colour = 'red', size = 1) +
   labs(
     x = '\nDays Since Case 20', 
     y = 'Daily Tests Per 100k Population\n',
     title = 'COVID-19 Tests Per 100k Population', 
-    subtitle = sprintf('United States, through %s. Red line is the rolling 3-day average.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')),
+    subtitle = sprintf('United States, through %s. Red line is the rolling 7-day average.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')),
     caption = 'Chart: Taylor G. White\nData: covidtracking.com'
   ) +
-  scale_y_continuous(breaks = seq(0, 500, by = 100)) +
-  scale_x_continuous(breaks = seq(0, 30, by = 5)) +
+  # geom_hline(aes(yintercept = 152)) +
+  scale_y_continuous(breaks = seq(0, 60, by = 10)) +
+  scale_x_date(date_breaks = '7 days', date_labels = '%b %d') +
   theme(
     title = element_text(size = 16),
     plot.subtitle = element_text(size = 11),
