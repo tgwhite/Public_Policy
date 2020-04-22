@@ -1,0 +1,6 @@
+Rscript anayze_jh_covid_data.r
+Rscript analyze_us_covid_data.r
+Rscript analyze_mobility_reports.r
+Rscript misc_data_extraction.r
+Rscript combine_country_state_county_data.r
+Rscript compare_influenza_covid.r

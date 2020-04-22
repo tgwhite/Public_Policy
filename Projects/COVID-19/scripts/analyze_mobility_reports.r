@@ -37,6 +37,8 @@ johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData
 # https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt
 
 setwd("C:/Users/csq/Downloads")
+# download.file('https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year/2020.csv.gz')
+
 weather_2020 = fread('2020.csv') %>% setorder(V1, V2, V3)
 names(weather_2020) = c('station', 'date', 'type', 'value', 'm_flag', 'q_flag', 's_flag', 'time')
 weather_2020$date_upd = as.Date(weather_2020$date %>% as.character(), format = '%Y%m%d')
@@ -148,7 +150,14 @@ johns_hopkins_cases_dt_agg = johns_hopkins_cases_dt[, {
   )
 
 #### read in mobility data and join everything else on ####
-apple_mobility_dat = read_csv('data/applemobilitytrends-2020-04-18.csv') %>%
+mobility_dataset_df = tibble(
+  dsn = list.files('data', pattern = 'applemobilitytrends', full.names = T),
+  date = str_extract(dsn, '[0-9]{4}-[0-9]{2}-[0-9]{2}') %>% as.Date()
+) %>% 
+  arrange(date) %>% 
+  tail(1)
+
+apple_mobility_dat = read_csv(mobility_dataset_df$dsn) %>%
   pivot_longer(cols = matches('^([0-9+]{4})'), names_to = 'date') %>%
   mutate(
     date = as.Date(date),
@@ -207,7 +216,6 @@ the_anova = anova(pre_covid_walking_model)
 the_anova$rsquared = the_anova$`Sum Sq`/sum(the_anova$`Sum Sq`)
 the_anova$predictor = row.names(the_anova)
 the_anova = arrange(the_anova, -rsquared)
-summary(pre_covid_walking_model)
 
 
 train_dat = baseline_data

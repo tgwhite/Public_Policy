@@ -8,6 +8,7 @@ library(data.table)
 library(htmltab)
 library(incidence)
 library(cowplot)
+library(scales)
 
 # start_week = 31
 # end_week = 26
@@ -365,17 +366,19 @@ us_main_plot = season_diffs_calcs_pct_of_excess %>%
   geom_bar(data = us_weekly_deaths %>%
              filter(weeks_since_first_death >=0), aes(weeks_since_first_death, total_deaths, fill = Virus, alpha = obs),
            stat = 'identity', colour = 'black', size = 0.75) +
-  scale_y_continuous(labels = comma, breaks = seq(0, 20e3, by = 2000)) +
   scale_x_continuous(breaks = seq(0, 30, by = 5))  +
-  scale_alpha(guide = F, range = c(0.2, 0.4))
+  scale_alpha(guide = F, range = c(0.2, 0.4)) 
   
-us_main_plot_with_scale = us_main_plot + scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) 
+us_main_plot_with_scale = us_main_plot + 
+  scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
+  scale_y_continuous(labels = comma, breaks = seq(0, 18000, by = 2000))
 fin_us_plot_scale = add_extra_bars(us_main_plot_with_scale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
-
-us_main_plot_noscale = us_main_plot + scale_fill_manual(guide = F, name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red'))
-fin_us_plot_noscale = add_extra_bars(us_main_plot_noscale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
-
 ggsave('output/U.S. covid_19 vs. 2016 flu season deaths.png', height = 6, width = 8, units = 'in', dpi = 800, plot = fin_us_plot_scale)
+
+us_main_plot_noscale = us_main_plot + 
+  scale_fill_manual(guide = F, name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
+  scale_y_continuous(labels = comma, breaks = seq(0, 18000, by = 2000), limits = c(0, 18500))   
+fin_us_plot_noscale = add_extra_bars(us_main_plot_noscale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
 
 # use shape of US 2016 flu season as proxy for Italian 2014-2015 season
 mean_italian_flu_season = mean(italian_excess_deaths$deaths)
@@ -398,8 +401,7 @@ season_comparison = filter(season_diffs_calcs_pct_of_excess,
     Virus = 'Influenza'
   )
 
-italy_season_2015$weeks_since_first_death
-italian_excess_deaths
+
 italy_lockdown = filter(jh_joined_it_us_stats, country_region == 'Italy', date_upd == as.Date('2020-03-09')) 
 main_plot = italy_season_2015 %>% 
   filter(weeks_since_first_death >=0) %>%
@@ -428,14 +430,20 @@ main_plot = italy_season_2015 %>%
     legend.position = c(0.85, 0.85)
   ) +
   scale_x_continuous(breaks = seq(0, 27.5, by = 5), limits = c(0, 27.5)) +
-  scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
-  scale_y_continuous(labels = comma, breaks = seq(0, 6000, by = 1000)) 
+  scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) 
+
+italy_own_scale = main_plot + scale_y_continuous(labels = comma, breaks = seq(0, 6000, by = 1000)) 
+italy_us_scale = main_plot + 
+  scale_y_continuous(labels = comma, breaks = seq(0, 18000, by = 2000), limits = c(0, 18500))   
 
 # add_extra_bars(main_plot, italy_weekly_deaths, the_hjust = 1, the_angle = 90, projected_label = 'Projected      ')
-fin_italy_plot = add_extra_bars(main_plot, italy_weekly_deaths, the_hjust = 0.5, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
 
-ggsave('output/average_italian_flu_deaths.png', height = 6, width = 8, units = 'in', dpi = 800, plot = fin_italy_plot)  
+fin_italy_plot_ownscale = add_extra_bars(italy_own_scale, italy_weekly_deaths, the_hjust = 0.5, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
+fin_italy_plot = add_extra_bars(italy_us_scale, italy_weekly_deaths, the_hjust = 0.5, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
 
+ggsave('output/average_italian_flu_deaths.png', height = 6, width = 8, units = 'in', dpi = 800, plot = fin_italy_plot_ownscale)  
 
-combined_plot = plot_grid(fin_us_plot_noscale, fin_italy_plot)
+combined_plot = plot_grid(fin_us_plot_noscale, fin_italy_plot_ownscale)
+combined_plot_samescale = plot_grid(fin_us_plot_noscale, fin_italy_plot)
 save_plot('output/combined_us_italy_flu_comparison.png', base_height = 10, base_width = 16, units = 'in', dpi = 600, plot = combined_plot)
+save_plot('output/combined_us_italy_flu_comparison_same_scale.png', base_height = 10, base_width = 16, units = 'in', dpi = 600, plot = combined_plot_samescale)

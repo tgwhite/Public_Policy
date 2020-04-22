@@ -64,3 +64,17 @@ if (run_geocode) {
   write.csv(stacked_testing_info_geocoded, 'data/cleaned_testing_sites.csv', row.names = F)
   
 }
+# 
+# library(webdriver)
+# https://github.com/rstudio/webdriver
+# pjs <- run_phantomjs()
+# ses <- Session$new(port = pjs$port)
+# ses$go("https://r-pkg.org/pkg/callr")
+# ses$takeScreenshot()
+# install <- ses$findElement(".install-package")
+# install$getName()
+# search2 <- ses$executeScript("return document.getElementById('cran-input');")
+# search2$getName()
+# search <- ses$findElement("#cran-input")
+# search$sendKeys("html", key$enter)
+# ses$getUrl()

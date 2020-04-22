@@ -114,11 +114,27 @@ state_geo_center = us_states_tigris@data %>%
   )
 
 ### get lockdown dates ###
-  us_lockdown_dates = read_csv('data/lockdown_dates.csv') %>% 
-  filter(Country == 'United States', Level == 'State') %>%
-    select(-Country, -Confirmed, -Level) %>%
-  rename(location_name = Place, lockdown_start = `Start date`, lockdown_end = `End date`)
 
+tryCatch({
+  lockdown_dates = read_csv('https://covid19-lockdown-tracker.netlify.com/lockdown_dates.csv') %>% 
+    rename(location_name = Place, lockdown_start = `Start date`, lockdown_end = `End date`)
+  if (nrow(lockdown_dates) > 0) {
+    write.csv(lockdown_dates, 'data/lockdown_dates.csv', row.names = F)  
+  }
+    
+}, error = function(e){
+  cat('error reading lockdown dates\n')
+  print(e)
+  
+}, finally = {
+  if (!'lockdown_dates' %in% ls()) {
+    lockdown_dates = read_csv('data/lockdown_dates.csv')  
+  }
+  
+})
+
+us_lockdown_dates = filter(lockdown_dates, Country == 'United States', Level == 'State') %>%
+  select(-Country, -Confirmed, -Level)
 names(us_lockdown_dates) = names(us_lockdown_dates) %>% str_replace_all(' ', '_')
 
 #### load and clean state covid data ####
@@ -556,12 +572,6 @@ state_lockdown_period_calcs = state_lockdown_period_calcs %>%
   )
 
 
-location_levels = filter(latest_state_data_sub, location %in% selected_locations) %>% pull(location_name)
-location_sub = filter(all_covid_data_diffs_dates, location %in% selected_locations) %>%
-  mutate(
-    location_name = factor(location_name, levels = location_levels)
-  )
-
 
 ##### show relationship between geometric daily growth vs R0 ####
 ggplot(state_lockdown_period_calcs, aes(period_daily_geometric_growth, period_r0)) +
@@ -592,71 +602,81 @@ ggsave('output/daily_average_case_growth_versus_r0.png', height = 6, width = 8, 
   
 
 ##### plot effective r0 versus lockdown dates #####
-
-selected_early_states = filter(all_covid_data_diffs_dates, location %in% c('CA', 'NY', 'WA'))
-  
-
-
-all_covid_data_diffs_dates %>% filter(location %in% c('NY', 'CA', 'WA'), !is.na(r0_rolling), days_since_case_20 >= 5) %>%
-  ggplot(aes(date, r0_rolling)) +
-  geom_hline(aes(yintercept = 0)) +
-  geom_hline(aes(yintercept = 1), colour = 'red') +
-  geom_hline(aes(yintercept = 2.28), linetype = 'dashed') +
-  facet_wrap(~location_name) +
-  scale_size(range = c(0.5, 4)) +
-  # scale_alpha(range = c(0.5, 1)) +
-  geom_line(colour = 'blue') +
-  geom_point(aes(size = cum_diff_value_total_cases,  colour = weekend_ind)) +
-  
-  labs(y = 'Seven-Day R0 of New Cases', x = '') +
-  # stat_smooth(method = 'gam') +
-  geom_vline(data = latest_state_data %>% filter(location %in% c('NY', 'CA', 'WA')), aes(xintercept = lockdown_start)) 
-ggsave('output/rolling_ro_by_early_states.png', height = 4, width = 9, units = 'in', dpi = 800)
-
-
-
-
-
-main_plot = 
-filter(location_sub, days_since_case_20 >= 5) %>%
-  ggplot() +
-  geom_hline(aes(yintercept = 0)) +
-  geom_hline(aes(yintercept = 1), colour = 'red') +
-  geom_hline(aes(yintercept = 2.28), linetype = 'dashed') +
-  geom_vline(data = us_lockdown_dates %>% filter(location_name %in% unique(location_sub$location_name)), aes(xintercept = lockdown_start)) +
-  geom_point(aes(date, effective_r0_interpolated, colour = weekend_ind)) +
-  stat_smooth(aes(date, effective_r0_interpolated), se = F, method = 'gam') +
-  scale_colour_manual(name = '', values = c('Week Day' = 'steelblue', 'Weekend' = 'orange')) +
-  theme_bw() +
-  theme(
-    title = element_text(size = 14),
-    axis.title = element_text(size = 14),
-    legend.text = element_text(size = 12),
-    plot.caption = element_text(size = 10, hjust = 0, face = 'italic'),
-    plot.subtitle = element_text(size = 11, face = 'italic'),
-    axis.text.x = element_text(angle = 45),
-    plot.margin = unit(c(0.25, 0.5, 0.25, 0.25), 'in'),
-    legend.position = 'bottom',
-    strip.text = element_text(face = 'bold')
-  ) +
-  labs(
-    x = NULL, y = 'Daily Effective COVID-19 Reproduction Number (r0)\n(New Cases / New Cases Generated 5 Days Later)\n', 
-    title = 'Lockdown Effects: COVID-19 Daily Effective R0 by State', 
-    subtitle = sprintf('Top 12 U.S. states by cases, through %s. Vertical lines show state lockdown dates. Dashed line shows average COVID-19 r0 and red line shows r0=1, below which is decreasing case growth.\nNote that each state has its own scale.', max(location_sub$date) %>% format('%B %d')),
-    caption = 'Chart: Taylor G. White\nData: covidtracking.com, auravision.ai, CNN'
-  ) 
-
-free_plot = main_plot +
-  facet_wrap(~factor(location_name, levels = location_levels), ncol = 4, scales = 'free_y') 
-# ggsave('output/effective_r0_top_12_states_free.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = free_plot)
-
-same_scale_plot = main_plot +
-  facet_wrap(~factor(location_name, levels = location_levels), ncol = 4)
-# ggsave('output/effective_r0_top_12_states.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = same_scale_plot)
-
-# select(all_covid_data_diffs_dates, has_30_days, date, location_name, diff_value_total_tests, value_total_tests, new_tests_per_100k) %>% View()
-
-##### plot new cases per 100k vs percent positive new cases #####
+# 
+# selected_locations = c(
+#   head(latest_state_data, 10)$location
+# )
+# 
+# # location_levels = filter(latest_stat  e_data_sub, location %in% selected_locations) %>% pull(location_name)
+# location_sub = filter(all_covid_data_diffs_dates, location %in% selected_locations) %>%
+#   mutate(
+#     location_name = factor(location_name, levels = location_levels)
+#   )
+# 
+# selected_early_states = filter(all_covid_data_diffs_dates, location %in% c('CA', 'NY', 'WA'))
+#   
+# 
+# 
+# all_covid_data_diffs_dates %>% filter(location %in% c('NY', 'CA', 'WA'), !is.na(r0_rolling), days_since_case_20 >= 5) %>%
+#   ggplot(aes(date, r0_rolling)) +
+#   geom_hline(aes(yintercept = 0)) +
+#   geom_hline(aes(yintercept = 1), colour = 'red') +
+#   geom_hline(aes(yintercept = 2.28), linetype = 'dashed') +
+#   facet_wrap(~location_name) +
+#   scale_size(range = c(0.5, 4)) +
+#   # scale_alpha(range = c(0.5, 1)) +
+#   geom_line(colour = 'blue') +
+#   geom_point(aes(size = cum_diff_value_total_cases,  colour = weekend_ind)) +
+#   
+#   labs(y = 'Seven-Day R0 of New Cases', x = '') +
+#   # stat_smooth(method = 'gam') +
+#   geom_vline(data = latest_state_data %>% filter(location %in% c('NY', 'CA', 'WA')), aes(xintercept = lockdown_start)) 
+# ggsave('output/rolling_ro_by_early_states.png', height = 4, width = 9, units = 'in', dpi = 800)
+# 
+# 
+# 
+# 
+# 
+# main_plot = 
+# filter(location_sub, days_since_case_20 >= 5) %>%
+#   ggplot() +
+#   geom_hline(aes(yintercept = 0)) +
+#   geom_hline(aes(yintercept = 1), colour = 'red') +
+#   geom_hline(aes(yintercept = 2.28), linetype = 'dashed') +
+#   geom_vline(data = us_lockdown_dates %>% filter(location_name %in% unique(location_sub$location_name)), aes(xintercept = lockdown_start)) +
+#   geom_point(aes(date, effective_r0_interpolated, colour = weekend_ind)) +
+#   stat_smooth(aes(date, effective_r0_interpolated), se = F, method = 'gam') +
+#   scale_colour_manual(name = '', values = c('Week Day' = 'steelblue', 'Weekend' = 'orange')) +
+#   theme_bw() +
+#   theme(
+#     title = element_text(size = 14),
+#     axis.title = element_text(size = 14),
+#     legend.text = element_text(size = 12),
+#     plot.caption = element_text(size = 10, hjust = 0, face = 'italic'),
+#     plot.subtitle = element_text(size = 11, face = 'italic'),
+#     axis.text.x = element_text(angle = 45),
+#     plot.margin = unit(c(0.25, 0.5, 0.25, 0.25), 'in'),
+#     legend.position = 'bottom',
+#     strip.text = element_text(face = 'bold')
+#   ) +
+#   labs(
+#     x = NULL, y = 'Daily Effective COVID-19 Reproduction Number (r0)\n(New Cases / New Cases Generated 5 Days Later)\n', 
+#     title = 'Lockdown Effects: COVID-19 Daily Effective R0 by State', 
+#     subtitle = sprintf('Top 12 U.S. states by cases, through %s. Vertical lines show state lockdown dates. Dashed line shows average COVID-19 r0 and red line shows r0=1, below which is decreasing case growth.\nNote that each state has its own scale.', max(location_sub$date) %>% format('%B %d')),
+#     caption = 'Chart: Taylor G. White\nData: covidtracking.com, auravision.ai, CNN'
+#   ) 
+# 
+# free_plot = main_plot +
+#   facet_wrap(~factor(location_name, levels = location_levels), ncol = 4, scales = 'free_y') 
+# # ggsave('output/effective_r0_top_12_states_free.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = free_plot)
+# 
+# same_scale_plot = main_plot +
+#   facet_wrap(~factor(location_name, levels = location_levels), ncol = 4)
+# # ggsave('output/effective_r0_top_12_states.png', height= 11, width = 14.5, units = 'in', dpi = 800, plot = same_scale_plot)
+# 
+# # select(all_covid_data_diffs_dates, has_30_days, date, location_name, diff_value_total_tests, value_total_tests, new_tests_per_100k) %>% View()
+# 
+# ##### plot new cases per 100k vs percent positive new cases #####
 
 all_covid_data_diffs_dates %>%
   filter(days_since_case_20 >= 0, location %in% c('NY', 'LA', 'CA', 'MI')) %>%
@@ -790,51 +810,48 @@ ggsave('output/all_states_positive_cases_vs_case_fatality_rate.png', height = 6,
 #### plot paths of selected states' CFR versus positive tests ####
 
 
-selected_locations = c(
-  head(latest_state_data, 10)$location
-)
 
-
-cfr_path_dat = filter(all_covid_data_diffs_dates, location %in%  selected_locations, days_since_case_20 >= 15)
-last_cfr_path_dat = filter(cfr_path_dat, date == max(date))
-
-cfr_path_plot = cfr_path_dat %>%
-  ggplot(aes(value_percent_positive_cases, value_case_fatality_rate, colour = location_factor)) +
-  scale_size(guide = F, range = c(0, 3)) +
-  scale_alpha(guide = F, range = c(0.3, 0.8)) +
-  geom_point(aes(alpha = days_since_case_20, size = log(value_total_cases))) +
-  geom_path(aes(alpha = days_since_case_20), size = 0.75) +
-  geom_text_repel(data = last_cfr_path_dat, aes(label = location_factor)) +
-  scale_y_continuous(breaks = seq(0, 0.1, by = 0.01), labels = percent) +
-  scale_x_continuous(labels = percent, breaks = seq(0, 0.7, by = 0.1)) +
-  theme(
-    strip.background = element_rect(fill = 'darkgray'),
-    strip.text = element_text(face = 'bold'),
-    text = element_text(colour = 'white'),
-    axis.text = element_text(colour = 'white'),
-    title = element_text(size = 16, colour = 'white'),
-    axis.title = element_text(size = 14),
-    legend.text = element_text(size = 12),
-    
-    legend.title = element_text(size = 14),
-    plot.caption = element_text(size = 10, hjust = 0, face = 'italic'),
-    plot.subtitle = element_text(size = 11, face = 'italic'),
-    plot.background = element_rect(fill = 'black'),
-    legend.background = element_rect(fill = 'black'),
-    panel.background = element_rect(fill = 'black'),
-    panel.grid.minor  = element_blank(),
-    panel.grid.major = element_line(size = 0.25),
-    legend.position = 'bottom'
-  ) +
-  guides(colour = guide_legend(override.aes = list(size = 2))) +
-  scale_colour_hue(name = '') +
-  labs(
-    x = '\nPercent Positive Tests', y = 'Case Fatality Rate\n', 
-    title = 'Paths of Case Fatality Rates and Positive Test Rates',
-    subtitle = sprintf('U.S. and selected states, through %s. Data shown from 15 days following 20th case.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')),
-    caption = 'Chart: Taylor G. White\nData: covidtracking.com'
-  )
-ggsave('output/positive_cases_vs_case_fatality_rate.png', height = 8, width = 10, units = 'in', dpi = 800, plot = cfr_path_plot)
+# 
+# cfr_path_dat = filter(all_covid_data_diffs_dates, location %in%  selected_locations, days_since_case_20 >= 15)
+# last_cfr_path_dat = filter(cfr_path_dat, date == max(date))
+# 
+# cfr_path_plot = cfr_path_dat %>%
+#   ggplot(aes(value_percent_positive_cases, value_case_fatality_rate, colour = location_factor)) +
+#   scale_size(guide = F, range = c(0, 3)) +
+#   scale_alpha(guide = F, range = c(0.3, 0.8)) +
+#   geom_point(aes(alpha = days_since_case_20, size = log(value_total_cases))) +
+#   geom_path(aes(alpha = days_since_case_20), size = 0.75) +
+#   geom_text_repel(data = last_cfr_path_dat, aes(label = location_factor)) +
+#   scale_y_continuous(breaks = seq(0, 0.1, by = 0.01), labels = percent) +
+#   scale_x_continuous(labels = percent, breaks = seq(0, 0.7, by = 0.1)) +
+#   theme(
+#     strip.background = element_rect(fill = 'darkgray'),
+#     strip.text = element_text(face = 'bold'),
+#     text = element_text(colour = 'white'),
+#     axis.text = element_text(colour = 'white'),
+#     title = element_text(size = 16, colour = 'white'),
+#     axis.title = element_text(size = 14),
+#     legend.text = element_text(size = 12),
+#     
+#     legend.title = element_text(size = 14),
+#     plot.caption = element_text(size = 10, hjust = 0, face = 'italic'),
+#     plot.subtitle = element_text(size = 11, face = 'italic'),
+#     plot.background = element_rect(fill = 'black'),
+#     legend.background = element_rect(fill = 'black'),
+#     panel.background = element_rect(fill = 'black'),
+#     panel.grid.minor  = element_blank(),
+#     panel.grid.major = element_line(size = 0.25),
+#     legend.position = 'bottom'
+#   ) +
+#   guides(colour = guide_legend(override.aes = list(size = 2))) +
+#   scale_colour_hue(name = '') +
+#   labs(
+#     x = '\nPercent Positive Tests', y = 'Case Fatality Rate\n', 
+#     title = 'Paths of Case Fatality Rates and Positive Test Rates',
+#     subtitle = sprintf('U.S. and selected states, through %s. Data shown from 15 days following 20th case.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')),
+#     caption = 'Chart: Taylor G. White\nData: covidtracking.com'
+#   )
+# ggsave('output/positive_cases_vs_case_fatality_rate.png', height = 8, width = 10, units = 'in', dpi = 800, plot = cfr_path_plot)
 
 
 dark_theme = theme(
