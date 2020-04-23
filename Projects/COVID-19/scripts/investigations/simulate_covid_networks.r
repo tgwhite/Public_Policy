@@ -3,6 +3,7 @@ library(R0)
 library(uuid)
 library(igraph)
 library(ggnetwork)
+library(data.table)
 
 weibull_mean = 6.4
 weibull_sd = 2.3
@@ -34,11 +35,10 @@ fit_weibull_r0 = function(pars) {
 r0_params = optim(par = c(3, 7), fn = fit_weibull_r0)
 
 
-initial_susceptible = 100000
-susceptible_list = map_chr(1:initial_susceptible, UUIDgenerate)
+initial_susceptible = 10e6
+current_susceptible = initial_susceptible
 case_link_list = list()
 case_info_list = list()
-
 
 generation = 0
 while (TRUE) {
@@ -52,35 +52,41 @@ while (TRUE) {
       parent_id = NA, 
       infection_date = 0
     )
+    the_id = 0
   }
   
-  if (length(susceptible_list) == 0) break
+  if (current_susceptible == 0) break
   
-  case_link_list[[length(case_link_list) + 1]] = cases_gen_df
+  # case_link_list[[length(case_link_list) + 1]] = cases_gen_df
   
   if(nrow(cases_gen_df) == 0) {
     cat('zero new case df!!!')
     break
   } else {
-    print(nrow(cases_gen_df))
-    print(length(susceptible_list) / initial_susceptible)
+    cat('new cases:', nrow(cases_gen_df), '\n')
+    cat('prop susceptible', (current_susceptible / initial_susceptible), '\n')
+    cat('id:', the_id, '\n')
   }
   new_cases_list = list() 
   
+  
+  
   # capture all the new cases from this generation
+  inner_case_info = list()
+  
   for (case_it in 1:nrow(cases_gen_df)) {
     
     the_case = cases_gen_df[case_it,]
     
-    the_id = sample(susceptible_list, 1)  
-    susceptible_list = susceptible_list[-which(the_id == susceptible_list)]  
+    the_id = the_id  
+    current_susceptible = current_susceptible - 1
     incubation_time = rweibull(1, weibull_params$par[1], weibull_params$par[2])
     incubation_end_date = incubation_time + the_case$infection_date
     
-    prob_running_into_someone_else = (length(susceptible_list) / initial_susceptible)
+    prob_running_into_someone_else = current_susceptible / initial_susceptible
     normal_r0 = rweibull(1, r0_params$par[1], r0_params$par[2]) 
     superspreader_r0 = rweibull(1, 1, 5)
-    superspreader = rbinom(1, 1, prob = 0.025)
+    superspreader = rbinom(1, 1, prob = 0.01)
     orig_r0 = ifelse(superspreader, superspreader_r0, normal_r0)
     
     r0_adj = orig_r0 * prob_running_into_someone_else
@@ -89,6 +95,7 @@ while (TRUE) {
     
     case_info = list(
       id=the_id,
+      parent_id = the_case$parent_id,
       generation = generation,
       incubation_start=the_case$infection_date, 
       incubation_end =incubation_end_date, 
@@ -98,24 +105,24 @@ while (TRUE) {
       incubation_time=incubation_time, 
       cases_generated = cases_generated) 
     
-    case_info_list[[length(case_info_list) + 1]] = case_info
-    
-    
+    inner_case_info[[length(inner_case_info) + 1]] = case_info
     
     case_infection_times = runif(cases_generated, 0, incubation_time)
     case_infection_dates = the_case$infection_date + case_infection_times
     
+    the_id = the_id +1
     if (cases_generated > 0) {
       these_new_cases = tibble(
         parent_id = the_id,
         generation = generation + 1,
         infection_date = case_infection_dates,
         case_infection_times = case_infection_times
-      ) %>% 
-        arrange(infection_date)
+      ) 
       new_cases_list[[length(new_cases_list) + 1]] = these_new_cases
     }
   }
+  case_info_list[[length(case_info_list) + 1]] = bind_rows(inner_case_info)
+  
   gen_end = proc.time()
   
   if (length(new_cases_list) > 0) {
@@ -169,6 +176,20 @@ ggplot(case_info_df, aes(incubation_end, cases_generated)) +
 
 head(case_info_df)
 
+x = tibble(id = 1:1e7, val = rnorm(length(id))) %>% data.table()
+head(x)
+system.time({
+  x[, {
+    list(val_upd = val + 1)
+  }, by = id]
+  
+})
+
+system.time({
+  for (it in 1:1e7) {
+    it+1
+  }
+})
 
 # capture information about each case, store it 
 # capture information about case links, store it
