@@ -83,7 +83,9 @@ names(us_cities_coord) = c('longitude', 'latitude')
 us_cities_shp_fin = bind_cols(us_cities_shp, us_cities_coord)
 
 us_cities_shp_fin$geometry = NULL
-selected_cities = filter(us_cities_shp_fin, str_detect(city, '^(New York City)|^(San Francisco)|(Seattle)|(Los Angeles)'))
+selected_cities = filter(us_cities_shp_fin, 
+                         str_detect(city, 
+                  '^(New York City)|^(San Francisco)|(Seattle)|(Los Angeles)'))
 
 # join on stations within 50 miles of cities
 city_stations = geo_left_join(selected_cities, stations %>% filter(country == 'US'), max_dist = 50)
@@ -164,7 +166,9 @@ apple_mobility_dat = read_csv(mobility_dataset_df$dsn) %>%
     date = as.Date(date),
     week_day = lubridate::wday(date),
     weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
-    entity_name = recode(region, `San Francisco - Bay Area` = 'San Francisco', 
+    entity_name = recode(region, 
+                         `UK` = 'United Kingdom',
+                         `San Francisco - Bay Area` = 'San Francisco', 
                          `Republic of Korea` = 'Korea, South')
   ) %>%
   left_join(
