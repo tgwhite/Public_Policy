@@ -701,7 +701,7 @@ all_covid_data_diffs_dates %>%
     caption = 'Chart: Taylor G. White\nData: covidtracking.com'
   ) +
   # geom_hline(aes(yintercept = 152)) +
-  scale_y_continuous(breaks = seq(0, 60, by = 10)) +
+  scale_y_continuous(breaks = seq(0, max(all_covid_data_diffs_dates$new_tests_per_100k, na.rm = T)+5, by = 10)) +
   scale_x_date(date_breaks = '7 days', date_labels = '%b %d') +
   theme(
     title = element_text(size = 16),

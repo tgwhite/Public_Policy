@@ -38,8 +38,9 @@ fit_weibull_r0 = function(pars) {
 r0_params = optim(par = c(3, 7), fn = fit_weibull_r0)
 
 
-run_case_simulation = function(initial_susceptible = 20e6, the_r0) {
-  
+run_case_simulation = function(initial_susceptible = 20e6, the_r0, 
+                               lockdown_date = NULL, lockdown_effect = NULL, r0_type = NULL) {
+  this_r0 = the_r0
   current_susceptible = initial_susceptible
   
   case_info_list = list()
@@ -57,25 +58,25 @@ run_case_simulation = function(initial_susceptible = 20e6, the_r0) {
   while (continue_loop) {
     loop_start = proc.time()
     
-    print(generation)
+    # print(generation)
     
     if (n_cases_generated > current_susceptible) {
-      cat('too many cases generated!\n', n_cases_generated, '\n')
+      # cat('too many cases generated!\n', n_cases_generated, '\n')
       n_cases_generated = current_susceptible
       suseptible_by_id = current_susceptible - 1:n_cases_generated
-      cat('n_cases_generated is now', n_cases_generated, '\n')
+      # cat('n_cases_generated is now', n_cases_generated, '\n')
       cases_gen_df = head(cases_gen_df, n_cases_generated)
     } else {
       suseptible_by_id = current_susceptible - 1:n_cases_generated
     }
-    cat('n_cases_generated:', n_cases_generated, '\n')
-    cat('current_susceptible:', current_susceptible, '\n')
-    
+    # cat('n_cases_generated:', n_cases_generated, '\n')
+    # cat('current_susceptible:', current_susceptible, '\n')
+    # 
     
     # suseptible_by_id = suseptible_by_id[suseptible_by_id > 0]
     
     if (current_susceptible < 0) {
-      cat('no more susceptible')
+      # cat('no more susceptible')
       break
     }
     
@@ -86,7 +87,19 @@ run_case_simulation = function(initial_susceptible = 20e6, the_r0) {
     incubation_end_date = incubation_start_date + incubation_time 
     prob_running_into_someone_else = suseptible_by_id / initial_susceptible
     
-    r0_adj = the_r0 * prob_running_into_someone_else
+    if (r0_type == 'weibull') {
+      the_r0 = rweibull(n_cases_generated, r0_params$par[1], r0_params$par[2])   
+    } else if (r0_type == 'unif') {
+      
+      the_r0 = runif(n_cases_generated, this_r0*0.75, this_r0*1.25)   
+    }
+    
+    if (!is.null(lockdown_date)) {
+      lockdown_effects = ifelse(incubation_start_date >= lockdown_date, lockdown_effect, 1)
+      r0_adj = the_r0 * prob_running_into_someone_else * lockdown_effects
+    } else {
+      r0_adj = the_r0 * prob_running_into_someone_else
+    }
     
     cases_generated = floor(r0_adj) + rbinom(length(r0_adj), 1, r0_adj - floor(r0_adj))
     n_cases_generated = sum(cases_generated)
@@ -119,7 +132,7 @@ run_case_simulation = function(initial_susceptible = 20e6, the_r0) {
       stopifnot(nrow(cases_gen_df) == n_cases_generated)
     }
     
-    print(proc.time() - loop_start)
+    # print(proc.time() - loop_start)
     generation = generation + 1
     current_susceptible = min(suseptible_by_id)
     continue_loop = n_cases_generated > 0 & current_susceptible > 0
@@ -134,71 +147,106 @@ run_case_simulation = function(initial_susceptible = 20e6, the_r0) {
   return(rbindlist(case_info_list))
 }
 
-covid_case_simulation = run_case_simulation(the_r0 = 2.5) %>% 
-  mutate(start_day = floor(incubation_start_date))
-flu_case_simulation = run_case_simulation(the_r0 = 1.3) %>% 
-  mutate(start_day = floor(incubation_start_date))
+
+covid_ifr = 0.003
+flu_ifr = 0.001
+n_susceptible = 10e6
+
+covid_case_simulation = run_case_simulation(r0_type = 'covid', the_r0 = 2.5, 
+                                            initial_susceptible = n_susceptible/2) %>% 
+  mutate(
+    start_day = floor(incubation_start_date),
+    died = rbinom(length(the_id), 1, covid_ifr),
+    death_date = ifelse(died, start_day + 14, NA)
+  )
+
+covid_case_simulation_lockdown = run_case_simulation(the_r0 = 2.5, r0_type = 'covid', 
+                                                     lockdown_date = 15, lockdown_effect = 0.65, 
+                                                     initial_susceptible = n_susceptible/2) %>% 
+  mutate(
+    start_day = floor(incubation_start_date),
+    died = rbinom(length(the_id), 1, covid_ifr),
+    death_date = ifelse(died, start_day + 14, NA)
+  )
 
 
-covid_cases_by_day = dplyr::group_by(covid_case_simulation, start_day, generation) %>%
+flu_case_simulation = run_case_simulation(the_r0 = 1.3, r0_type = 'flu', 
+                                          initial_susceptible = 327e6/4) %>% 
+  mutate(
+    start_day = floor(incubation_start_date),
+    died = rbinom(length(the_id), 1, flu_ifr),
+    death_date = ifelse(died, start_day + 14, NA)
+  )
+
+covid_cases_by_day = dplyr::group_by(covid_case_simulation, start_day) %>%
   dplyr::summarize(
-    obs = n_distinct(the_id)
+    obs = n_distinct(the_id),
+    died = sum(died)
   ) %>%
   mutate(
     cum_obs = cumsum(obs),
-    Virus = 'COVID-19'
+    Virus = 'COVID-19',
+    with_lockdown = 'No'
   )
 
-flu_cases_by_day = dplyr::group_by(flu_case_simulation, start_day, generation) %>%
+covid_cases_by_day_lockdown = dplyr::group_by(covid_case_simulation_lockdown, start_day) %>%
   dplyr::summarize(
-    obs = n_distinct(the_id)
+    obs = n_distinct(the_id),
+    died = sum(died)
   ) %>%
   mutate(
     cum_obs = cumsum(obs),
-    Virus = 'Influenza'
+    Virus = 'COVID-19 Early Lockdown',
+    with_lockdown = 'Yes'
   )
 
-stacked_stats = bind_rows(covid_cases_by_day, flu_cases_by_day)
+flu_cases_by_day = dplyr::group_by(flu_case_simulation, start_day) %>%
+  dplyr::summarize(
+    obs = n_distinct(the_id),
+    died = sum(died)
+  ) %>%
+  mutate(
+    cum_obs = cumsum(obs),
+    Virus = 'Influenza',
+    with_lockdown = 'No'
+  )
+sum(flu_cases_by_day$died)
+
+stacked_stats = bind_rows(
+  covid_cases_by_day, flu_cases_by_day,
+  covid_cases_by_day_lockdown) %>%
+  mutate(
+    week = start_day %/% 7
+  )
+
+group_by(stacked_stats, Virus, with_lockdown) %>%
+  summarize(
+    t_obs = sum(obs),
+    pct_infected = t_obs / n_susceptible,
+    t_died = sum(died),
+    crude_mortality_rate = t_died / n_susceptible,
+    infection_fatality_rate = t_died / t_obs,
+    time_period = as.numeric(max(start_day)-min(start_day))
+  )
+weekly_stats = group_by(stacked_stats, week, Virus, with_lockdown) %>%
+  summarize(
+    weekly_deaths = sum(died),
+    weekly_cases = sum(obs)
+  )
+max(weekly_stats$weekly_deaths * 32.7)
+
 ggplot(stacked_stats, aes(start_day, obs, fill = Virus)) +
-  geom_bar(stat = 'identity', alpha = 0.3)
+  geom_area(alpha = 0.3, position = 'identity')
 
-ggplot(cases_by_day, aes(start_day, obs, fill = factor(generation))) +
-  geom_bar(stat = 'identity', colour = 'black') 
-# 
+ggplot(weekly_stats, aes(week, weekly_deaths*32.7, colour = Virus)) +
+  # facet_wrap(~Virus, scales = 'free_y') +
+  geom_line() +
+  geom_point() 
+  # geom_bar(stat = 'identity', position = 'identity')
+
+
+
 # mGT_weibull <- generation.time("weibull", c(6.4, 2.3))
 # mGT_weibull <- generation.time("gamma", c(5, 1.5))
 # est.R0.EG(cases_by_day$obs, mGT_weibull, t = cases_by_day$start_day, begin = 0, end = 20)
 # 
-# filter(case_info_df, start_day <= 15) %>% pull(r0_adj) %>% summary()
-# 
-# 
-# 
-# obs_by_parent = group_by(case_link_df, parent_id) %>%
-#   summarize(
-#     cases_generated = n()
-#   )
-# 
-# sum(case_info_df$cases_generated) - nrow(case_link_df)
-# 
-# ggplot(case_info_df, aes(incubation_end, cases_generated)) +
-#   geom_point()
-# 
-# head(case_info_df)
-# 
-# x = tibble(id = 1:1e7, val = rnorm(length(id))) %>% data.table()
-# head(x)
-# system.time({
-#   x[, {
-#     list(val_upd = val + 1)
-#   }, by = id]
-#   
-# })
-# 
-# system.time({
-#   for (it in 1:1e7) {
-#     it+1
-#   }
-# })
-# 
-# # capture information about each case, store it 
-# # capture information about case links, store it

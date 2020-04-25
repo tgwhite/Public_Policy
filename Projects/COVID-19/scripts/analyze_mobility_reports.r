@@ -33,13 +33,14 @@ johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData
 
 
 #### get weather data from NOAA ####
+# https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year
 # https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year/readme.txt
 # https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt
 
 setwd("C:/Users/csq/Downloads")
 # download.file('https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year/2020.csv.gz')
 
-weather_2020 = fread('2020.csv') %>% setorder(V1, V2, V3)
+weather_2020 = fread('2020_weather.csv') %>% setorder(V1, V2, V3)
 names(weather_2020) = c('station', 'date', 'type', 'value', 'm_flag', 'q_flag', 's_flag', 'time')
 weather_2020$date_upd = as.Date(weather_2020$date %>% as.character(), format = '%Y%m%d')
 weather_2020$country = str_extract(weather_2020$station, '^([A-Z]{2})')
@@ -283,7 +284,6 @@ last_vals_by_country = group_by(smoothed_pct_of_predicted, entity_name) %>%
     last_predicted_walking_baseline = predicted_walking_baseline[date == last_date],
     last_smoothed_percent_of_predicted = smoothed_percent_of_predicted[date == last_date]
   )
-smoothed_pct_of_predicted$StringencyIndex
 
 original_plot = ggplot(smoothed_pct_of_predicted, aes(date, mobility, group = entity_name, colour = StringencyIndex)) +
   theme_bw() +
@@ -400,7 +400,7 @@ final_plot = plot_grid(
 # final_plot
 save_plot('output/smoothed_mobility_index_data.png', plot = final_plot, 
           base_height = 12, 
-           base_width = 14, units = 'in', dpi = 600)
+           base_width = 14, units = 'in', dpi = 400)
 
 
 # smoothed_pct_of_predicted %>%
