@@ -130,10 +130,11 @@ state_geo_center = us_states_tigris@data %>%
   )
 
 ### get lockdown dates ###
+lockdown_dates = read_csv('data/lockdown_dates.csv')
+     
 lockdown_dates = read_csv('data/lockdown_dates.csv') %>% 
-  rename(location = Place, 
-         country = Country,
-         lockdown_start = `Start date`, lockdown_end = `End date`, level = Level) %>%
+  rename(location = location_name, 
+         country = Country, level = Level) %>%
   mutate(
     level = recode(level, National = 'Country'),
     location = ifelse(is.na(location), country, location),
