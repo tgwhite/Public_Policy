@@ -508,6 +508,7 @@ covid_cases_mobility_stringency = fread('data/covid_cases_mobility_stringency.cs
   ) %>% 
   select(
     date, country, location, location_type, StringencyIndex, mobility, predicted_walking_baseline,
+    mean_temp,
     percent_of_predicted, smoothed_percent_of_predicted, fips
   )
 
@@ -547,9 +548,10 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_dates) %
     week_day = lubridate::wday(date),
     weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
   ) %>%
-  arrange(location_key, date) %>%
+  arrange(location, date) %>%
   select(-fips.y) %>% 
   rename(
     fips = fips.x
   )
 
+write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
