@@ -130,8 +130,6 @@ state_geo_center = us_states_tigris@data %>%
   )
 
 ### get lockdown dates ###
-lockdown_dates = read_csv('data/lockdown_dates.csv')
-     
 lockdown_dates = read_csv('data/lockdown_dates.csv') %>% 
   rename(location = location_name, 
          country = Country, level = Level) %>%
@@ -167,9 +165,6 @@ johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData
 johns_hopkins_deaths = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv') %>%
   pivot_longer(cols = matches('^([0-9])'), names_to = 'date', values_to = 'deaths')
 
-johns_hopkins_recovered = read_csv('https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv') %>%
-  pivot_longer(cols = matches('^([0-9])'), names_to = 'date', values_to = 'recovered')
-
 jh_joined = left_join(johns_hopkins_cases, johns_hopkins_deaths) %>%
   mutate(
     date = as.Date(date, format = '%m/%d/%y')
@@ -200,12 +195,14 @@ jh_summary_by_country = group_by(jh_joined, country, date) %>%
     state = NA,
     location = ifelse(is.na(state), country, state),
     location_type = ifelse(is.na(state), 'country', 'state/province'),
+    location = recode(location, `US` = "United States"),
+    country = recode(country, `US` = "United States"),
     data_source = 'Johns Hopkins CSSE',
     location_key = paste(country, state, location_type, location, data_source, sep = '|')
   ) %>%
   arrange(location_key, date) %>%
   filter(
-    !country %in% c('US', 'United States')
+    # !country %in% c('US', 'United States')
     ) # use covidtracking data
 
 #### US and state data ####
@@ -292,9 +289,7 @@ nyt_county_data[nyt_county_data$location == 'New York City','fips'] = '36061'
 
 
 all_covid_data_stacked = bind_rows(
-  us_states_covid_data   
-  , us_covid_data,
-  
+  us_states_covid_data,
   nyt_county_data,
   jh_summary_by_country
 ) %>%
@@ -557,6 +552,4 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_dates) %
   rename(
     fips = fips.x
   )
-
-write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
 
