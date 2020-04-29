@@ -434,18 +434,54 @@ filter(all_covid_data_diffs_dates,
        location %in% head(latest_state_data, 50)$location, date >= as.Date('2020-03-11')) %>%
   ggplot() +
   facet_wrap(~location_factor, scales = 'free_y', ncol = 5) +
-  geom_area(aes(date, rolling7_tests_with_results), fill = 'black', alpha = .4) +
+  geom_area(aes(date, rolling7_tests_with_results/pop_100k), fill = 'black', alpha = .4) +
   # geom_area(aes(date, rolling7_percent_positive_new_tests), fill = 'black', alpha = .4) +
-  geom_line(aes(date, rolling3_new_cases), colour = 'blue', size = 0.75) +
+  geom_line(aes(date, rolling3_new_cases/pop_100k), colour = 'blue', size = 0.75) +
   # geom_point(aes(date, rolling3_percent_positive_new_tests), colour = 'blue') +
   # geom_point(aes(date, rolling3_percent_positive_new_tests, size = new_cases_per_100k), colour = 'red') +
+  theme_bw() +
+  theme(strip.background = element_blank(), panel.grid = element_blank()) +
   scale_size(range = c(1, 5)) +
+  scale_x_date(date_breaks = '7 days', date_labels = '%b %d') +
   scale_y_continuous(labels = comma) +
-  theme_classic() +
   labs(
-    y = '3 Day Average of New Cases', x = ''
+    y = '3 Day Average of New Cases Per 100k', x = '',
+    title = 'Daily Average Testing Per Week Versus Positive Test Results, Per 100k Population'
   )
-ggsave('output/three_vs_seven_day_avg_positive_tests.png', height = 16, width = 16, units = 'in', dpi = 800)  
+ggsave('output/three_vs_seven_day_avg_positive_tests.png', height = 16, width = 18, units = 'in', dpi = 800)  
+
+
+
+latest_state_data = filter(all_covid_data_diffs_dates, location != 'United States', date == max(date)) %>% 
+  arrange(-value_total_cases) %>%
+  mutate(
+    location_factor = factor(location, levels = location)
+  )
+
+all_covid_data_diffs_dates$location_factor = factor(all_covid_data_diffs_dates$location, 
+                                                    levels = latest_state_data$location)
+
+
+filter(all_covid_data_diffs_dates, 
+       days_since_case_20 > 14,
+       location %in% head(latest_state_data, 50)$location, date >= as.Date('2020-03-11')) %>%
+  ggplot() +
+  facet_wrap(~location_factor, scales = 'free_y', ncol = 5) +
+  # geom_area(aes(date, rolling7_percent_positive_new_tests), fill = 'black', alpha = .4) +
+  geom_line(aes(date, rolling3_new_cases/rolling7_tests_with_results), colour = 'blue', size = 0.75) +
+  # geom_point(aes(date, rolling3_percent_positive_new_tests), colour = 'blue') +
+  # geom_point(aes(date, rolling3_percent_positive_new_tests, size = new_cases_per_100k), colour = 'red') +
+  theme_bw() +
+  theme(strip.background = element_blank(), panel.grid = element_blank()) +
+  scale_size(range = c(1, 5)) +
+  scale_x_date(date_breaks = '7 days', date_labels = '%b %d') +
+  geom_hline(aes(yintercept = 0)) +
+  scale_y_continuous(labels = percent) +
+  labs(
+    y = '3 Day Avg. of New Cases / 7-Day Avg. Testing', x = '',
+    title = 'U.S. COVID-19 Positive Test Rate, by State'
+  )
+
 
 
 
@@ -490,7 +526,9 @@ lockdown_period_stats_days = group_by(all_covid_data_diffs_dates, days_since_loc
   filter(obs > 0)
 
 pal_3 = brewer.pal(3, 'Set1')
-r0_boxplot = ggplot(all_covid_data_diffs_dates, aes(lockdown_period, r0_rolling_lead_7, fill = lockdown_period)) +
+r0_boxplot = 
+  all_covid_data_diffs_dates %>% filter(lockdown_period != 'No Lockdown') %>% 
+  ggplot(aes(lockdown_period, r0_rolling_lead_7, fill = lockdown_period)) +
   theme_minimal() +
   geom_boxplot(colour = 'gray', size =  0.25) +
   # geom_text(data = lockdown_period_stats, aes(y = median_r0_rolling_7, label = paste('Median:', round(median_r0_rolling_7, 2))), fontface = 'bold', size = 2.5)  +
@@ -554,7 +592,7 @@ ggplot(lockdown_states, aes(days_since_lockdown_start, median_r0_rolling_7, fill
   scale_y_continuous(breaks = seq(0, 20, by = 1)) + 
   scale_x_continuous(limits = c(-30, max(lockdown_states$days_since_lockdown_start, na.rm = T)), 
                      breaks = seq(-30, max(lockdown_states$days_since_lockdown_start, na.rm = T), by = 2)) +
-  annotation_custom(ggplotGrob(r0_boxplot), xmin = -10, xmax = 12, ymin = 8, ymax = 17)
+  annotation_custom(ggplotGrob(r0_boxplot), xmin = -10, xmax = 18, ymin = 8, ymax = 17)
 
 ggsave('output/rolling_r0_by_lockdown_period.png', height = 7, width = 9, units = 'in', dpi = 800)
 

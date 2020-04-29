@@ -1,11 +1,16 @@
-library(tidyverse)
+
 library(R0)
 library(uuid)
 library(igraph)
 library(ggnetwork)
 library(data.table)
+library(EpiDynamics)
+library(scales)
+library(tidyverse)
 
+# https://www.ijidonline.com/article/S1201-9712(20)30119-3/pdf
 weibull_mean = 6.4
+# weibull_mean = 4.8
 weibull_sd = 2.3
 # 
 # > 10977 / (19e6 * .2)
@@ -19,10 +24,12 @@ fit_weibull = function(pars) {
   the_sd = abs(sd(the_dist) - weibull_sd)
   the_mean =  abs(mean(the_dist) - weibull_mean)
   return(
-    the_sd * the_mean
+    (the_sd * the_mean)^2 
   )
 }
 weibull_params = optim(par = c(3, 7), fn = fit_weibull)
+the_weibull_dist = rweibull(10000, weibull_params$par[1], weibull_params$par[2])
+summary(the_weibull_dist)
 
 fit_weibull_r0 = function(pars) {
   shape = pars[1]
@@ -81,8 +88,13 @@ run_case_simulation = function(initial_susceptible = 20e6, the_r0,
     }
     
     the_id = initial_susceptible - suseptible_by_id
+    # https://wwwnc.cdc.gov/eid/article/26/6/20-0357_article
+    # https://www.ijidonline.com/article/S1201-9712(20)30119-3/pdf
     
-    incubation_time = rweibull(n_cases_generated, weibull_params$par[1], weibull_params$par[2])
+    # incubation_time = rnorm(n_cases_generated, 3.96, 4.75)
+    # incubation_time = rgamma(n_cases_generated, 4.37,  scale = 1.25) 
+    # incubation_time = rweibull(n_cases_generated, weibull_params$par[1], weibull_params$par[2])
+    incubation_time = 5
     incubation_start_date = cases_gen_df$incubation_start
     incubation_end_date = incubation_start_date + incubation_time 
     prob_running_into_someone_else = suseptible_by_id / initial_susceptible
@@ -90,7 +102,6 @@ run_case_simulation = function(initial_susceptible = 20e6, the_r0,
     if (r0_type == 'weibull') {
       the_r0 = rweibull(n_cases_generated, r0_params$par[1], r0_params$par[2])   
     } else if (r0_type == 'unif') {
-      
       the_r0 = runif(n_cases_generated, this_r0*0.75, this_r0*1.25)   
     }
     
@@ -159,6 +170,63 @@ covid_case_simulation = run_case_simulation(r0_type = 'covid', the_r0 = 2.5,
     died = rbinom(length(the_id), 1, covid_ifr),
     death_date = ifelse(died, start_day + 14, NA)
   )
+
+generation_stats = group_by(covid_case_simulation, generation) %>%
+  summarize(
+    obs = n(),
+    mean_cases = mean(cases_generated),
+    mean_r0 = mean(r0_adj),
+    mean_prob = mean(prob_running_into_someone_else ),
+    min_prob = min(prob_running_into_someone_else),
+    max_prob = max(prob_running_into_someone_else),
+    start = min(incubation_start_date),
+    end = max(incubation_end_date),
+    mean_start = mean(incubation_start_date),
+    mean_end = mean(incubation_end_date)
+  )
+
+ggplot(generation_stats, aes(start, max_prob, colour = factor(generation))) +
+  geom_point() +
+  geom_point(aes(y = min_prob))
+
+covid_case_simulation$incubation_time
+covid_case_simulation %>% pull(cases_generated) %>% summary()
+
+ggplot(covid_case_simulation, aes(incubation_start_date, cases_generated, size = r0_adj)) +
+  geom_point()
+
+incubation_period = 5
+initial_r0 = 2.5
+gamma = 1/incubation_period
+initial_beta = initial_r0 / incubation_period
+initial_parameters <- c(beta = initial_beta, gamma = gamma)
+initials <- c(S = 1 - 1e-06, I = 1e-06, R = 1 - (1 - 1e-06 - 1e-06))
+# initials <- c(S = 1 - 1e-06, I = 1e-06, R = 1 - (1 - 1e-06 - 1e-06))
+initial_covid_sir <- SIR(pars = initial_parameters, init = initials, time = 0:240)
+
+counts_by_day = group_by(covid_case_simulation, start_day) %>%
+  summarize(
+    obs = n_distinct(the_id)
+  )
+
+sir_results =  initial_covid_sir$results %>%
+  mutate(
+    n_susceptible = n_susceptible/2 * S,
+    n_cases = lag(n_susceptible, 1) - n_susceptible 
+  )
+b = left_join(sir_results, counts_by_day, by = c('time' = 'start_day')) %>%
+  mutate(
+    obs= ifelse(is.na(obs), 0, obs),
+    n_cases = ifelse(is.na(n_cases), 0, n_cases)
+  )
+with(b, cor(obs, n_cases))
+
+ggplot(counts_by_day, aes(start_day, obs)) +
+  geom_area(alpha = 0.3) +
+  geom_area(data = sir_results, aes(time, n_cases), alpha = 0.3, fill = 'blue') +
+  scale_y_continuous(labels = comma)
+
+
 
 covid_case_simulation_lockdown = run_case_simulation(the_r0 = 2.5, r0_type = 'covid', 
                                                      lockdown_date = 15, lockdown_effect = 0.65, 
