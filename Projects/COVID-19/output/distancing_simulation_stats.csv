@@ -1,0 +1,17 @@
+,,,,,,,,,,,,,
+Sum of median_cases,Column Labels,,,,,,,"Action, Effect",Median Cases by Day,,,,Day 60 Risk Ratio
+Row Labels,7,14,30,60,Grand Total,,,,7,14,30,60,
+No Social Distancing,5,21,100,100,226,,,No Social Distancing,5,21,100,100,2.86
+"Social Distancing at 14 days, 25% effect",5,21,95,100,221,,,"Social Distancing at 14 days, 25% effect",5,21,95,100,2.86
+"Social Distancing at 14 days, 60% effect",5,21,64,69,159,,,"Social Distancing at 21 days, 25% effect",5,22,100,100,2.86
+"Social Distancing at 14 days, 80% effect",5,21,49,51,126,,,"Social Distancing at 21 days, 60% effect",5,21,99,100,2.86
+"Social Distancing at 14 days, 90% effect",5,21,44,44,114,,,"Social Distancing at 21 days, 80% effect",5,22,99,100,2.86
+"Social Distancing at 21 days, 25% effect",5,22,100,100,227,,,"Social Distancing at 21 days, 90% effect",5,22,99,100,2.86
+"Social Distancing at 21 days, 60% effect",5,21,99,100,225,,,"Social Distancing at 7 days, 25% effect",4.5,18,79,96,2.74
+"Social Distancing at 21 days, 80% effect",5,22,99,100,226,,,"Social Distancing at 14 days, 60% effect",5,21,64,69,1.97
+"Social Distancing at 21 days, 90% effect",5,22,99,100,226,,,"Social Distancing at 14 days, 80% effect",5,21,49,51,1.46
+"Social Distancing at 7 days, 25% effect",4.5,18,79,96,197.5,,,"Social Distancing at 14 days, 90% effect",5,21,44,44,1.26
+"Social Distancing at 7 days, 60% effect",5,14,28,35,82,,,"Social Distancing at 7 days, 60% effect",5,14,28,35,1.00
+"Social Distancing at 7 days, 80% effect",5,12,16,16,49,,,"Social Distancing at 7 days, 80% effect",5,12,16,16,0.46
+"Social Distancing at 7 days, 90% effect",4,11,12,12,39,,,"Social Distancing at 7 days, 90% effect",4,11,12,12,0.34
+Grand Total,63.5,247,884,923,2117.5,,,,,,,,

@@ -1,6 +1,6 @@
 
 
-
+# install.packages(c('tidyverse', 'plotly', 'readxl', 'data.table', 'htmltab', 'incidence', 'cowplot', 'scales'))
 library(tidyverse)
 library(plotly)
 library(readxl)
@@ -9,6 +9,9 @@ library(htmltab)
 library(incidence)
 library(cowplot)
 library(scales)
+library(gganimate)
+library(gifski)
+library(gridExtra)
 
 # start_week = 31
 # end_week = 26
@@ -17,7 +20,7 @@ library(scales)
 # https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1001051
 start_week = 40
 end_week = 20
-last_week = 52
+last_week = 53
 
 italy_start_week = 30
 
@@ -170,11 +173,6 @@ historical_us_flu_burden = htmltab('https://www.cdc.gov/flu/about/burden/past-se
     season = str_extract(Season, '[0-9]{4}') %>% as.numeric()
   )
 
-#### read in excess flu / pneumonia deaths ####
-# us_NCHSData12 = read_excel('literature/Italy Influenza vs. COVID.xlsx', 'NCHSData12')
-us_NCHSData12 = read_csv('https://www.cdc.gov/flu/weekly/weeklyarchives2019-2020/data/NCHSData12.csv')
-names(us_NCHSData12) = str_replace_all(names(us_NCHSData12), '[ ]', '_') %>% str_to_lower()
-
 
 # read in latest john's hopkins covid case / death data 
 jh_joined_it_us = read_csv('data/jh_joined.csv') %>%
@@ -225,14 +223,22 @@ italy_weekly_deaths = filter(weekly_deaths, country_region == 'Italy', weeks_sin
 first_death_dates = filter(jh_joined_it_us_stats, days_since_first_death == 0)
 
 #### compute flu seasons using U.S. season data 
+#### read in excess flu / pneumonia deaths ####
+# us_NCHSData12 = read_excel('literature/Italy Influenza vs. COVID.xlsx', 'NCHSData12')
+us_NCHSData12 = read_csv('https://www.cdc.gov/flu/weekly/weeklyarchives2019-2020/data/NCHSData12.csv')
+names(us_NCHSData12) = str_replace_all(names(us_NCHSData12), '[ ]', '_') %>% str_to_lower()
+
+# last_week = 52
 us_NCHSData12 = arrange(us_NCHSData12, year, week) %>%
   mutate(
     order = 1:length(year),
     season = ifelse(week>= start_week, year, ifelse(week <= end_week, year-1, NA)),
-    week_of_season = ifelse(week>= start_week, week-start_week + 1, (last_week - start_week) + week + 1),
     pn_in_deaths = pneumonia_deaths + influenza_deaths
   ) %>%
+  arrange(season, order) %>%
   data.table()
+
+# us_NCHSData12 = left_join(us_NCHSData12, week_of_season) %>% filter(!is.na(season))
 
 # calculate season peaks/shapes
 season_diffs_calcs = us_NCHSData12[, {
@@ -243,7 +249,8 @@ season_diffs_calcs = us_NCHSData12[, {
   
   list(
     week = week,
-    week_of_season = week_of_season,
+    week_of_season = 1:length(order),
+    order,
     year = year,
     all_deaths = all_deaths, 
     pn_in_deaths = pn_in_deaths, 
@@ -298,6 +305,8 @@ season_diffs_calcs_pct_of_excess = season_diffs_calcs[season %in% seasons_to_che
     Virus = 'Influenza'
   )
 
+
+
 # check the calculations. Most are spot on, but some are *slightly* off. There may
 #  be rounding somewhere in the CDC weekly death data 
 calculated_excess = filter(season_diffs_calcs_pct_of_excess, season == 2013)$excess_deaths %>% sum()
@@ -310,7 +319,10 @@ pcts_by_week = group_by(season_diffs_calcs_pct_of_excess, week_of_season) %>%
   summarize(
     avg_pct = mean(pct_of_excess)
   )
-sum(pcts_by_week$avg_pct)
+
+ggplot(season_diffs_calcs_pct_of_excess, aes(weeks_since_first_death, excess_deaths)) +
+  facet_wrap(~season) +
+  geom_bar(stat = 'identity')
 
 #### show excess deaths and season shapes ####
 the_plot = ggplot(season_diffs_calcs_pct_of_excess, aes(week_of_season, pct_of_excess)) +
@@ -381,6 +393,65 @@ us_main_plot_noscale = us_main_plot +
   scale_fill_manual(guide = F, name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
   scale_y_continuous(labels = comma, breaks = seq(0, 18000, by = 2000), limits = c(0, 18500))   
 fin_us_plot_noscale = add_extra_bars(us_main_plot_noscale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
+
+#### animate us plot ####
+
+season_diffs_calcs_pct_of_excess_covid = 
+  left_join(season_diffs_calcs_pct_of_excess, us_weekly_deaths, by = c('weeks_since_first_death')) %>%
+  mutate(
+    flu_virus = 'Influenza',
+    covid_virus = 'COVID-19',
+    flu_obs = 7,
+    Projected = 'Projected'
+  )
+
+min_obs = min(season_diffs_calcs_pct_of_excess_covid$obs, na.rm = T)
+alpha_vec = c("7" = 0.5)
+alpha_vec[paste(min_obs)] = 0.3
+
+flu_burden_table = filter(historical_us_flu_burden, season %in% season_diffs_calcs_pct_of_excess_covid$season) %>%
+  mutate(death_estimate_pretty = comma(death_estimate)) %>%
+  select(
+    Season = season, 
+    `Flu Deaths` = death_estimate_pretty
+  )
+
+the_anim = ggplot(season_diffs_calcs_pct_of_excess_covid, aes(weeks_since_first_death)) + 
+  theme_bw() +
+  geom_bar(aes(y = excess_deaths, alpha = paste0(flu_obs), fill = flu_virus), stat = 'identity') +
+  geom_bar(aes(y = projected_deaths, alpha = paste0(obs), fill = covid_virus),
+           stat = 'identity') +
+  geom_bar(aes(y = total_deaths, alpha = paste0(obs), fill = covid_virus),
+           stat = 'identity', colour = 'black') +
+  annotate("text", x = max(us_weekly_deaths$weeks_since_first_death), y = 12500, label = "Projected", angle = 90, size = 2.75) +
+  scale_fill_manual(name = '', values = c('Influenza' = 'gray30', 'COVID-19' = 'red')) +
+  annotation_custom(tableGrob(flu_burden_table, rows = NULL), xmin=20, xmax=30, ymin=12000, ymax=12000) +
+  transition_states(
+     season,
+     transition_length = 2,
+     state_length = 1
+   ) +
+  enter_fade() + 
+  exit_shrink() +
+  labs(
+    title = 'Deaths from COVID-19 vs. Recent Flu Seasons in the U.S.',
+    subtitle = sprintf('COVID-19: %s deaths through %s\nFlu season: {closest_state}',
+                       comma(sum(us_weekly_deaths$total_deaths)), format(max(jh_joined_it_us_stats$date_upd), '%B %d')), 
+       x = 'Weeks Since First Death', y = 'Weekly Deaths',
+    caption = 'Chart: Taylor G. White\nData: CDC, Johns Hopkins CSSE') +
+  ease_aes('sine-in-out') +
+  theme(
+    plot.title = element_text(size = 16),
+    plot.subtitle = element_text(size = 11, face = 'italic'),
+    plot.caption = element_text(size = 10, face = 'italic', hjust = 0)
+  ) +
+  scale_alpha_manual(guide = F, values = alpha_vec, labels = c('Actual', 'Projected')) +
+  scale_y_continuous(labels = comma, breaks = seq(0, 16000, by = 2000))  +
+  scale_x_continuous(breaks = seq(0, 33, by = 5))
+
+animate(the_anim, nframes = 100,
+        renderer = gifski_renderer("output/us_flu_vs_covid_deaths.gif"), 
+        height = 6, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
 # use shape of US 2016 flu season as proxy for Italian 2014-2015 season
 mean_italian_flu_season = mean(italian_excess_deaths$deaths)
