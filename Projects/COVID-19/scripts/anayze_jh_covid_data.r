@@ -26,6 +26,9 @@ library(transformr)
 library(ggrepel)
 library(cowplot)
 
+# library(devtools)
+# devtools::install_github("ropensci/USAboundariesData")
+
 generate_gifs = F
 
 setwd("~/Public_Policy/Projects/COVID-19")

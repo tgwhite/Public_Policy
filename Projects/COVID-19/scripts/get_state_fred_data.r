@@ -1,6 +1,7 @@
 library(tidyverse)
-library(fredr)
+# library(fredr)
 library(sqldf)
+install.packages('fredr')
 
 continue_download = F
 clean_existing_data = T

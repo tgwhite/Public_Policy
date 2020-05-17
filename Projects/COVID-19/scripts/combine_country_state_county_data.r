@@ -38,12 +38,12 @@ library(ggrepel)
 # deaths
 # FIPs (if available)
 # latitude / longitude
-
-us_counties_shp = us_counties()
-us_states_shp = us_states()
-us_map = USAboundaries::us_boundaries()
-us_states_tigris = tigris::states()
-us_counties_tigris = tigris::counties()
+# 
+# us_counties_shp = us_counties()
+# us_states_shp = us_states()
+# us_map = USAboundaries::us_boundaries()
+# us_states_tigris = tigris::states()
+# us_counties_tigris = tigris::counties()
 
 ## population by area ## 
 
@@ -71,27 +71,33 @@ est_r0_window = function(new_cases, catch = F) {
 }
 
 
-### get state and US population data  ###
-fred_sqlite = dbConnect(SQLite(), dbname= "data/fred_sqlite.sqlite")
+# ### get state and US population data  ###
+# fred_sqlite = dbConnect(SQLite(), dbname= "data/fred_sqlite.sqlite")
+# 
+# state_economic_data = dbGetQuery(fred_sqlite, 'select * from state_economic_data') %>%
+#   mutate(
+#     date = as.Date(date, origin = '1970-01-01'),
+#     title_clean = str_extract(title, '(.* in )|(.* for )') %>% str_replace('( in )|( for )', ''),
+#     title_for_col = paste0("x_", str_replace_all(title_clean, '[ \\-%,]', '_'))
+#   ) %>% 
+#   arrange(state_name, title_clean, date) %>%
+#   data.table() %>%
+#   # accidentally inserted duplicate records for Alabama, dedup here (need to index this db later)
+#   unique(by = c('state_name', 'title_clean', 'date'))
+# 
+# 
+# annual_population_by_state = filter(state_economic_data, title_clean == 'Resident Population') %>%
+#   mutate(
+#     year = year(date)
+#   ) 
 
-state_economic_data = dbGetQuery(fred_sqlite, 'select * from state_economic_data') %>%
-  mutate(
-    date = as.Date(date, origin = '1970-01-01'),
-    title_clean = str_extract(title, '(.* in )|(.* for )') %>% str_replace('( in )|( for )', ''),
-    title_for_col = paste0("x_", str_replace_all(title_clean, '[ \\-%,]', '_'))
-  ) %>% 
-  arrange(state_name, title_clean, date) %>%
-  data.table() %>%
-  # accidentally inserted duplicate records for Alabama, dedup here (need to index this db later)
-  unique(by = c('state_name', 'title_clean', 'date'))
 
-
-annual_population_by_state = filter(state_economic_data, title_clean == 'Resident Population') %>%
-  mutate(
-    year = year(date)
-  ) 
-
-population_by_state = filter(annual_population_by_state, date == max(date))
+# population_by_state = filter(annual_population_by_state, date == max(date))
+population_by_state = read_csv('data/state_pop_2018.csv', skip = 1) %>%
+  rename(
+    state_name = `Geographic Area Name`,
+    value = `Estimate!!Total`
+  )
 us_population = sum(population_by_state$value)
 
 latest_country_pop = read_csv('data/latest_country_pop.csv')
@@ -117,17 +123,17 @@ county_pops_sub = select(county_pops, GEO_ID, NAME, county_pop = DP05_0033E) %>%
 # remotes::install_git("https://git.sr.ht/~hrbrmstr/albersusa")
 # https://github.com/hrbrmstr/albersusa
 
-us_sf <- usa_sf("laea")
-cty_sf <- counties_sf("aeqd")
-
-state_geo_center = us_states_tigris@data %>%
-  mutate(
-    lat = as.numeric(INTPTLAT),
-    long = as.numeric(INTPTLON)
-  ) %>%
-  rename(
-    state_abbr = STUSPS
-  )
+# us_sf <- usa_sf("laea")
+# cty_sf <- counties_sf("aeqd")
+# 
+# state_geo_center = us_states_tigris@data %>%
+  # mutate(
+  #   lat = as.numeric(INTPTLAT),
+  #   long = as.numeric(INTPTLON)
+  # ) %>%
+  # rename(
+  #   state_abbr = STUSPS
+  # )
 
 ### get lockdown dates ###
 lockdown_dates = read_csv('data/lockdown_dates.csv') %>% 

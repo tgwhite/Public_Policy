@@ -1,6 +1,5 @@
 
 
-# install.packages(c('tidyverse', 'plotly', 'readxl', 'data.table', 'htmltab', 'incidence', 'cowplot', 'scales'))
 library(tidyverse)
 library(plotly)
 library(readxl)
@@ -356,6 +355,7 @@ add_extra_bars = function(a_plot, weekly_stats, the_hjust = 0.5, the_angle = 0, 
   }
 }
 
+us_max_scale = max(us_weekly_deaths$total_deaths) * 1.05
 us_main_plot = season_diffs_calcs_pct_of_excess %>% 
   filter(weeks_since_first_death >= 0,
          excess_deaths > 0, season == 2016) %>%
@@ -385,13 +385,13 @@ us_main_plot = season_diffs_calcs_pct_of_excess %>%
   
 us_main_plot_with_scale = us_main_plot + 
   scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
-  scale_y_continuous(labels = comma, breaks = seq(0, 18000, by = 2000))
+  scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000))
 fin_us_plot_scale = add_extra_bars(us_main_plot_with_scale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
 ggsave('output/U.S. covid_19 vs. 2016 flu season deaths.png', height = 6, width = 8, units = 'in', dpi = 800, plot = fin_us_plot_scale)
 
 us_main_plot_noscale = us_main_plot + 
   scale_fill_manual(guide = F, name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
-  scale_y_continuous(labels = comma, breaks = seq(0, 18000, by = 2000), limits = c(0, 18500))   
+  scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000), limits = c(0, us_max_scale))   
 fin_us_plot_noscale = add_extra_bars(us_main_plot_noscale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
 
 #### animate us plot ####
@@ -446,7 +446,7 @@ the_anim = ggplot(season_diffs_calcs_pct_of_excess_covid, aes(weeks_since_first_
     plot.caption = element_text(size = 10, face = 'italic', hjust = 0)
   ) +
   scale_alpha_manual(guide = F, values = alpha_vec, labels = c('Actual', 'Projected')) +
-  scale_y_continuous(labels = comma, breaks = seq(0, 16000, by = 2000))  +
+  scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000))  +
   scale_x_continuous(breaks = seq(0, 33, by = 5))
 
 animate(the_anim, nframes = 100,
@@ -507,12 +507,14 @@ main_plot = italy_season_2015 %>%
 
 italy_own_scale = main_plot + scale_y_continuous(labels = comma, breaks = seq(0, 6000, by = 1000)) 
 italy_us_scale = main_plot + 
-  scale_y_continuous(labels = comma, breaks = seq(0, 18000, by = 2000), limits = c(0, 18500))   
+  scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000), limits = c(0, us_max_scale))   
 
 # add_extra_bars(main_plot, italy_weekly_deaths, the_hjust = 1, the_angle = 90, projected_label = 'Projected      ')
 
-fin_italy_plot_ownscale = add_extra_bars(italy_own_scale, italy_weekly_deaths, the_hjust = 0.5, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
-fin_italy_plot = add_extra_bars(italy_us_scale, italy_weekly_deaths, the_hjust = 0.5, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
+fin_italy_plot_ownscale = add_extra_bars(italy_own_scale, italy_weekly_deaths, the_hjust = 0.5, the_angle = 90, 
+                                         projected_label = paste0('Projected', paste(rep(' ', 16), collapse = '')))
+fin_italy_plot = add_extra_bars(italy_us_scale, italy_weekly_deaths, the_hjust = 0.5, the_angle = 90, 
+                                projected_label = paste0('Projected', paste(rep(' ', 20), collapse = '')))
 
 ggsave('output/average_italian_flu_deaths.png', height = 6, width = 8, units = 'in', dpi = 800, plot = fin_italy_plot_ownscale)  
 

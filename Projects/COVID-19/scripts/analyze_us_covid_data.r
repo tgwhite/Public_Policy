@@ -21,7 +21,8 @@ library(fuzzyjoin)
 library(tigris)
 library(scales)
 library(ggthemes)
-library(usmap)
+# library(usmap)
+
 library(cowplot)
 library(RcppRoll)
 library(sqldf)
@@ -66,28 +67,35 @@ est_r0_window = function(new_cases, catch = F) {
 
 
 ### get state and US population data  ###
-fred_sqlite = dbConnect(SQLite(), dbname= "data/fred_sqlite.sqlite")
+# fred_sqlite = dbConnect(SQLite(), dbname= "data/fred_sqlite.sqlite")
+# 
+# state_economic_data = dbGetQuery(fred_sqlite, 'select * from state_economic_data') %>%
+#   mutate(
+#     date = as.Date(date, origin = '1970-01-01'),
+#     title_clean = str_extract(title, '(.* in )|(.* for )') %>% str_replace('( in )|( for )', ''),
+#     title_for_col = paste0("x_", str_replace_all(title_clean, '[ \\-%,]', '_'))
+#   ) %>% 
+#   arrange(state_name, title_clean, date) %>%
+#   data.table() %>%
+#   # accidentally inserted duplicate records for Alabama, dedup here (need to index this db later)
+#   unique(by = c('state_name', 'title_clean', 'date'))
 
-state_economic_data = dbGetQuery(fred_sqlite, 'select * from state_economic_data') %>%
-  mutate(
-    date = as.Date(date, origin = '1970-01-01'),
-    title_clean = str_extract(title, '(.* in )|(.* for )') %>% str_replace('( in )|( for )', ''),
-    title_for_col = paste0("x_", str_replace_all(title_clean, '[ \\-%,]', '_'))
-  ) %>% 
-  arrange(state_name, title_clean, date) %>%
-  data.table() %>%
-  # accidentally inserted duplicate records for Alabama, dedup here (need to index this db later)
-  unique(by = c('state_name', 'title_clean', 'date'))
+# 
+# annual_population_by_state = filter(state_economic_data, title_clean == 'Resident Population') %>%
+#   mutate(
+#     year = year(date)
+#   ) 
+# 
 
 
-annual_population_by_state = filter(state_economic_data, title_clean == 'Resident Population') %>%
-  mutate(
-    year = year(date)
-  ) 
+# population_by_state = filter(annual_population_by_state, date == max(date))
+population_by_state = read_csv('data/state_pop_2018.csv', skip = 1) %>%
+  rename(
+    state_name = `Geographic Area Name`,
+    value = `Estimate!!Total`
+  )
 
-population_by_state = filter(annual_population_by_state, date == max(date))
 us_population = sum(population_by_state$value)
-
 
 
 ## get shapefile data ## 
@@ -253,7 +261,7 @@ all_covid_data_diffs =
   ) %>%
   mutate(
     location_name = ifelse(is.na(state_name), location, state_name),
-    population = ifelse(is.na(state_pop), us_pop, state_pop) * 1000,
+    population = ifelse(is.na(state_pop), us_pop, state_pop),
     pop_100k = population/100000,
     state_pop = NULL, us_pop = NULL
   )
@@ -474,16 +482,14 @@ filter(all_covid_data_diffs_dates,
   theme_bw() +
   theme(strip.background = element_blank(), panel.grid = element_blank()) +
   scale_size(range = c(1, 5)) +
-  scale_x_date(date_breaks = '7 days', date_labels = '%b %d') +
+  scale_x_date(date_breaks = '14 days', date_labels = '%b %d') +
   geom_hline(aes(yintercept = 0)) +
   scale_y_continuous(labels = percent) +
   labs(
     y = '3 Day Avg. of New Cases / 7-Day Avg. Testing', x = '',
     title = 'U.S. COVID-19 Positive Test Rate, by State'
   )
-
-
-
+ggsave('output/positive_test_rate_by_state.png', height = 16, width = 20, units = 'in', dpi = 600)
 
 ## compute stats by lockdown period
 state_lockdown_period_calcs = group_by(all_covid_data_diffs_dates, location, lockdown_period) %>%
@@ -724,7 +730,7 @@ all_covid_data_diffs_dates %>%
 
 
 ##### plot tests per 100k #####
-
+all_covid_data_diffs_dates$new_tests_per_100k
 all_covid_data_diffs_dates %>%
   filter(days_since_case_20 >= 0, location == 'United States') %>%
   ggplot(aes(date, new_tests_per_100k)) +
@@ -732,8 +738,8 @@ all_covid_data_diffs_dates %>%
   geom_bar(stat = 'identity') +
   geom_line(aes(y = rolling7_tests_with_results/pop_100k), colour = 'red', size = 1) +
   labs(
-    x = '\nDays Since Case 20', 
-    y = 'Daily Tests Per 100k Population\n',
+    x = 'Date', 
+    y = 'Daily Tests Per 100k Population',
     title = 'COVID-19 Tests Per 100k Population', 
     subtitle = sprintf('United States, through %s. Red line is the rolling 7-day average.', max(all_covid_data_diffs_dates$date) %>% format('%B %d')),
     caption = 'Chart: Taylor G. White\nData: covidtracking.com'
