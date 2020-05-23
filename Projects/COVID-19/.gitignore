@@ -1,1 +1,3 @@
 *.RData
+*mobility_stringency.csv
+*countries_states_county_covid_calcs.csv
