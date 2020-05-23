@@ -448,10 +448,10 @@ the_anim = ggplot(season_diffs_calcs_pct_of_excess_covid, aes(weeks_since_first_
   scale_alpha_manual(guide = F, values = alpha_vec, labels = c('Actual', 'Projected')) +
   scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000))  +
   scale_x_continuous(breaks = seq(0, 33, by = 5))
-
-animate(the_anim, nframes = 100,
-        renderer = gifski_renderer("output/us_flu_vs_covid_deaths.gif"), 
-        height = 6, width = 8, units = 'in',  type = 'cairo-png', res = 200)
+# 
+# animate(the_anim, nframes = 100,
+#         renderer = gifski_renderer("output/us_flu_vs_covid_deaths.gif"), 
+#         height = 6, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
 # use shape of US 2016 flu season as proxy for Italian 2014-2015 season
 mean_italian_flu_season = mean(italian_excess_deaths$deaths)

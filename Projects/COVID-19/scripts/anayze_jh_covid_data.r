@@ -373,7 +373,4 @@ latest_country_pop = filter(wdi_data_stacked, indicator == 'SP.POP.TOTL',region 
 
 write.csv(latest_country_pop, 'data/latest_country_pop.csv', row.names = F)
 
-# 
-# world <- ne_countries(scale = "medium", returnclass = "sf")
-# ggplot(data = world) +
-#   geom_sf()
+

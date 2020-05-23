@@ -39,7 +39,7 @@ johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData
 # https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt
 
 setwd("~/../Downloads")
-# download.file('https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year/2020.csv.gz', destfile = '2020_weather.csv.gz')
+download.file('https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_year/2020.csv.gz', destfile = '2020_weather.csv.gz')
 
 weather_2020 = fread('2020_weather.csv.gz') %>% setorder(V1, V2, V3)
 names(weather_2020) = c('station', 'date', 'type', 'value', 'm_flag', 'q_flag', 's_flag', 'time')
@@ -136,6 +136,7 @@ oxford_stringency_index = read_csv("https://github.com/OxCGRT/covid-policy-track
     date = as.Date(Date %>% as.character(), format = '%Y%m%d')
   )
 
+
 ### disaggregate jh data -- some countries have provinces/states included ###
 johns_hopkins_cases_dt = arrange(johns_hopkins_cases, date, country_name) %>% data.table()
 johns_hopkins_cases_dt_agg = johns_hopkins_cases_dt[, {
@@ -191,6 +192,7 @@ apple_mobility_dat = read_csv(mobility_dataset_df$dsn) %>%
   mutate(
     entity_name = recode(entity_name, `Korea, South` = 'South Korea')
   )
+write.csv(apple_mobility_dat, 'data/mobility_stringency.csv', row.names = F)
 
 #### subset to walking data -- this seems more comparable across countries since driving/transit trades off ###
 walking_data = filter(apple_mobility_dat, transportation_type == 'walking', !is.na(mean_temp), !is.na(value))
@@ -258,7 +260,9 @@ smoothed_pct_of_predicted = map(unique(walking_data_fin$entity_name), function(t
   rename(
     mobility = value
   )
-  
+
+write.csv(smoothed_pct_of_predicted, 'data/covid_cases_mobility_stringency.csv', row.names = F)
+
 
 
 stats_by_region = group_by(smoothed_pct_of_predicted, entity_name) %>%
@@ -270,8 +274,6 @@ stats_by_region = group_by(smoothed_pct_of_predicted, entity_name) %>%
     last_date = max(date),
     last_val = smoothed_percent_of_predicted[date == last_date]
   )
-
-write.csv(smoothed_pct_of_predicted, 'data/covid_cases_mobility_stringency.csv', row.names = F)
 
 # ggplot(smoothed_pct_of_predicted, aes(StringencyIndex, percent_of_predicted)) +
 #   geom_point() +
@@ -411,7 +413,7 @@ final_plot = plot_grid(
 # final_plot
 save_plot('output/smoothed_mobility_index_data.png', plot = final_plot, 
           base_height = 12, 
-           base_width = 14, units = 'in', dpi = 400)
+           base_width = 14, units = 'in', dpi = 100)
 
 
 # smoothed_pct_of_predicted %>%

@@ -100,7 +100,12 @@ population_by_state = read_csv('data/state_pop_2018.csv', skip = 1) %>%
   )
 us_population = sum(population_by_state$value)
 
-latest_country_pop = read_csv('data/latest_country_pop.csv')
+latest_country_pop = read_csv('data/latest_country_pop.csv') %>%
+  mutate(
+    country = recode(country, `Korea, Rep.` = "South Korea")
+  )
+
+
 county_pops = read_csv('data/ACSDP5Y2018.DP05_data_with_overlays_2020-04-16T114550.csv', skip = 2, col_names = F)
 county_pops_names = read_csv('data/ACSDP5Y2018.DP05_data_with_overlays_2020-04-16T114550.csv', n_max = 1, col_names = T)
 names(county_pops) = names(county_pops_names)
@@ -116,7 +121,7 @@ county_pops_sub = select(county_pops, GEO_ID, NAME, county_pop = DP05_0033E) %>%
 # us_counties_shp = us_counties()
 # us_states_shp = us_states()
 # us_map = USAboundaries::us_boundaries()
-# us_states_tigris = tigris::states()
+us_states_tigris = tigris::states()
 # us_counties_tigris = tigris::counties()
 
 
@@ -125,15 +130,15 @@ county_pops_sub = select(county_pops, GEO_ID, NAME, county_pop = DP05_0033E) %>%
 
 # us_sf <- usa_sf("laea")
 # cty_sf <- counties_sf("aeqd")
-# 
-# state_geo_center = us_states_tigris@data %>%
-  # mutate(
-  #   lat = as.numeric(INTPTLAT),
-  #   long = as.numeric(INTPTLON)
-  # ) %>%
-  # rename(
-  #   state_abbr = STUSPS
-  # )
+
+state_geo_center = us_states_tigris@data %>%
+mutate(
+  lat = as.numeric(INTPTLAT),
+  long = as.numeric(INTPTLON)
+) %>%
+rename(
+  state_abbr = STUSPS
+)
 
 ### get lockdown dates ###
 lockdown_dates = read_csv('data/lockdown_dates.csv') %>% 
@@ -383,6 +388,9 @@ all_covid_data_diffs_clean =
   left_join(
     select(population_by_state, state_name, state_pop = value), by = c('state' = 'state_name')
   ) %>%
+  mutate(
+    country = recode(country, `Korea, South` = "South Korea")
+  ) %>%
   left_join(
     latest_country_pop %>% select(-year, country_pop = population), 
     by = c('country')
@@ -391,9 +399,8 @@ all_covid_data_diffs_clean =
     county_pops_sub
   ) %>%
   mutate(
-    state_pop = state_pop * 1000,
     population = coalesce(county_pop, state_pop, country_pop),
-    pop_100k = population / 100e5
+    pop_100k = population / 1e5
   )
 
 
@@ -532,7 +539,7 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_dates) %
   left_join(effective_r0_dat) %>%
   mutate(
     location = recode(location, `Korea, South` = "South Korea"),
-    country = recode(country, `Korea, South` = "South Korea"),
+    # country = recode(country, `Korea, South` = "South Korea"),
     location = ifelse(location_type == 'US State', state, location)
   ) %>%
   full_join(covid_cases_mobility_stringency_fin, by = c('date', 'location', 'location_type', 'country')) %>%
@@ -559,5 +566,6 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs_clean, case_dates) %
   rename(
     fips = fips.x
   )
+
 
 write.csv(all_covid_data_diffs_dates, 'data/countries_states_county_covid_calcs.csv', row.names = F)
