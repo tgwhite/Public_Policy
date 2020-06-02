@@ -116,17 +116,17 @@ last_vals = filter(combined_covid_dat_upd_mobility_stringency, location %in% nor
   )
 
 
-
-
 ##### map european crude mortality rates #####
 europe_sf = left_join(europe_cropped, stats_by_country, by  = c('name' = 'location'))
 
 ggplot(europe_sf) +
   geom_sf(aes(fill = total_deaths_100k)) +
-  geom_sf_label(data = filter(europe_sf, 
-                              name %in% c(nordics, top_europe)), 
+  # geom_sf_text(data = europe_sf,
+                # aes(label = paste0(comma(total_deaths_100k, accuracy = 0.1))), size = 2.5, fontface = 'bold') +
+  geom_sf_label(data = filter(europe_sf,
+                              name %in% c(nordics)),
                 aes(label = paste0(name, '\n', comma(total_deaths_100k, accuracy = 0.1))), size = 2.5) +
-  scale_fill_viridis_c(name = 'Deaths Per\n100k Pop.',option = 'C') +
+  scale_fill_viridis_c(name = 'Deaths Per\n100k Pop.',option = 'A') +
   theme_map() +
   labs(
     title = 'COVID-19 Crude Mortality Rates in Selected European Countries',
@@ -157,7 +157,7 @@ filter(combined_covid_dat_upd,
        ) %>%
 ggplot(aes(date, new_deaths_per_100k, colour = StringencyIndex)) +
   facet_wrap(~location_factor, ncol = 5) +
-  scale_color_viridis_c(name = 'Stringency Index',direction = 1, option = 'C') +
+  scale_color_viridis_c(name = 'Stringency Index',direction = 1, option = 'A') +
   stat_smooth(span = 0.2, aes(colour = StringencyIndex), se = F, colour = 'white') +
   geom_point(size = 1) +
   theme_dark() +
@@ -196,8 +196,8 @@ ggsave('output/daily_deaths_vs_stringency_sel_europe.png', height = 8, width = 1
 filter(combined_covid_dat_upd_mobility_stringency, location %in% c(nordics)) %>%
   ggplot(aes(date, walking_mobility_simple_smoother, group = location, colour = StringencyIndex, fill = StringencyIndex)) +
   geom_line(size = 1) +
-  scale_color_viridis_c(name='Stringency Index',option = 'C') +
-  scale_fill_viridis_c(name='Stringency Index',option = 'C') +
+  scale_color_viridis_c(name='Stringency Index',option = 'A') +
+  scale_fill_viridis_c(name='Stringency Index',option = 'A') +
   geom_label(data = last_vals, 
              aes(x = last_date + 3, y = last_mobility, fill = last_stringency, label = location), 
              colour = 'white', fontface = 'bold', size = 2.5) +

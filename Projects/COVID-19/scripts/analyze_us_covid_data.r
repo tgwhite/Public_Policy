@@ -369,6 +369,7 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
     tests_per_100k = value_total_tests / pop_100k,
     cases_per_100k = value_total_cases / pop_100k,
     new_cases_per_100k = cum_diff_value_total_cases / pop_100k,
+    new_deaths_per_100k = cum_diff_value_total_deaths / pop_100k,
     deaths_per_100k = value_total_deaths / pop_100k,
     diff_value_avg_3_total_tests_per_100k = diff_value_avg_3_total_tests / pop_100k,
     week_day = lubridate::wday(date),
@@ -790,6 +791,20 @@ select(all_covid_data_diffs_dates, location, population) %>%
   unique(by = 'location') 
 
 
+#### plot daily deaths (smoothed) by state ####
+ggplot(all_covid_data_diffs_dates, aes(date, new_deaths_per_100k)) +
+  facet_wrap(~location_factor, scales = 'free_y') +
+  stat_smooth(span = 0.3, se = F) +
+  theme_minimal() +
+  labs(
+    y = 'New Deaths per 100k Population',
+    x = '', 
+    title = 'New Deaths per 100k Population by U.S. State',
+    subtitle = sprintf('Data through %s', max(all_covid_data_diffs_dates$date) %>% format('%b %d'))
+  )
+ggsave('output/daily_deaths_per_100k_by_state.png', height = 10, width = 14, units = 'in', dpi= 600)
+
+
 ##### create map for all 50 states #####
 US_state_data = left_join(us_sf, latest_state_data, by = c('iso_3166_2' = 'location')) %>% left_join(state_geo_center, by = c('iso_3166_2' = 'state_abbr'))
 
@@ -812,8 +827,46 @@ ggplot() +
   )
 
 ggsave('output/latest_cv_state_map_50.png', height = 6, width = 8, units = 'in', dpi = 800)
+#### deaths by state #####
 
+ggplot() +
+  geom_sf(data = US_state_data, aes(fill = log(deaths_per_100k)), alpha = 1, size = 0.25) +
+  scale_fill_viridis(guide = F, option = 'A') +
+  geom_sf_text(data = US_state_data, aes(long, lat, label = comma(deaths_per_100k, accuracy = 1)),
+               colour = 'black', fontface='bold', size = 2) +
+  theme_map() +
+  labs(x = '', y = '',
+       caption = 'Chart: Taylor G. White\nData: covidtracking.com',
+       title = 'U.S. COVID-19 Deaths by State, Per 100k Population', subtitle = sprintf('As of %s',
+                                                                                       unique(format(latest_state_data$date, '%B %d')))) +
+  theme(
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    title = element_text(size = 16),
+    plot.subtitle = element_text(size = 11),
+    plot.caption = element_text(hjust = 0, face = 'italic', size = 10)
+  )
+ggsave('output/deaths_per_100k_by_state.png', height = 6, width = 8, units = 'in', dpi = 800)
 
+#### map of new deaths by state #####
+
+# ggplot() +
+#   geom_sf(data = US_state_data, aes(fill = log(new_cases_per_100k)), alpha = 1, size = 0.25) +
+#   scale_fill_viridis(guide = F, option = 'A') +
+#   geom_sf_text(data = US_state_data, aes(long, lat, label = comma(new_cases_per_100k, accuracy = 1)),
+#                colour = 'black', fontface='bold', size = 2) +
+#   theme_map() +
+#   labs(x = '', y = '',
+#        caption = 'Chart: Taylor G. White\nData: covidtracking.com',
+#        title = 'New U.S. COVID-19 Cases by State, Per 100k Population', subtitle = sprintf('As of %s',
+#                                                                                         unique(format(latest_state_data$date, '%B %d')))) +
+#   theme(
+#     axis.ticks = element_blank(),
+#     axis.text = element_blank(),
+#     title = element_text(size = 16),
+#     plot.subtitle = element_text(size = 11),
+#     plot.caption = element_text(hjust = 0, face = 'italic', size = 10)
+#   )
 
 # world <- ne_countries(scale = "medium", returnclass = "sf")
 # usa <- subset(world, admin == "United States of America")
