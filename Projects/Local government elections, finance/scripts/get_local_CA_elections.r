@@ -73,7 +73,7 @@ last_file_index = which(names(election_files_read_in) == last_valid_file)
 all_files_stacked = election_files_read_in[1:last_file_index] %>% bind_rows() %>%
   mutate(
     date = as.Date(date),
-    race_unique = paste(year, raceid),
+    race_unique = paste(date, raceid),
     judge = office %>% tolower() %>% str_detect('judge'),
     attorney = office %>% tolower() %>% str_detect('attorney|prosecutor'),
     mayor = office %>% tolower() %>% str_detect('mayor'),
@@ -102,7 +102,6 @@ all_files_stacked_dt$area
 
 ## get the number of candidates for a race and keep the top N winners
 ## find the next lowest
-
 
 stats_by_race = all_files_stacked_dt[, {
   n_to_vote_for = vote_num[1]
@@ -141,15 +140,28 @@ stats_by_race = all_files_stacked_dt[, {
     lowest_winner = lowest_winner,
     top_loser = top_loser,
     loser_margin = loser_margin,
-    loser_margin_pct = loser_margin_pct
+    loser_margin_pct = loser_margin_pct,
+    loser_difference_median_winner = loser_margin / median(top_n_winners),
+    avg_votes_per_office = total_votes / n_to_vote_for
   )
   
-}, by = list(race_unique)]
+}, by = list(race_unique)] %>%
+  mutate(
+    entity_name = str_to_title(place),
+    year = year(date),
+    office_pretty = str_to_title(office_type_fin)
+  )
+
+write.csv(stats_by_race, 'data/ca_election_results_by_race.csv', row.names = F)
+write.csv(all_files_stacked, 'data/ca_all_election_results.csv', row.names = F)
+
+
+# get candidates per office, typical winning margin 
+
 
 santa_monica_elections = filter(stats_by_race, str_detect(place %>% tolower(), 'monica'))
 
 
-santa_monica_elections$loser_margin
 ggplot(santa_monica_elections, aes(race_unique, loser_margin_pct, fill = n_candidates_per_office)) +
   geom_bar(stat = 'identity') +
   # geom_point() +
