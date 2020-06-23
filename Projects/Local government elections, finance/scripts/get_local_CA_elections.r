@@ -155,12 +155,28 @@ stats_by_race = all_files_stacked_dt[, {
 write.csv(stats_by_race, 'data/ca_election_results_by_race.csv', row.names = F)
 write.csv(all_files_stacked, 'data/ca_all_election_results.csv', row.names = F)
 
+head(stats_by_race)
 
-# get candidates per office, typical winning margin 
+
+stats_by_race_year = group_by(stats_by_race, year, office_type_fin) %>%
+  summarize(
+    mean_n_candidates_per_office = mean(n_candidates_per_office),
+    mean_loser_margin_pct = mean(loser_margin_pct, na.rm = T),
+    n_races = n()
+  ) %>%
+  ungroup() %>%
+  mutate(
+    odd_year = year %% 2 == 1
+  )
+ggplot(stats_by_race_year, aes(year, mean_loser_margin_pct)) +
+  facet_wrap(~office_type_fin) +
+  geom_line(aes(colour = office_type_fin)) +
+  geom_point(aes(shape = odd_year, size = mean_n_candidates_per_office))
+
 
 
 santa_monica_elections = filter(stats_by_race, str_detect(place %>% tolower(), 'monica'))
-
+write.csv(santa_monica_elections, 'data/santa_monica_elections.csv')
 
 ggplot(santa_monica_elections, aes(race_unique, loser_margin_pct, fill = n_candidates_per_office)) +
   geom_bar(stat = 'identity') +
