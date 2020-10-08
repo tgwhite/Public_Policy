@@ -386,12 +386,21 @@ us_main_plot = season_diffs_calcs_pct_of_excess %>%
 us_main_plot_with_scale = us_main_plot + 
   scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
   scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000))
-fin_us_plot_scale = add_extra_bars(us_main_plot_with_scale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
+fin_us_plot_scale = add_extra_bars(us_main_plot_with_scale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 8), collapse = '')))
 ggsave('output/U.S. covid_19 vs. 2016 flu season deaths.png', height = 6, width = 8, units = 'in', dpi = 800, plot = fin_us_plot_scale)
 
 us_main_plot_noscale = us_main_plot + 
   scale_fill_manual(guide = F, name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
   scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000), limits = c(0, us_max_scale))   
+
+
+us_main_plot_scale = us_main_plot + 
+  scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
+  scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000), limits = c(0, us_max_scale))   +
+  theme(legend.position = 'bottom')
+
+
+
 fin_us_plot_noscale = add_extra_bars(us_main_plot_noscale, us_weekly_deaths, the_angle = 90, projected_label = paste0('Projected', paste(rep(' ', 30), collapse = '')))
 
 #### animate us plot ####
@@ -416,7 +425,7 @@ flu_burden_table = filter(historical_us_flu_burden, season %in% season_diffs_cal
     `Flu Deaths` = death_estimate_pretty
   )
 
-the_anim = ggplot(season_diffs_calcs_pct_of_excess_covid, aes(weeks_since_first_death)) + 
+the_anim = ggplot(season_diffs_calcs_pct_of_excess_covid %>% filter(season < 2019), aes(weeks_since_first_death)) + 
   theme_bw() +
   geom_bar(aes(y = excess_deaths, alpha = paste0(flu_obs), fill = flu_virus), stat = 'identity') +
   geom_bar(aes(y = projected_deaths, alpha = paste0(obs), fill = covid_virus),
@@ -424,8 +433,8 @@ the_anim = ggplot(season_diffs_calcs_pct_of_excess_covid, aes(weeks_since_first_
   geom_bar(aes(y = total_deaths, alpha = paste0(obs), fill = covid_virus),
            stat = 'identity', colour = 'black') +
   annotate("text", x = max(us_weekly_deaths$weeks_since_first_death), y = 12500, label = "Projected", angle = 90, size = 2.75) +
-  scale_fill_manual(name = '', values = c('Influenza' = 'gray30', 'COVID-19' = 'red')) +
-  annotation_custom(tableGrob(flu_burden_table, rows = NULL), xmin=20, xmax=30, ymin=12000, ymax=12000) +
+  scale_fill_manual(name = '', values = c('Influenza' = 'black', 'COVID-19' = 'red')) +
+  annotation_custom(tableGrob(flu_burden_table %>% filter(Season < 2019), rows = NULL), xmin=20, xmax=30, ymin=12000, ymax=12000) +
   transition_states(
      season,
      transition_length = 2,
@@ -448,10 +457,10 @@ the_anim = ggplot(season_diffs_calcs_pct_of_excess_covid, aes(weeks_since_first_
   scale_alpha_manual(guide = F, values = alpha_vec, labels = c('Actual', 'Projected')) +
   scale_y_continuous(labels = comma, breaks = seq(0, us_max_scale, by = 2000))  +
   scale_x_continuous(breaks = seq(0, 33, by = 5))
-# 
-# animate(the_anim, nframes = 100,
-#         renderer = gifski_renderer("output/us_flu_vs_covid_deaths.gif"), 
-#         height = 6, width = 8, units = 'in',  type = 'cairo-png', res = 200)
+
+animate(the_anim, nframes = 100,
+        renderer = gifski_renderer("output/us_flu_vs_covid_deaths.gif"),
+        height = 6, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
 # use shape of US 2016 flu season as proxy for Italian 2014-2015 season
 mean_italian_flu_season = mean(italian_excess_deaths$deaths)

@@ -169,6 +169,8 @@ quarterly_gdp = fread('quarterly_gdp.csv') %>%
     country = countrycode(LOCATION, origin = 'iso3c', destination = 'country.name')
   )
 
+View(quarterly_gdp)
+
 monthly_unemployment_rate = fread('unemployment_rate.csv') %>%
   filter(SUBJECT == 'TOT', FREQUENCY == 'M') %>%
   mutate(
@@ -249,25 +251,117 @@ covid_ur_indexes = monthly_2020_unemployment_rate_dt[, {
 # https://fiscaldata.treasury.gov/datasets/monthly-statement-public-debt/summary-of-treasury-securities-outstanding
 
 
-latest_jh_data_with_growth = inner_join(
-  latest_jh_data, 
+
+
+covid_deaths_by_country$country %>% unique()
+intersect(unique(quarterly_gdp$country), unique(covid_ur_indexes$country))
+intersect(c(unique(quarterly_gdp$country), unique(covid_ur_indexes$country)), unique(covid_deaths_by_country$country))
+
+
+latest_jh_data_with_growth = left_join(
+  covid_deaths_by_country, 
   filter(quarterly_gdp, year_qtr == max(year_qtr)) %>% rename(qtr_gdp_change = Value_Pct) ) %>%
-  inner_join(covid_ur_indexes)
+  left_join(covid_ur_indexes) %>%
+  filter(
+    !is.na(mortality_rate) & !is.na(qtr_gdp_change),
+    country != 'China'
+  ) %>%
+  mutate(
+    mortality_rank = cume_dist(-mortality_rate),
+    gdp_rank = cume_dist(qtr_gdp_change),
+    overall_rank = mortality_rank * gdp_rank
+  ) %>%
+  arrange(-overall_rank) %>%
+  mutate(
+    country_ranked_overall = factor(country, levels = rev(country))
+  ) %>%
+  arrange(
+    -mortality_rank
+  ) %>%
+  mutate(
+    country_ranked_mortality = factor(country, levels = rev(country))
+  ) %>%
+  arrange(
+    -gdp_rank
+  ) %>%
+  mutate(
+    country_ranked_gdp = factor(country, levels = rev(country))
+  )
 
 
-ggplot(latest_jh_data_with_growth, aes(qtr_gdp_change, mortality_rate)) +
-  geom_point(aes(size = mean_index-1, colour = mean_index-1)) +
-  geom_text(aes(label = country)) +
+median_growth = median(latest_jh_data_with_growth$qtr_gdp_change)
+median_mortality = median(latest_jh_data_with_growth$mortality_rate)
+
+mortality_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_mortality, mortality_rate * 1e5, fill = mortality_rate * 1e5)) +
+  geom_bar(stat = 'identity') +
+  scale_y_continuous(labels = comma) +
+  scale_fill_viridis_c(option = 'A', labels = comma, name = 'Mortality Rate') +
+  coord_flip() +
+  theme_bw() +
+  labs(x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
+  geom_hline(aes(yintercept = median_mortality*1e5), linetype = 'dashed') +
+  theme(legend.position = 'right') +
+  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_mortality*1e5, label = paste('Median:', comma(median_mortality*1e5)))
+mortality_rank_plot
+
+gdp_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_gdp, qtr_gdp_change, fill = qtr_gdp_change)) +
+  geom_bar(stat = 'identity', colour = 'gray') +
+  coord_flip() +
+  theme_bw() +
+  scale_y_continuous(labels = percent) +
+  labs(x = '', y = '\nQ2 GDP Change from Prior Period') +
+  scale_fill_viridis_c(option = 'A', direction = -1, labels = function(x) {percent(x, accuracy = 0.1)}, name = 'Q2 GDP Change') +
+  geom_hline(aes(yintercept = median_growth), linetype = 'dashed') +
+  theme(legend.position = 'right') +
+  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_growth, label = paste('Median:', percent(median_growth, accuracy = 0.1)))
+
+
+overall_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_overall, overall_rank, fill = overall_rank)) +
+  geom_bar(stat = 'identity') +
+  scale_y_continuous(labels = percent) +
+  scale_fill_viridis_c(option = 'A', direction = -1) +
+  coord_flip()
+
+
+combined_plot = plot_grid(mortality_rank_plot, gdp_rank_plot)
+save_plot('output/mortality_growth_comparison_oecd.png', base_height = 10, base_width = 16, 
+          units = 'in', dpi = 600, plot = combined_plot)
+shell('explorer .')
+
+
+head(latest_jh_data_with_growth)
+filter(latest_jh_data_with_growth, !is.na(mortality_rate)) %>% pull(country) %>% n_distinct()
+filter(latest_jh_data_with_growth, !is.na(qtr_gdp_change) & !is.na(mortality_rate)) %>% pull(country) %>% n_distinct()
+filter(latest_jh_data_with_growth, !is.na(qtr_gdp_change) & !is.na(mean_index)) %>% pull(country) %>% n_distinct()
+
+View(latest_jh_data_with_growth)
+
+
+
+
+ggplot(latest_jh_data_with_growth %>% filter(country != 'China'), aes(qtr_gdp_change, mortality_rate)) +
+  # geom_point(aes(size = population)) +
+  geom_hline(aes(yintercept = 0)) +
+  geom_vline(aes(xintercept = 0)) +
+  geom_text(aes(label = country, size = population), show.legend = F) +
+  geom_hline(aes(yintercept = median_mortality), linetype = 'dashed', colour = 'firebrick', size = 0.75) +
+  geom_vline(aes(xintercept = median_growth), linetype = 'dashed', colour = 'firebrick', size = 0.75) +
   scale_color_viridis_c() +
   # geom_hline(aes(yintercept = 0)) +
   # geom_vline(aes(xintercept = 0)) +
-  scale_size(labels = percent, range = c(1.5, 12)) +
+  scale_size( range = c(3, 12)) +
   scale_y_continuous(labels = percent) +
   scale_x_continuous(labels = percent) +
   labs(
     y = 'COVID-19 Mortality Rate\n(Deaths / Population)', 
     x = 'Q2 GDP Growth'
-  )
+  ) +
+  stat_smooth(method = 'lm', se = F) +
+  coord_cartesian(ylim = c(-.00025, 0.001))
+
+
+
+
 
 nordics = c('Sweden', 'Finland', 'Norway', 'Denmark')
 selected_countries = c('Sweden', 'Finland', 'Norway', 'Denmark', 'Germany', 'United Kingdom', 'Italy', 'Spain', 'France')
