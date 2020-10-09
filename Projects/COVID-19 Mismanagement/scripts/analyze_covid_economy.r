@@ -288,20 +288,22 @@ latest_jh_data_with_growth = left_join(
     country_ranked_gdp = factor(country, levels = rev(country))
   )
 
+setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/output")
+
 
 median_growth = median(latest_jh_data_with_growth$qtr_gdp_change)
 median_mortality = median(latest_jh_data_with_growth$mortality_rate)
 
 mortality_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_mortality, mortality_rate * 1e5, fill = mortality_rate * 1e5)) +
-  geom_bar(stat = 'identity') +
+  geom_bar(stat = 'identity', colour = 'gray') +
   scale_y_continuous(labels = comma) +
   scale_fill_viridis_c(option = 'A', labels = comma, name = 'Mortality Rate') +
   coord_flip() +
   theme_bw() +
   labs(x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
-  geom_hline(aes(yintercept = median_mortality*1e5), linetype = 'dashed') +
-  theme(legend.position = 'right') +
-  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_mortality*1e5, label = paste('Median:', comma(median_mortality*1e5)))
+  geom_hline(aes(yintercept = median_mortality*1e5), linetype = 'dashed', colour = 'gray', size = 0.75) +
+  theme(legend.position = 'right', panel.grid.minor = element_blank()) +
+  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_mortality*1e5, label = paste('Median:', comma(median_mortality*1e5)), fontface = 'bold')
 mortality_rank_plot
 
 gdp_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_gdp, qtr_gdp_change, fill = qtr_gdp_change)) +
@@ -311,10 +313,10 @@ gdp_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_gdp, qtr_g
   scale_y_continuous(labels = percent) +
   labs(x = '', y = '\nQ2 GDP Change from Prior Period') +
   scale_fill_viridis_c(option = 'A', direction = -1, labels = function(x) {percent(x, accuracy = 0.1)}, name = 'Q2 GDP Change') +
-  geom_hline(aes(yintercept = median_growth), linetype = 'dashed') +
-  theme(legend.position = 'right') +
-  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_growth, label = paste('Median:', percent(median_growth, accuracy = 0.1)))
-
+  geom_hline(aes(yintercept = median_growth), linetype = 'dashed', colour = 'gray', size = 0.75) +
+  theme(legend.position = 'right', panel.grid.minor = element_blank()) +
+  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_growth, label = paste('Median:', percent(median_growth, accuracy = 0.1)), fontface = 'bold')
+gdp_rank_plot
 
 overall_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_overall, overall_rank, fill = overall_rank)) +
   geom_bar(stat = 'identity') +
@@ -324,7 +326,7 @@ overall_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_overal
 
 
 combined_plot = plot_grid(mortality_rank_plot, gdp_rank_plot)
-save_plot('output/mortality_growth_comparison_oecd.png', base_height = 10, base_width = 16, 
+save_plot('mortality_growth_comparison_oecd.png', base_height = 10, base_width = 18, 
           units = 'in', dpi = 600, plot = combined_plot)
 shell('explorer .')
 
@@ -372,7 +374,6 @@ europe_cropped
 nordics_quarterly_gdp = filter(quarterly_gdp, country %in% nordics, year >= 2018)
 nordics_monthly_unemployment_rate  = filter(monthly_2020_unemployment_rate_dt_indexes, country %in% nordics)
 
-setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/output")
 
 ggplot(nordics_quarterly_gdp, aes(year_qtr, Value_Pct, colour = country)) +
   theme_bw() +
