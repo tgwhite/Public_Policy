@@ -16,6 +16,7 @@ setwd("~/Public_Policy/Projects/COVID-19")
 nordics = c('Sweden', 'Finland', 'Norway', 'Denmark')
 top_europe = c('Spain', 'United Kingdom', 'Italy', 'France', 'Germany', 'Belgium')
 
+##### get map data #####
 world <- ne_countries(scale = "medium", returnclass = "sf")
 europe = filter(world, continent == 'Europe') %>%
   mutate(
@@ -26,10 +27,6 @@ europe = filter(world, continent == 'Europe') %>%
 europe_cropped <- st_crop(europe, xmin = -24, xmax = 45,
                           ymin = 30, ymax = 73)
 
-
-# yearqtr('2020-1', format = '%Y-%q')
-# a = as.yearqtr("2001 Q3")
-# as.Date(a)
 
 # countrycode(sourcevar = 'South Korea', destination = 'iso3c', origin = 'un.name.en')
 
@@ -90,15 +87,11 @@ latest_country_pop = filter(wdi_data_stacked, indicator == 'SP.POP.TOTL', region
 
 ##### Covid data #####
 
-##### pull in data ####
 johns_hopkins_cases = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv') %>%
   pivot_longer(cols = matches('^([0-9])'), names_to = 'date', values_to = 'cases')
 
 johns_hopkins_deaths = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv') %>%
   pivot_longer(cols = matches('^([0-9])'), names_to = 'date', values_to = 'deaths')
-
-# johns_hopkins_recovered = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv') %>%
-#   pivot_longer(cols = matches('^([0-9])'), names_to = 'date', values_to = 'recovered')
 
 jh_joined = left_join(johns_hopkins_cases, johns_hopkins_deaths, by = c('Province/State', 'Country/Region', 'date')) %>%
   select(-contains('lat'), -contains('long')) %>%
@@ -118,12 +111,49 @@ jh_with_pop = mutate(jh_joined, is_country = is.na(province_state)) %>%
                      `Korea, South` = 'South Korea', Czechia = 'Czech Republic', Slovakia = 'Slovak Republic')
   ) 
 
+
 deaths_by_country_province = group_by(jh_with_pop, country, province_state) %>%
   summarize(
-    last_deaths = tail(deaths, 1),
+    max_cases = max(cases),
     max_deaths = max(deaths),
     last_date = max(date_upd)
   )
+
+covid_deaths_by_country_date = group_by(jh_with_pop, country, province_state, date_upd) %>%
+  summarize(
+    cumulative_cases = max(cases),
+    cumulative_deaths = sum(deaths)
+  ) %>%
+  group_by(country, date_upd) %>%
+  summarize(
+    cumulative_cases = sum(cumulative_cases),
+    cumulative_deaths = sum(cumulative_deaths)
+  ) %>%
+  arrange(country, date) %>%
+  data.table()
+
+
+covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
+  
+  list(
+    date = date, 
+    new_cases = c(NA, diff(total_cases)),
+    new_deaths = c(NA, diff(total_deaths)),
+    total_cases = total_cases, 
+    total_deaths = total_deaths
+  )
+  
+}, by = list(country)] %>%
+  full_join(
+    latest_country_pop
+  ) %>%
+  mutate(
+    new_deaths_per_100k = (new_deaths / population) * 1e5,
+    new_cases_per_100k = (new_cases / population) * 1e5,
+    mortality_rate = total_deaths / population,
+    mortality_per_100k = mortality_rate * 1e5
+  ) 
+
 
 covid_deaths_by_country = group_by(deaths_by_country_province, country) %>%
   summarize(
@@ -148,10 +178,47 @@ covid_deaths_by_country = group_by(deaths_by_country_province, country) %>%
     population >= 1e5
   ) 
 
-ggplot(covid_deaths_by_country %>% head(50), aes(country_mort, mortality_rate, fill = income)) +
-  geom_bar(stat = 'identity') +
-  coord_flip()
+##### stringency and mobility data #####
 
+setwd("~/Public_Policy/Projects/COVID-19")
+
+oxford_stringency_index = read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv") %>%
+  rename(
+    country = CountryName
+  ) %>%
+  mutate(
+    entity_name = ifelse(is.na(RegionName) | RegionName == "", country, RegionName),
+    stringency_geo_type = ifelse(entity_name == country, 'country', 'region'),
+    date = as.Date(Date %>% as.character(), format = '%Y%m%d')
+  ) 
+
+country_stringency = filter(oxford_stringency_index, stringency_geo_type == 'country')
+
+
+mobility_dataset_df = tibble(
+  dsn = list.files('data', pattern = 'applemobilitytrends', full.names = T),
+  date = str_extract(dsn, '[0-9]{4}-[0-9]{2}-[0-9]{2}') %>% as.Date()
+) %>% 
+  arrange(date) %>% 
+  tail(1)
+
+apple_mobility_dat = read_csv(mobility_dataset_df$dsn) %>%
+  pivot_longer(cols = matches('^([0-9+]{4})'), names_to = 'date') %>%
+  mutate(
+    date = as.Date(date),
+    week_day = lubridate::wday(date),
+    weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
+    entity_name = recode(region, 
+                         `UK` = 'United Kingdom',
+                         `San Francisco - Bay Area` = 'San Francisco', 
+                         `Republic of Korea` = 'South Korea')
+  ) %>%
+  left_join(
+    country_stringency, by = c('entity_name', 'date')
+  ) %>%
+  mutate(
+    entity_name = recode(entity_name, `Korea, South` = 'South Korea')
+  )
 
 ##### OECD Data #####
 
@@ -168,8 +235,6 @@ quarterly_gdp = fread('quarterly_gdp.csv') %>%
     year_qtr = as.yearqtr(paste(year, quarter, sep = '-'), format = '%Y-%q'),
     country = countrycode(LOCATION, origin = 'iso3c', destination = 'country.name')
   )
-
-View(quarterly_gdp)
 
 monthly_unemployment_rate = fread('unemployment_rate.csv') %>%
   filter(SUBJECT == 'TOT', FREQUENCY == 'M') %>%
@@ -214,12 +279,6 @@ monthly_2020_unemployment_rate_dt_indexes = monthly_2020_unemployment_rate_dt[, 
   )
   
 }, by = list(country)]
-# 
-# ggplot(monthly_2020_unemployment_rate_dt_indexes, aes(month_date, val_index, colour = country)) +
-#   geom_line() +
-#   geom_point() +
-#   geom_text(data = filter(monthly_2020_unemployment_rate_dt_indexes, is_last_date), aes(label = country))
-
 
 covid_ur_indexes = monthly_2020_unemployment_rate_dt[, {
   starting_value = Value_Pct[1]
@@ -252,11 +311,7 @@ covid_ur_indexes = monthly_2020_unemployment_rate_dt[, {
 
 
 
-
-covid_deaths_by_country$country %>% unique()
-intersect(unique(quarterly_gdp$country), unique(covid_ur_indexes$country))
-intersect(c(unique(quarterly_gdp$country), unique(covid_ur_indexes$country)), unique(covid_deaths_by_country$country))
-
+##### analysis -- growth and mortality rankings #####
 
 latest_jh_data_with_growth = left_join(
   covid_deaths_by_country, 
@@ -288,13 +343,14 @@ latest_jh_data_with_growth = left_join(
     country_ranked_gdp = factor(country, levels = rev(country))
   )
 
-setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/output")
 
+setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/output")
 
 median_growth = median(latest_jh_data_with_growth$qtr_gdp_change)
 median_mortality = median(latest_jh_data_with_growth$mortality_rate)
 
-mortality_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_mortality, mortality_rate * 1e5, fill = mortality_rate * 1e5)) +
+
+mortality_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_mortality, mortality_rate, fill = mortality_rate)) +
   geom_bar(stat = 'identity', colour = 'gray') +
   scale_y_continuous(labels = comma) +
   scale_fill_viridis_c(option = 'A', labels = comma, name = 'Mortality Rate') +
@@ -303,7 +359,7 @@ mortality_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_mort
   labs(x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
   geom_hline(aes(yintercept = median_mortality*1e5), linetype = 'dashed', colour = 'gray', size = 0.75) +
   theme(legend.position = 'right', panel.grid.minor = element_blank()) +
-  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_mortality*1e5, label = paste('Median:', comma(median_mortality*1e5)), fontface = 'bold')
+  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_mortality*1e5, label = paste('Median:', comma(median_mortality)), fontface = 'bold')
 mortality_rank_plot
 
 gdp_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_gdp, qtr_gdp_change, fill = qtr_gdp_change)) +
