@@ -1,4 +1,4 @@
-library(tidyverse)
+(tidyverse)
 library(WDI)
 library(data.table)
 library(countrycode)
@@ -84,7 +84,50 @@ latest_country_pop = filter(wdi_data_stacked, indicator == 'SP.POP.TOTL', region
   mutate(
     country = recode(country, `Korea, Rep.` = 'South Korea', `Russian Federation` = 'Russia')
   )
+sum(latest_country_pop$population)
 
+
+##### stringency and mobility data #####
+
+setwd("~/Public_Policy/Projects/COVID-19")
+
+oxford_stringency_index = read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv") %>%
+  rename(
+    country = CountryName
+  ) %>%
+  mutate(
+    entity_name = ifelse(is.na(RegionName) | RegionName == "", country, RegionName),
+    stringency_geo_type = ifelse(entity_name == country, 'country', 'region'),
+    date = as.Date(Date %>% as.character(), format = '%Y%m%d')
+  ) 
+
+country_stringency = filter(oxford_stringency_index, stringency_geo_type == 'country')
+
+
+mobility_dataset_df = tibble(
+  dsn = list.files('data', pattern = 'applemobilitytrends', full.names = T),
+  date = str_extract(dsn, '[0-9]{4}-[0-9]{2}-[0-9]{2}') %>% as.Date()
+) %>% 
+  arrange(date) %>% 
+  tail(1)
+
+apple_mobility_dat = read_csv(mobility_dataset_df$dsn) %>%
+  pivot_longer(cols = matches('^([0-9+]{4})'), names_to = 'date') %>%
+  mutate(
+    date = as.Date(date),
+    week_day = lubridate::wday(date),
+    weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
+    entity_name = recode(region, 
+                         `UK` = 'United Kingdom',
+                         `San Francisco - Bay Area` = 'San Francisco', 
+                         `Republic of Korea` = 'South Korea')
+  ) %>%
+  left_join(
+    country_stringency, by = c('entity_name', 'date')
+  ) %>%
+  mutate(
+    entity_name = recode(entity_name, `Korea, South` = 'South Korea')
+  )
 
 ##### Covid data #####
 
@@ -161,7 +204,8 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
     new_cases_per_100k = (new_cases / population) * 1e5,
     mortality_rate = total_deaths / population,
     mortality_per_100k = mortality_rate * 1e5
-  ) 
+  ) %>%
+  left_join(country_stringency)
 
 
 
@@ -189,47 +233,6 @@ covid_deaths_by_country = group_by(deaths_by_country_province, country) %>%
     population >= 1e5
   ) 
 
-##### stringency and mobility data #####
-
-setwd("~/Public_Policy/Projects/COVID-19")
-
-oxford_stringency_index = read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv") %>%
-  rename(
-    country = CountryName
-  ) %>%
-  mutate(
-    entity_name = ifelse(is.na(RegionName) | RegionName == "", country, RegionName),
-    stringency_geo_type = ifelse(entity_name == country, 'country', 'region'),
-    date = as.Date(Date %>% as.character(), format = '%Y%m%d')
-  ) 
-
-country_stringency = filter(oxford_stringency_index, stringency_geo_type == 'country')
-
-
-mobility_dataset_df = tibble(
-  dsn = list.files('data', pattern = 'applemobilitytrends', full.names = T),
-  date = str_extract(dsn, '[0-9]{4}-[0-9]{2}-[0-9]{2}') %>% as.Date()
-) %>% 
-  arrange(date) %>% 
-  tail(1)
-
-apple_mobility_dat = read_csv(mobility_dataset_df$dsn) %>%
-  pivot_longer(cols = matches('^([0-9+]{4})'), names_to = 'date') %>%
-  mutate(
-    date = as.Date(date),
-    week_day = lubridate::wday(date),
-    weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
-    entity_name = recode(region, 
-                         `UK` = 'United Kingdom',
-                         `San Francisco - Bay Area` = 'San Francisco', 
-                         `Republic of Korea` = 'South Korea')
-  ) %>%
-  left_join(
-    country_stringency, by = c('entity_name', 'date')
-  ) %>%
-  mutate(
-    entity_name = recode(entity_name, `Korea, South` = 'South Korea')
-  )
 
 ##### OECD Data #####
 
@@ -362,34 +365,47 @@ median_mortality = median(latest_jh_data_with_growth$mortality_rate) * 1e5
 
 
 mortality_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_mortality, mortality_per_100k, fill = mortality_per_100k)) +
-  geom_bar(stat = 'identity', colour = 'gray') +
+  geom_bar(stat = 'identity', fill = 'steelblue') +
   scale_y_continuous(labels = comma) +
-  scale_fill_viridis_c(option = 'A', labels = comma, name = 'Mortality Rate') +
+  # scale_fill_viridis_c(option = 'A', labels = comma, name = 'Mortality Rate') +
   coord_flip() +
   theme_bw() +
   labs(x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
-  geom_hline(aes(yintercept = median_mortality), linetype = 'dashed', colour = 'gray', size = 0.75) +
-  theme(legend.position = 'right', panel.grid.minor = element_blank()) +
-  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_mortality, label = paste('Median:', comma(median_mortality)), fontface = 'bold')
+  geom_hline(aes(yintercept = median_mortality), colour = 'darkslategray', size = 0.75) +
+  theme(
+    axis.title = element_text(size = 15),
+    axis.text = element_text(size = 15),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 13),
+    legend.position = 'right', 
+    panel.grid.minor = element_blank()
+    ) +
+  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_mortality, label = paste('Median:', comma(median_mortality)), fontface = 'bold', size = 6)
 mortality_rank_plot
 
 gdp_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_gdp, qtr_gdp_change, fill = qtr_gdp_change)) +
-  geom_bar(stat = 'identity', colour = 'gray') +
+  geom_bar(stat = 'identity', fill = 'steelblue') +
   coord_flip() +
   theme_bw() +
   scale_y_continuous(labels = percent) +
-  labs(x = '', y = '\nQ2 GDP Change from Prior Period') +
-  scale_fill_viridis_c(option = 'A', direction = -1, labels = function(x) {percent(x, accuracy = 0.1)}, name = 'Q2 GDP Change') +
-  geom_hline(aes(yintercept = median_growth), linetype = 'dashed', colour = 'gray', size = 0.75) +
-  theme(legend.position = 'right', panel.grid.minor = element_blank()) +
-  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_growth, label = paste('Median:', percent(median_growth, accuracy = 0.1)), fontface = 'bold')
+  labs(x = '', y = '\nQ2 Economic Growth\nChange from Prior Period') +
+  # scale_fill_viridis_c(option = 'A', direction = 1, labels = function(x) {percent(x, accuracy = 0.1)}, name = 'Q2 GDP Change') +
+  geom_hline(aes(yintercept = median_growth), colour = 'darkslategray', size = 0.75) +
+  theme(
+    axis.title = element_text(size = 15),
+    axis.text = element_text(size = 15),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 13),
+    legend.position = 'right', 
+    panel.grid.minor = element_blank()) +
+  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_growth, label = paste('Median:', percent(median_growth, accuracy = 0.1)), fontface = 'bold', size = 6)
 gdp_rank_plot
-
-overall_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_overall, overall_rank, fill = overall_rank)) +
-  geom_bar(stat = 'identity') +
-  scale_y_continuous(labels = percent) +
-  scale_fill_viridis_c(option = 'A', direction = -1) +
-  coord_flip()
+# 
+# overall_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_overall, overall_rank, fill = overall_rank)) +
+#   geom_bar(stat = 'identity') +
+#   scale_y_continuous(labels = percent) +
+#   scale_fill_viridis_c(option = 'A', direction = -1) +
+#   coord_flip()
 
 
 combined_plot = plot_grid(mortality_rank_plot, gdp_rank_plot)
@@ -508,6 +524,83 @@ ggsave('europe_mortality_rate_map.png', height = 9, width = 12, units = 'in', dp
 
 
 ##### analysis --- covid response and effectiveness #####
+covid_stats_by_country = 
+  covid_deaths_by_country_date_diffs %>%
+  filter(population > 10e6) %>%
+  group_by(country, income) %>%
+  summarize(
+    max_stringency = max(StringencyIndex, na.rm = T),
+    median_stringency = median(StringencyIndex, na.rm = T),
+    mean_stringency = mean(StringencyIndex, na.rm = T),
+    mean_new_deaths_pct_of_max = mean(new_deaths_pct_of_max, na.rm = T),
+    mean_new_deaths_per_100k = mean(new_deaths_per_100k, na.rm = T),
+    mortality_per_100k = max(mortality_per_100k)
+  ) %>%
+  arrange(-mortality_per_100k) %>%
+  mutate(
+    country_factor = factor(country, levels = rev(country))
+  ) %>%
+  filter(
+    country %in% unique(latest_jh_data_with_growth$country)
+  )
+
+head(covid_stats_by_country)
+
+covid_deaths_by_country_date_diffs$country_factor = factor(covid_deaths_by_country_date_diffs$country, levels = covid_stats_by_country$country)
+
+filter(covid_deaths_by_country_date_diffs, country %in% head(covid_stats_by_country, 10)$country) %>%
+  ggplot(aes(date, roll_7_new_deaths_per_100k, fill = StringencyIndex)) +
+  geom_bar(stat = 'identity') +
+  facet_wrap(~country_factor) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0, 3)) +
+  scale_fill_viridis_c(option = 'A', name = 'Stringency\nIndex') + 
+  theme(
+    strip.text = element_text(face = 'bold', size = 15),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16),
+    plot.caption = element_text(size = 11, face = 'italic', hjust = 0),
+    plot.subtitle = element_text(size = 11, face = 'italic'),
+    strip.background = element_rect(fill = 'white'),
+    panel.grid = element_blank(),
+    panel.background = element_rect(fill = 'black'),
+    legend.text = element_text(size = 11),
+    legend.title = element_text(size = 12)
+  ) +
+  labs(
+    x = '', y = '7 Day Average of Daily Mortality\nPer 100,000 Population\n',
+    subtitle = 'The stringency index shows the "strictness" or degree of government response to the COVID pandemic. A higher value means a more significant response, not necessarily a better response.',
+    title = 'COVID Daily Mortality vs. Stringency of Government Response\nTop 10 OECD Countries by Mortality Rate, Minimum 5M Population',
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE, Oxford OxCGRT'
+  )
+ggsave('daily_mortality_vs_stringency.png', height = 10, width = 14, units = 'in', dpi = 600)
+
+
+ggplot(covid_deaths_by_country_date_diffs, aes(roll_7_new_deaths_per_100k, StringencyIndex)) +
+  geom_point()
+head(covid_deaths_by_country_date_diffs)
+
+ggplot(covid_stats_by_country, aes(mean_new_deaths_pct_of_max, median_stringency, colour = income)) +
+  geom_point(aes(size = mortality_per_100k))
+             
+ggplot(covid_stats_by_country, aes(mean_new_deaths_pct_of_max, mean_new_deaths_per_100k, colour = income)) +
+  geom_point(aes(size = mortality_per_100k))
+
+ggplot(covid_stats_by_country, aes(mean_new_deaths_pct_of_max, mortality_per_100k, colour = income)) +
+  geom_point(aes())
+
+ggplot(covid_stats_by_country %>% head(50), aes(country_factor, mean_new_deaths_per_100k)) +
+  geom_bar(stat = 'identity') +
+  coord_flip()
+
+filter(covid_deaths_by_country_date_diffs, country %in% head(covid_stats_by_country$country, 10)) %>%
+  ggplot(aes(date, roll_7_new_deaths_per_100k)) +
+  facet_wrap(~country, ncol = 2) +
+  geom_bar(stat = 'identity') +
+  coord_cartesian(ylim = c(0, 3))
+
+head(covid_deaths_by_country_date_diffs)
 
 filter(covid_deaths_by_country_date_diffs, country %in% c('Italy', 'Germany', 'Sweden', 'United States', 'Japan', 'South Korea')) %>%
   ggplot(aes(date, daily_cumulative_deaths_percent_of_total, colour = new_deaths_per_100k)) +
@@ -626,7 +719,7 @@ daily_avg_mortality_high_income_not_us = filter(covid_deaths_by_country_date_dif
 
 ggplot() +
   geom_line(data = stats_by_income_excl_us, aes(days_since_death_50_date, total_roll_7_new_deaths_100k, colour = income)) + 
-  geom_line(data = covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Brazil')), aes(days_since_death_50_date, roll_7_new_deaths_per_100k, group = country), linetype = 'dashed') +
+  geom_line(data = covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Brazil', 'Sweden', 'Germany')), aes(days_since_death_50_date, roll_7_new_deaths_per_100k, group = country), linetype = 'dashed') +
   scale_x_continuous(limits = c(0, 180))
 
 
