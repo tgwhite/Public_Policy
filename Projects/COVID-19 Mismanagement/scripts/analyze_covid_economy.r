@@ -1,4 +1,4 @@
-(tidyverse)
+library(tidyverse)
 library(WDI)
 library(data.table)
 library(countrycode)
@@ -12,21 +12,26 @@ library(sf)
 library(cowplot)
 library(RcppRoll)
 
-
 setwd("~/Public_Policy/Projects/COVID-19")
 nordics = c('Sweden', 'Finland', 'Norway', 'Denmark')
 top_europe = c('Spain', 'United Kingdom', 'Italy', 'France', 'Germany', 'Belgium')
 
 ##### get map data #####
-world <- ne_countries(scale = "medium", returnclass = "sf")
-europe = filter(world, continent == 'Europe') %>%
+world <- ne_countries(scale = "medium", returnclass = "sf") %>% 
   mutate(
-    name = recode(name, `Czech Rep.` = 'Czech Republic', 
+    name = recode(name, 
+                  `Dem. Rep. Korea` = 'South Korea', 
+                  `Czech Rep.` = 'Czech Republic', 
                   `Slovakia` = 'Slovak Republic',
                   `Bosnia and Herz.` = 'Bosnia and Herzegovina')
-  )
+    )
+
+
+europe = filter(world, continent == 'Europe') 
+
 europe_cropped <- st_crop(europe, xmin = -24, xmax = 45,
                           ymin = 30, ymax = 73)
+
 
 
 # countrycode(sourcevar = 'South Korea', destination = 'iso3c', origin = 'un.name.en')
@@ -72,6 +77,8 @@ wdi_data_stacked = bind_rows(WDI_data_long) %>%
   left_join(wdi_descriptions) %>% 
   select(-matches('V[0-9]'), -description, -contains('source'))
 
+world$name %>% unique()
+
 latest_country_pop = filter(wdi_data_stacked, indicator == 'SP.POP.TOTL', region != 'Aggregates') %>%
   group_by(country, income, region) %>%
   summarize(
@@ -81,11 +88,12 @@ latest_country_pop = filter(wdi_data_stacked, indicator == 'SP.POP.TOTL', region
   rename(
     year = latest_year
   ) %>%
+  left_join(world, by = c('country'= 'name')) %>%
   mutate(
     country = recode(country, `Korea, Rep.` = 'South Korea', `Russian Federation` = 'Russia')
   )
-sum(latest_country_pop$population)
-
+select(latest_country_pop, region, country) %>% View()
+latest_country_pop$region %>% table()
 
 ##### stringency and mobility data #####
 
@@ -153,7 +161,11 @@ jh_with_pop = mutate(jh_joined, is_country = is.na(province_state)) %>%
                      `Russian Federation` = 'Russia',
                      US = 'United States', 
                      `Korea, South` = 'South Korea', Czechia = 'Czech Republic', Slovakia = 'Slovak Republic')
+  ) %>%
+  left_join(
+    latest_country_pop
   ) 
+head(jh_with_pop)
 
 
 deaths_by_country_province = group_by(jh_with_pop, country, province_state) %>%
@@ -163,51 +175,47 @@ deaths_by_country_province = group_by(jh_with_pop, country, province_state) %>%
     last_date = max(date_upd)
   )
 
-covid_deaths_by_country_date = group_by(jh_with_pop, country, province_state, date_upd) %>%
+covid_deaths_by_country_date = group_by(jh_with_pop, country, province_state, date = date_upd) %>%
   summarize(
     cumulative_cases = max(cases),
     cumulative_deaths = sum(deaths)
   ) %>%
-  group_by(country, date_upd) %>%
+  group_by(country, date) %>%
   summarize(
     cumulative_cases = sum(cumulative_cases),
     cumulative_deaths = sum(cumulative_deaths)
   ) %>%
   arrange(country, date) %>%
   data.table()
-
+covid_deaths_by_country_date_diffs
 
 covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
-  new_deaths = c(NA, diff(total_deaths))
-  death_50_date = date[total_deaths >= 50][1]
+  new_deaths = c(NA, diff(cumulative_deaths))
+  death_50_date = date[cumulative_deaths >= 50][1]
   days_since_death_50_date = as.numeric(date - death_50_date)
   
   list(
     days_since_death_50_date = days_since_death_50_date, 
     date = date, 
-    new_cases = c(NA, diff(total_cases)),
+    new_cases = c(NA, diff(cumulative_cases)),
     new_deaths = new_deaths,
     new_deaths_pct_of_max = new_deaths / max(new_deaths, na.rm = T),
     roll_7_new_deaths = c(rep(NA, 6), roll_mean(new_deaths, 7)),
-    total_cases = total_cases, 
-    total_deaths = total_deaths,
-    daily_cumulative_deaths_percent_of_total = total_cases / max(total_cases)
+    cumulative_cases = cumulative_cases, 
+    cumulative_deaths = cumulative_deaths,
+    daily_cumulative_deaths_percent_of_total = cumulative_cases / max(cumulative_cases)
   )
   
 }, by = list(country)] %>%
-  full_join(
-    latest_country_pop
-  ) %>%
+  left_join(latest_country_pop) %>%
   mutate(
     new_deaths_per_100k = (new_deaths / population) * 1e5,
     roll_7_new_deaths_per_100k = (roll_7_new_deaths / population) * 1e5,
     new_cases_per_100k = (new_cases / population) * 1e5,
-    mortality_rate = total_deaths / population,
+    mortality_rate = cumulative_deaths / population,
     mortality_per_100k = mortality_rate * 1e5
   ) %>%
   left_join(country_stringency)
-
-
 
 
 covid_deaths_by_country = group_by(deaths_by_country_province, country) %>%
@@ -232,6 +240,30 @@ covid_deaths_by_country = group_by(deaths_by_country_province, country) %>%
   filter(
     population >= 1e5
   ) 
+
+covid_deaths_by_country_date_diffs_dt = data.table(arrange(covid_deaths_by_country_date_diffs, region, country, date))
+
+stats_by_region = covid_deaths_by_country_date_diffs_dt[!is.na(date),{
+  the_countries = country
+  
+  total_pop = sum(filter(latest_country_pop, country %in% the_countries)$population, na.rm = T)
+  
+  country_df = data.frame(country, date, new_deaths) %>%
+    group_by(date) %>%
+    summarize(
+      total_new_deaths = sum(new_deaths, na.rm = T)
+    ) %>%
+    ungroup() %>%
+    mutate(
+      total_new_deaths_100k = (total_new_deaths / total_pop) * 1e5,
+      total_new_death_100k_roll_7 = c(rep(NA, 6), roll_mean(total_new_deaths_100k, 7))
+    )
+  
+  
+  country_df
+  
+}, by = list(region)] %>%
+  filter(!is.na(region))
 
 
 ##### OECD Data #####
@@ -277,9 +309,9 @@ most_common_months_latest_data =
 selected_ur_countries = filter(last_month_by_country, last_month >= most_common_months_latest_data$last_month[1])
 
 monthly_2020_unemployment_rate_dt = filter(monthly_unemployment_rate, 
-                                           year == 2020  
-                                             # & month_date <= most_common_months_latest_data$last_month[1] &
-                                             # country %in% selected_ur_countries$country
+                                           year == 2020,
+                                             month_date <= most_common_months_latest_data$last_month[1],
+                                             country %in% selected_ur_countries$country
                                              ) %>%
   data.table()
 
@@ -314,7 +346,10 @@ covid_ur_indexes = monthly_2020_unemployment_rate_dt[, {
   )
   
 }, by = list(country)] %>%
-  arrange(-mean_index) 
+  arrange(-mean_index) %>%
+  mutate(
+    country_ur_factor = factor(country, levels = rev(country))
+  )
 
 ## for each country, calculate UR index since December 2019
 
@@ -358,47 +393,70 @@ latest_jh_data_with_growth = left_join(
   )
 
 
+
+
+indexes_latest_month = monthly_2020_unemployment_rate_dt_indexes %>% filter(month_date <= most_common_months_latest_data$last_month[1]) 
+
+
+
 setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/output")
 
 median_growth = median(latest_jh_data_with_growth$qtr_gdp_change)
 median_mortality = median(latest_jh_data_with_growth$mortality_rate) * 1e5
 
 
+ggplot(covid_ur_indexes, aes(country_ur_factor, mean_index - 1)) +
+  geom_bar(stat = 'identity') +
+  scale_y_continuous(labels = percent) +
+  coord_flip() + 
+  labs(
+    x = '', y = sprintf('Percent Change in Unemployment Rate\nJan 2020 - %s', format(most_common_months_latest_data$last_month[1], '%b-%Y'))
+  )
+
+
 mortality_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_mortality, mortality_per_100k, fill = mortality_per_100k)) +
   geom_bar(stat = 'identity', fill = 'steelblue') +
+  geom_bar(data = filter(latest_jh_data_with_growth, country == 'United States'), fill = 'firebrick', stat = 'identity') +
   scale_y_continuous(labels = comma) +
-  # scale_fill_viridis_c(option = 'A', labels = comma, name = 'Mortality Rate') +
   coord_flip() +
   theme_bw() +
-  labs(x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
+  labs(
+    title = 'COVID Mortality Rate',
+    caption = 'Chart: Taylor G. White\nData: OECD Stat, Johns Hopkins CSSE',
+    x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
   geom_hline(aes(yintercept = median_mortality), colour = 'darkslategray', size = 0.75) +
   theme(
-    axis.title = element_text(size = 15),
-    axis.text = element_text(size = 15),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 13),
+    plot.title = element_text(size = 20),
+    axis.title = element_text(size = 17),
+    plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
+    axis.text = element_text(size = 17),
+    legend.text = element_text(size = 13),
+    legend.title = element_text(size = 14),
     legend.position = 'right', 
     panel.grid.minor = element_blank()
-    ) +
-  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_mortality, label = paste('Median:', comma(median_mortality)), fontface = 'bold', size = 6)
-mortality_rank_plot
+    ) 
 
 gdp_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_gdp, qtr_gdp_change, fill = qtr_gdp_change)) +
   geom_bar(stat = 'identity', fill = 'steelblue') +
+  geom_bar(data = filter(latest_jh_data_with_growth, country == 'United States'), fill = 'firebrick', stat = 'identity') +
   coord_flip() +
   theme_bw() +
   scale_y_continuous(labels = percent) +
-  labs(x = '', y = '\nQ2 Economic Growth\nChange from Prior Period') +
-  # scale_fill_viridis_c(option = 'A', direction = 1, labels = function(x) {percent(x, accuracy = 0.1)}, name = 'Q2 GDP Change') +
+  labs(
+    title = 'Q2 Economic Growth, OECD Countries',
+    caption = '\n',
+    x = '', y = '\nQ2 Economic Growth\nChange from Prior Period') +
   geom_hline(aes(yintercept = median_growth), colour = 'darkslategray', size = 0.75) +
   theme(
-    axis.title = element_text(size = 15),
-    axis.text = element_text(size = 15),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 13),
+    plot.title = element_text(size = 20),
+    plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
+    axis.title = element_text(size = 17),
+    axis.text = element_text(size = 17),
+    legend.text = element_text(size = 13),
+    legend.title = element_text(size = 14),
     legend.position = 'right', 
-    panel.grid.minor = element_blank()) +
-  annotate('text', x = nrow(latest_jh_data_with_growth), y = median_growth, label = paste('Median:', percent(median_growth, accuracy = 0.1)), fontface = 'bold', size = 6)
+    panel.grid.minor = element_blank()
+    ) 
 gdp_rank_plot
 # 
 # overall_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_overall, overall_rank, fill = overall_rank)) +
@@ -548,10 +606,10 @@ head(covid_stats_by_country)
 
 covid_deaths_by_country_date_diffs$country_factor = factor(covid_deaths_by_country_date_diffs$country, levels = covid_stats_by_country$country)
 
-filter(covid_deaths_by_country_date_diffs, country %in% head(covid_stats_by_country, 10)$country) %>%
+filter(covid_deaths_by_country_date_diffs, country %in% head(covid_stats_by_country, 9)$country) %>%
   ggplot(aes(date, roll_7_new_deaths_per_100k, fill = StringencyIndex)) +
   geom_bar(stat = 'identity') +
-  facet_wrap(~country_factor) +
+  facet_wrap(~country_factor, nrow=3) +
   theme_bw() +
   scale_y_continuous(limits = c(0, 3)) +
   scale_fill_viridis_c(option = 'A', name = 'Stringency\nIndex') + 
@@ -570,8 +628,8 @@ filter(covid_deaths_by_country_date_diffs, country %in% head(covid_stats_by_coun
   ) +
   labs(
     x = '', y = '7 Day Average of Daily Mortality\nPer 100,000 Population\n',
-    subtitle = 'The stringency index shows the "strictness" or degree of government response to the COVID pandemic. A higher value means a more significant response, not necessarily a better response.',
-    title = 'COVID Daily Mortality vs. Stringency of Government Response\nTop 10 OECD Countries by Mortality Rate, Minimum 5M Population',
+    # subtitle = 'The stringency index shows the "strictness" or degree of government response to the COVID pandemic. A higher value means a more significant response, not necessarily a better response.',
+    title = 'COVID Daily Mortality vs. Stringency of Government Response\nTop OECD Countries by Mortality Rate, Minimum 5M Population',
     caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE, Oxford OxCGRT'
   )
 ggsave('daily_mortality_vs_stringency.png', height = 10, width = 14, units = 'in', dpi = 600)
@@ -726,4 +784,43 @@ ggplot() +
   
 
 
-# countries that have a "nagging cold" vs those that didn't
+##### Stats by Region #####
+
+
+peak_mortality_dates
+
+
+
+stacked_daily_stats_selected_regions = bind_rows(
+  us_daily_stats = filter(covid_deaths_by_country_date_diffs, country %in% c('United States', 'Canada')) %>% select(region = country, roll_7_new_deaths_per_100k, date),
+  stats_by_region %>% filter(region %in% c('Europe & Central Asia', 'Latin America & Caribbean')) %>% select(region, roll_7_new_deaths_per_100k = total_new_death_100k_roll_7, date)
+)
+
+peak_mortality_dates = group_by(stacked_daily_stats_selected_regions, region) %>%
+  summarize(
+    peak_mortality = max(roll_7_new_deaths_per_100k, na.rm = T),
+    peak_mortality_date = min(date[roll_7_new_deaths_per_100k == peak_mortality], na.rm = T)
+  )
+
+ggplot(stacked_daily_stats_selected_regions, aes(date, roll_7_new_deaths_per_100k, colour = region)) +
+  geom_line(size = 1) + 
+  labs(
+    y = '7 Day Average of Daily Mortality\nPer 100k Population', 
+    x = '',
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
+    title = 'COVID-19 Daily Mortality, by Region'
+  ) +
+  theme_bw() +
+  # geom_point(data = peak_mortality_dates, aes(peak_mortality_date, peak_mortality, colour = region), size = 3.5, pch = 18) + 
+  theme(
+    plot.title = element_text(size = 18),
+    plot.caption = element_text(hjust = 0, face = 'italic', size = 11),
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 15),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 15)
+  ) +
+  scale_colour_hue(name = 'Region / Country') +
+  scale_x_date(date_breaks = '1 month', date_labels = '%b', limits = c(as.Date('2020-03-01'), max(stats_by_region$date))) +
+  guides(colour = guide_legend(override.aes = list(size = 2.5)))
+ggsave('average_daily_mortality_by_region.png', height= 10, width = 12, units = 'in', dpi = 600)
