@@ -11,6 +11,9 @@ library(rnaturalearthdata)
 library(sf)
 library(cowplot)
 library(RcppRoll)
+library(gganimate)
+library(gifski)
+library(readxl)
 
 setwd("~/Public_Policy/Projects/COVID-19")
 nordics = c('Sweden', 'Finland', 'Norway', 'Denmark')
@@ -216,6 +219,7 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
     mortality_per_100k = mortality_rate * 1e5
   ) %>%
   left_join(country_stringency)
+head(covid_deaths_by_country_date_diffs)
 
 
 covid_deaths_by_country = group_by(deaths_by_country_province, country) %>%
@@ -266,8 +270,26 @@ stats_by_region = covid_deaths_by_country_date_diffs_dt[!is.na(date),{
   filter(!is.na(region))
 
 
-##### OECD Data #####
+##### IMF Data #####
+setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/data")
 
+imf_real_gdp_projections = read_excel("IMF october projections data.xlsx", 'all countries projections') %>% 
+  mutate_all(function(x){
+    y = str_replace(x, '-', '-')
+    y_num = as.numeric(y)
+    na_y = sum(is.na(y))
+    na_y_num = sum(is.na(y_num))
+    if (na_y_num <= na_y) {
+      return(y_num)
+    } else {
+      return(y)
+    }
+  }) %>%
+  mutate(
+    entity = recode(entity, `Korea` = 'South Korea')
+  ) 
+
+##### OECD Data #####
 setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/data/OECD")
 
 ## MEASURE -- PC_CHGPY -- SAME PERIOD PRIOR YEAR
@@ -510,7 +532,7 @@ nordics = c('Sweden', 'Finland', 'Norway', 'Denmark')
 selected_countries = c('Sweden', 'Finland', 'Norway', 'Denmark', 'Germany', 'United Kingdom', 'Italy', 'Spain', 'France')
 
 europe_map_data = left_join(europe_cropped, covid_deaths_by_country, by = c('name' = 'country'))
-europe_cropped
+
 
 nordics_quarterly_gdp = filter(quarterly_gdp, country %in% nordics, year >= 2018)
 nordics_monthly_unemployment_rate  = filter(monthly_2020_unemployment_rate_dt_indexes, country %in% nordics)
@@ -556,7 +578,10 @@ ggplot(nordics_monthly_unemployment_rate, aes(month_date , Value_Pct, colour = c
 head(nordics_monthly_unemployment_rate)
 
 
-head(europe_quarterly_gdp)
+
+
+
+
 
 
 ggplot(europe_map_data) +
@@ -580,6 +605,38 @@ ggplot(europe_map_data) +
 # dir.create('~/Public_Policy/Projects/COVID-19 Mismanagement/output')
 ggsave('europe_mortality_rate_map.png', height = 9, width = 12, units = 'in', dpi = 600)
 
+date_seq = seq.Date(min(europe_map_data_daily$date, na.rm = T), max(europe_map_data_daily$date, na.rm = T), by = 7)
+
+europe_map_data_daily = left_join(europe_cropped, covid_deaths_by_country_date_diffs, by = c('name' = 'country')) 
+
+animated_mortality_map = 
+  ggplot(europe_map_data_daily) +
+  geom_sf(aes(fill = mortality_per_100k)) +
+  transition_time(date, range = as.Date(c('2020-02-01', '2020-08-01'))) +
+  scale_fill_viridis_c(name = 'Deaths Per\n100k Pop.',option = 'A') +
+  theme_map() +
+  # theme_dark() +
+  # theme_minimal() +
+  # geom_sf_label(data = filter(europe_map_data, name %in% selected_countries), aes(label = paste0(name, '\n', comma(mortality_per_100k, accuracy = 0.1))), size = 2.5) +
+  labs(
+    x = '', y = '', 
+    title = 'COVID-19 Mortality Rates in Selected European Countries',
+    subtitle = sprintf('Data through {frame_time}'),
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE, World Bank'
+  ) +
+  theme(
+    # axis.text = element_blank(),
+    plot.subtitle = element_text(face = 'italic'),
+    plot.caption = element_text(hjust = 0, face = 'italic')
+  )
+
+
+# ?transition_reveal
+
+animate(animated_mortality_map, 
+        nframes = 450,
+        renderer = gifski_renderer("europe_mortality_map.gif"),
+        height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
 ##### analysis --- covid response and effectiveness #####
 covid_stats_by_country = 
@@ -598,11 +655,46 @@ covid_stats_by_country =
   mutate(
     country_factor = factor(country, levels = rev(country))
   ) %>%
-  filter(
-    country %in% unique(latest_jh_data_with_growth$country)
+  left_join(
+    imf_real_gdp_projections, by = c('country' =   "entity")
+  ) %>%
+  left_join(
+    latest_country_pop
+  ) %>%
+  rename(
+    projection_2020 = `2020`
+  ) %>%
+  mutate(
+    three_year_avg_growth = (`2019` + `2018` + `2017` ) / 3
   )
 
-head(covid_stats_by_country)
+
+ggplot(covid_stats_by_country, aes(mortality_per_100k, projection_2020)) +
+  geom_point(aes(colour = median_stringency)) +
+  stat_smooth() + 
+  scale_color_viridis_c(option = 'A')
+
+ggplot(covid_stats_by_country, aes(median_stringency, projection_2020)) +
+  geom_point(aes(size = mortality_per_100k, colour = income)) +
+  stat_smooth() 
+
+simple_mod = lm(projection_2020 ~ max_stringency * income + mortality_per_100k + three_year_avg_growth, data = covid_stats_by_country)
+simple_mod_no_income = lm(projection_2020 ~ max_stringency + mortality_per_100k + three_year_avg_growth, data = covid_stats_by_country)
+anova(simple_mod, simple_mod_no_income)
+
+
+ggplot(covid_stats_by_country, aes(country, `2020`)) +
+  geom_bar(stat = 'identity') +
+  coord_flip()
+
+# imf_real_gdp_projections
+
+
+projections = filter(covid_stats_by_country, !is.na(`2020`))
+ggplot(projections, aes(mortality_per_100k, `2020`)) +
+  geom_point(aes(size = median_stringency)) +
+  scale_color_viridis_c(option = 'A')
+names(projections)
 
 covid_deaths_by_country_date_diffs$country_factor = factor(covid_deaths_by_country_date_diffs$country, levels = covid_stats_by_country$country)
 
