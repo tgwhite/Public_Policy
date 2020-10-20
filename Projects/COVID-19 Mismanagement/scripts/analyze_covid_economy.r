@@ -112,8 +112,6 @@ oxford_stringency_index = read.csv("https://raw.githubusercontent.com/OxCGRT/cov
     date = as.Date(Date %>% as.character(), format = '%Y%m%d')
   ) 
 
-country_stringency = filter(oxford_stringency_index, stringency_geo_type == 'country')
-
 
 mobility_dataset_df = tibble(
   dsn = list.files('data', pattern = 'applemobilitytrends', full.names = T),
@@ -132,13 +130,16 @@ apple_mobility_dat = read_csv(mobility_dataset_df$dsn) %>%
                          `UK` = 'United Kingdom',
                          `San Francisco - Bay Area` = 'San Francisco', 
                          `Republic of Korea` = 'South Korea')
-  ) %>%
-  left_join(
-    country_stringency, by = c('entity_name', 'date')
-  ) %>%
-  mutate(
-    entity_name = recode(entity_name, `Korea, South` = 'South Korea')
+  ) 
+
+country_mobility_data = filter(apple_mobility_dat, geo_type == 'country/region', transportation_type == 'walking')
+
+country_stringency = filter(oxford_stringency_index, stringency_geo_type == 'country') %>%
+  left_join(country_mobility_data, by = c('country' = 'entity_name', 'date' = 'date')) %>%
+  rename(
+    mobility = value
   )
+
 
 ##### Covid data #####
 
@@ -188,14 +189,19 @@ covid_deaths_by_country_date = group_by(jh_with_pop, country, province_state, da
     cumulative_cases = sum(cumulative_cases),
     cumulative_deaths = sum(cumulative_deaths)
   ) %>%
+  left_join(country_stringency) %>%
   arrange(country, date) %>%
-  data.table()
-covid_deaths_by_country_date_diffs
+  mutate(
+    Stringency_z = (StringencyIndex - mean(StringencyIndex, na.rm = T)) / sd(StringencyIndex, na.rm = T),
+    Stringency_median_over_iqr = (StringencyIndex - median(StringencyIndex, na.rm = T)) / IQR(StringencyIndex ,na.rm = T)
+    ) %>%
+  data.table() 
 
 covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
   new_deaths = c(NA, diff(cumulative_deaths))
   death_50_date = date[cumulative_deaths >= 50][1]
   days_since_death_50_date = as.numeric(date - death_50_date)
+  
   
   list(
     days_since_death_50_date = days_since_death_50_date, 
@@ -206,6 +212,18 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
     roll_7_new_deaths = c(rep(NA, 6), roll_mean(new_deaths, 7)),
     cumulative_cases = cumulative_cases, 
     cumulative_deaths = cumulative_deaths,
+    ContainmentHealthIndex  = ContainmentHealthIndex , 
+    EconomicSupportIndex = EconomicSupportIndex ,
+    GovernmentResponseIndex = GovernmentResponseIndex , 
+    StringencyIndex = StringencyIndex ,
+    one_week_stringency = c(rep(NA, 6), roll_mean(StringencyIndex, 7)),
+    two_week_stringency = c(rep(NA, 13), roll_mean(StringencyIndex, 14)),
+    Stringency_z = Stringency_z,
+    Stringency_median_over_iqr = Stringency_median_over_iqr,
+    StringencyIndex_percentile = cume_dist(StringencyIndex),
+    change_StringencyIndex = c(NA, diff(StringencyIndex, 1)),
+    mobility = mobility,
+    avg_7_mobility = c(rep(NA, 6), roll_mean(mobility, 7)),
     daily_cumulative_deaths_percent_of_total = cumulative_cases / max(cumulative_cases)
   )
   
@@ -217,9 +235,21 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
     new_cases_per_100k = (new_cases / population) * 1e5,
     mortality_rate = cumulative_deaths / population,
     mortality_per_100k = mortality_rate * 1e5
-  ) %>%
-  left_join(country_stringency)
-head(covid_deaths_by_country_date_diffs)
+  ) 
+
+selected_countries = filter(covid_deaths_by_country_date_diffs, country %in% c('United States', 'Japan', 'Germany'))
+
+ggplot(selected_countries, aes(date, one_week_stringency, colour = country)) +
+  geom_point()
+
+ggplot(selected_countries, aes(one_week_stringency, avg_7_mobility, colour = country)) +
+  geom_point()
+
+ggplot(covid_deaths_by_country_date_diffs, aes(change_StringencyIndex, avg_7_mobility)) +
+  geom_point()
+
+us = filter(covid_deaths_by_country_date_diffs, country == 'United States')
+ggplot(us, aes(StringencyIndex, avg_7_mobility)) + geom_point()
 
 
 covid_deaths_by_country = group_by(deaths_by_country_province, country) %>%
@@ -644,6 +674,8 @@ covid_stats_by_country =
   filter(population > 10e6) %>%
   group_by(country, income) %>%
   summarize(
+    mean_mobility = mean(mobility, na.rm = T),
+    median_mobility = median(mobility, na.rm = T),
     max_stringency = max(StringencyIndex, na.rm = T),
     median_stringency = median(StringencyIndex, na.rm = T),
     mean_stringency = mean(StringencyIndex, na.rm = T),
@@ -667,21 +699,65 @@ covid_stats_by_country =
   mutate(
     three_year_avg_growth = (`2019` + `2018` + `2017` ) / 3
   )
+min_mortality_not_zero = covid_stats_by_country$mortality_per_100k[covid_stats_by_country$mortality_per_100k > 0] %>% min()
+
+covid_stats_by_country$mortality_per_100k_log = ifelse(covid_stats_by_country$mortality_per_100k == 0, min_mortality_not_zero, covid_stats_by_country$mortality_per_100k)
+
+head(covid_stats_by_country)
+ggplot(covid_stats_by_country, aes(mean_mobility, projection_2020)) +
+  geom_point()
 
 
-ggplot(covid_stats_by_country, aes(mortality_per_100k, projection_2020)) +
-  geom_point(aes(colour = median_stringency)) +
-  stat_smooth() + 
+ggplot(covid_stats_by_country, aes(country, median_mobility)) +
+  geom_bar(stat= 'identity') + 
+  coord_flip()
+
+europe_stats_by_country = left_join(europe_cropped, covid_stats_by_country, by = c('name' = 'country'))
+ggplot(europe_stats_by_country) +
+  geom_sf(aes(fill = median_mobility)) +
+  scale_fill_viridis_c(option = 'A')
+
+ggplot(covid_stats_by_country, aes(mean_mobility, mortality_per_100k)) +
+  geom_point()
+ggplot(covid_stats_by_country, aes(median_stringency, median_mobility)) +
+  geom_point(aes(size = mortality_per_100k, colour = mortality_per_100k)) +
+  scale_colour_viridis_c(option = 'A')+
+  stat_smooth(method = 'lm')
+
+summary(covid_stats_by_country$mortality_per_100k)
+
+ggplot(covid_deaths_by_country_date_diffs, aes(new_deaths_per_100k, StringencyIndex)) +
+  geom_point()
+
+ggplot(covid_stats_by_country, aes(log(mortality_per_100k), projection_2020)) +
+  geom_point(aes(colour = max_stringency)) +
+  stat_smooth(method = 'lm') + 
   scale_color_viridis_c(option = 'A')
 
 ggplot(covid_stats_by_country, aes(median_stringency, projection_2020)) +
   geom_point(aes(size = mortality_per_100k, colour = income)) +
   stat_smooth() 
 
-simple_mod = lm(projection_2020 ~ max_stringency * income + mortality_per_100k + three_year_avg_growth, data = covid_stats_by_country)
-simple_mod_no_income = lm(projection_2020 ~ max_stringency + mortality_per_100k + three_year_avg_growth, data = covid_stats_by_country)
-anova(simple_mod, simple_mod_no_income)
+options(na.action = na.exclude)
+simple_mod = lm(projection_2020 ~ max_stringency + income + log(mortality_per_100k_log) + three_year_avg_growth, data = covid_stats_by_country)
+covid_stats_by_country$modeled_growth = predict(simple_mod)
 
+
+head(covid_deaths_by_country_date_diffs)
+ggplot(covid_stats_by_country, aes(modeled_growth, projection_2020 )) +
+  geom_point() +
+  stat_smooth(method = 'lm')
+
+ggplot(covid_stats_by_country, aes(three_year_avg_growth, projection_2020)) +
+  geom_point(aes(size = mortality_per_100k, colour = income)) +
+  stat_smooth(method = 'lm', formula = y ~ poly(x, 1), se = F) +
+  scale_size(name = 'Mortality per 100k') + 
+  scale_colour_hue(name = 'Income')
+
+
+ggplot(covid_stats_by_country, aes(country, `2020`)) +
+  geom_bar(stat = 'identity') +
+  coord_flip()
 
 ggplot(covid_stats_by_country, aes(country, `2020`)) +
   geom_bar(stat = 'identity') +
