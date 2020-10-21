@@ -450,7 +450,6 @@ covid_ur_indexes = monthly_2020_unemployment_rate_dt[, {
 
 covid_stats_by_country = 
   covid_deaths_by_country_date_diffs %>%
-  filter(population > 5e6) %>%
   group_by(country, income) %>%
   summarize(
     as_of_date = max(date, na.rm = T),
@@ -481,12 +480,17 @@ covid_stats_by_country =
   rename(
     projection_2020 = `2020`
   ) %>%
-  arrange(-projection_2020) %>%
+  filter(population > 5e6, projection_2020 >= -15) %>%
   mutate(
     three_year_avg_growth = (`2019` + `2018` + `2017` ) / 3,
     two_year_avg_growth = (`2019` + `2018`) / 2,
     last_year_growth = `2019`,
-    country_ranked_gdp = factor(country, levels = rev(country))
+    
+    diff_projection_avg = projection_2020 - three_year_avg_growth
+  ) %>%
+  arrange(-diff_projection_avg) %>%
+  mutate(
+    country_ranked_gdp = factor(country, levels = rev(country)),
   ) %>%
   arrange(-gdp_per_capita_us)
 
@@ -566,7 +570,13 @@ covid_stats_by_country$mortality_per_100k_log = ifelse(covid_stats_by_country$mo
 
 options(na.action = na.exclude)
 
+ggplot(covid_stats_by_country, aes(log(mortality_per_100k_log), projection_2020)) +
+  geom_point() +
+  stat_smooth(method = 'lm')
+
+
 simple_mod = lm(projection_2020 ~ log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
+
 simple_mod_region_deaths = lm(projection_2020 ~ log(mortality_per_100k_log) + log(region_deaths_per_100k) + last_year_growth, data = covid_stats_by_country)
 simple_mod_region_proj = lm(projection_2020 ~ log(mortality_per_100k_log) + last_year_growth + mean_proj_for_region, data = covid_stats_by_country)
 simple_mod_region = lm(projection_2020 ~ log(mortality_per_100k_log) + last_year_growth + region, data = covid_stats_by_country)
@@ -577,13 +587,19 @@ max_stringency_region_proj = lm(projection_2020 ~ max_stringency + pop_pct_65_ov
 median_health_index = lm(projection_2020 ~ median_ContainmentHealthIndex + pop_pct_65_over + income + trade_pct_gdp + log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
 median_stringency = lm(projection_2020 ~ median_stringency + pop_pct_65_over + income + trade_pct_gdp + log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
 
+# rank countries by growth as a percent of average 
+
+summary(max_stringency)
+
 anova(simple_mod, simple_mod_region_proj, max_health_index, max_stringency, max_stringency_region_proj, median_health_index, median_stringency)
 
 
-median_growth = median(us_comparator_countries$projection_2020, na.rm = T)
+median_econ_impact = median(us_comparator_countries$diff_projection_avg, na.rm = T)
 median_mortality = median(us_comparator_countries$mortality_per_100k, na.rm = T)
 
 us_data = filter(us_comparator_countries, country == 'United States')
+
+us_calcs = us_data %>% select(mortality_per_100k, diff_projection_avg) %>% summarise_all(median)
 
 
 ggplot(covid_stats_by_country, aes(projection_2020)) +
@@ -600,7 +616,7 @@ mortality_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_mortali
   theme_bw() +
   labs(
     title = 'COVID Mortality Rate',
-    subtitle = 'High Income Countries',
+    subtitle = 'High Income Countries, Minimum 5M Population',
     caption = 'Chart: Taylor G. White\nData: IMF October Economic Outlook, Johns Hopkins CSSE',
     x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
   geom_hline(aes(yintercept = median_mortality), colour = 'darkslategray', size = 0.75) +
@@ -615,18 +631,19 @@ mortality_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_mortali
     panel.grid.minor = element_blank()
   ) 
 
-gdp_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_gdp, projection_2020/100, fill = projection_2020/100)) +
+
+gdp_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_gdp, diff_projection_avg/100, fill = diff_projection_avg/100)) +
   geom_bar(stat = 'identity', fill = 'steelblue') +
   geom_bar(data = filter(us_comparator_countries, country == 'United States'), fill = 'firebrick', stat = 'identity') +
   coord_flip() +
   theme_bw() +
   scale_y_continuous(labels = percent) +
   labs(
-    title = 'Projected Economic Growth for 2020',
-    subtitle = 'High Income Countries',
+    title = 'Economic Impact of COVID',
+    subtitle = 'High Income Countries, Minimum 5M Population',
     caption = '\n',
-    x = '', y = '\nReal GDP Growth\n') +
-  geom_hline(aes(yintercept = median_growth/100), colour = 'darkslategray', size = 0.75) +
+    x = '', y = '\nReal GDP Growth\nDifference from Three Year Average') +
+  geom_hline(aes(yintercept = median_econ_impact/100), colour = 'darkslategray', size = 0.75) +
   theme(
     plot.title = element_text(size = 20),
     plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
