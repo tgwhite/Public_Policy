@@ -620,6 +620,7 @@ ggplot(covid_stats_by_country, aes(projection_2020)) +
   geom_vline(aes(xintercept = us_data$projection_2020)) + 
   scale_x_continuous(limits = c(-15, 5))
 
+filter(us_comparator_countries, country %in% c('United States','Japan', 'Denmark', 'Finland', 'Sweden', 'Norway')) %>% select(country, three_year_avg_growth, projection_2020, diff_projection_avg, mortality_per_100k)
 
 mortality_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_mortality, mortality_per_100k, fill = mortality_per_100k)) +
   geom_bar(stat = 'identity', fill = 'steelblue') +
@@ -629,7 +630,7 @@ mortality_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_mortali
   theme_bw() +
   labs(
     title = 'COVID Mortality Rate',
-    subtitle = 'High Income Countries, Minimum 5M Population',
+    subtitle = 'High income countries, minimum 5M population. Vertical lines show median values.',
     caption = 'Chart: Taylor G. White\nData: IMF October Economic Outlook, Johns Hopkins CSSE',
     x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
   geom_hline(aes(yintercept = median_mortality), colour = 'darkslategray', size = 0.75) +
@@ -653,9 +654,9 @@ gdp_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_gdp, diff_pro
   scale_y_continuous(labels = percent) +
   labs(
     title = 'Economic Impact of COVID',
-    subtitle = 'High Income Countries, Minimum 5M Population',
+    subtitle = 'High income countries, minimum 5M population. Vertical lines show median values.',
     caption = '\n',
-    x = '', y = '\nReal GDP Growth\nDifference from Three Year Average') +
+    x = '', y = '\nReal GDP Growth\nProjected Difference from Three Year Average') +
   geom_hline(aes(yintercept = median_econ_impact/100), colour = 'darkslategray', size = 0.75) +
   theme(
     plot.title = element_text(size = 20),
@@ -793,11 +794,15 @@ stacked_daily_stats_selected_regions = bind_rows(
 
 peak_mortality_dates = group_by(stacked_daily_stats_selected_regions, region) %>%
   summarize(
+    mean_mortality = mean(roll_7_new_deaths_per_100k, na.rm = T),
     peak_mortality = max(roll_7_new_deaths_per_100k, na.rm = T),
     peak_mortality_date = min(date[roll_7_new_deaths_per_100k == peak_mortality], na.rm = T)
-  )
+  ) %>%
+  arrange(-mean_mortality)
 
-ggplot(stacked_daily_stats_selected_regions, aes(date, roll_7_new_deaths_per_100k, colour = region)) +
+stacked_daily_stats_selected_regions$region_factor = factor(stacked_daily_stats_selected_regions$region, levels = peak_mortality_dates$region)
+
+ggplot(stacked_daily_stats_selected_regions, aes(date, roll_7_new_deaths_per_100k, colour = region_factor)) +
   geom_line(size = 1) + 
   labs(
     y = '7 Day Average of Daily Mortality\nPer 100k Population', 
