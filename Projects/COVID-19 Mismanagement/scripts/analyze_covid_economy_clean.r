@@ -620,7 +620,12 @@ ggplot(covid_stats_by_country, aes(projection_2020)) +
   geom_vline(aes(xintercept = us_data$projection_2020)) + 
   scale_x_continuous(limits = c(-15, 5))
 
-filter(us_comparator_countries, country %in% c('United States','Japan', 'Denmark', 'Finland', 'Sweden', 'Norway')) %>% select(country, three_year_avg_growth, projection_2020, diff_projection_avg, mortality_per_100k)
+filter(us_comparator_countries, country %in% c('United States', 'Germany','Japan', 'Denmark', 'Finland', 'Sweden', 'Norway')) %>% 
+  select(country, three_year_avg_growth, projection_2020, diff_projection_avg, mortality_per_100k, population, median_stringency, max_stringency, gdp_per_capita_us, trade_pct_gdp, pop_pct_65_over) %>%
+  write.csv('comparison_stats_nordics.csv', row.names = F)
+
+
+
 
 mortality_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_mortality, mortality_per_100k, fill = mortality_per_100k)) +
   geom_bar(stat = 'identity', fill = 'steelblue') +
@@ -630,17 +635,18 @@ mortality_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_mortali
   theme_bw() +
   labs(
     title = 'COVID Mortality Rate',
-    subtitle = 'High income countries, minimum 5M population. Vertical lines show median values.',
-    caption = 'Chart: Taylor G. White\nData: IMF October Economic Outlook, Johns Hopkins CSSE',
+    subtitle = 'High income countries, minimum 5M population.',
+    caption = '\nChart: Taylor G. White\nData: IMF October Economic Outlook, Johns Hopkins CSSE\nVertical lines show median values.',
     x = '', y = '\nCOVID-19 Mortality Rate\n(Deaths / 100k Population)') +
   geom_hline(aes(yintercept = median_mortality), colour = 'darkslategray', size = 0.75) +
   theme(
-    plot.title = element_text(size = 20),
-    axis.title = element_text(size = 17),
-    plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
-    axis.text = element_text(size = 17),
-    legend.text = element_text(size = 13),
-    legend.title = element_text(size = 14),
+    plot.title = element_text(size = 28),
+    plot.subtitle = element_text(size = 18, face = 'italic'),
+    axis.title = element_text(size = 22),
+    plot.caption = element_text(size = 14, face = 'italic', hjust = 0),
+    axis.text = element_text(size = 20),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16),
     legend.position = 'right', 
     panel.grid.minor = element_blank()
   ) 
@@ -653,22 +659,23 @@ gdp_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_gdp, diff_pro
   theme_bw() +
   scale_y_continuous(labels = percent) +
   labs(
-    title = 'Economic Impact of COVID',
-    subtitle = 'High income countries, minimum 5M population. Vertical lines show median values.',
-    caption = '\n',
+    title = 'COVID Economic Impact',
+    subtitle = 'High income countries, minimum 5M population.',
+    caption = '\n\n\n',
     x = '', y = '\nReal GDP Growth\nProjected Difference from Three Year Average') +
   geom_hline(aes(yintercept = median_econ_impact/100), colour = 'darkslategray', size = 0.75) +
+  # geom_segment(aes(x = 5, xend = 20, y = .95 * min(diff_projection_avg/100) , yend = .95 * min(diff_projection_avg/100)), size = 1) + 
   theme(
-    plot.title = element_text(size = 20),
-    plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
-    axis.title = element_text(size = 17),
-    axis.text = element_text(size = 17),
-    legend.text = element_text(size = 13),
-    legend.title = element_text(size = 14),
+    plot.title = element_text(size = 28),
+    plot.subtitle = element_text(size = 18, face = 'italic'),
+    axis.title = element_text(size = 22),
+    plot.caption = element_text(size = 14, face = 'italic', hjust = 0),
+    axis.text = element_text(size = 20),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16),
     legend.position = 'right', 
     panel.grid.minor = element_blank()
   ) 
-
 
 # 
 # overall_rank_plot = ggplot(latest_jh_data_with_growth, aes(country_ranked_overall, overall_rank, fill = overall_rank)) +
@@ -679,7 +686,7 @@ gdp_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_gdp, diff_pro
 
 
 combined_plot = plot_grid(mortality_rank_plot, gdp_rank_plot)
-save_plot('mortality_growth_comparison_oecd.png', base_height = 14, base_width = 18, 
+save_plot('mortality_growth_comparison_oecd.png', base_height = 15, base_width = 20, 
           units = 'in', dpi = 600, plot = combined_plot)
 
 
@@ -694,7 +701,7 @@ ggplot(europe_map_data) +
   theme_map() +
   # theme_dark() +
   # theme_minimal() +
-  geom_sf_label(data = filter(europe_map_data, name %in% selected_european_countries), aes(label = paste0(name, '\n', comma(mortality_per_100k, accuracy = 0.1))), size = 2.5) +
+  geom_sf_label(data = filter(europe_map_data, name %in% selected_european_countries), aes(label = paste0(name, '\n', comma(mortality_per_100k, accuracy = 0.1))), size = 3.5) +
   labs(
     x = '', y = '', 
     title = 'COVID-19 Mortality Rates in Europe',
@@ -807,20 +814,22 @@ ggplot(stacked_daily_stats_selected_regions, aes(date, roll_7_new_deaths_per_100
   labs(
     y = '7 Day Average of Daily Mortality\nPer 100k Population', 
     x = '',
-    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
+    caption = sprintf('Chart: Taylor G. White\nData: Johns Hopkins CSSE\nData through %s', max(stacked_daily_stats_selected_regions$date, na.rm = T) %>% format('%b %d')),
     title = 'COVID-19 Daily Mortality, by Region'
   ) +
   theme_bw() +
   # geom_point(data = peak_mortality_dates, aes(peak_mortality_date, peak_mortality, colour = region), size = 3.5, pch = 18) + 
   theme(
-    plot.title = element_text(size = 18),
+    plot.title = element_text(size = 22),
+    plot.subtitle = element_text(size = 14, face = 'italic'),
     plot.caption = element_text(hjust = 0, face = 'italic', size = 11),
     axis.text = element_text(size = 14),
     axis.title = element_text(size = 15),
-    legend.text = element_text(size = 14),
-    legend.title = element_text(size = 15)
+    legend.text = element_text(size = 15),
+    legend.title = element_text(size = 16),
+    legend.position = 'bottom'
   ) +
-  scale_color_brewer(name = 'Region / Country', palette = 'Set1') +
+  scale_color_brewer(name = '', palette = 'Set1') +
   # scale_colour_hue() +
   scale_x_date(date_breaks = '1 month', date_labels = '%b', limits = c(as.Date('2020-03-01'), max(stats_by_region$date))) +
   guides(colour = guide_legend(override.aes = list(size = 2.5)))
