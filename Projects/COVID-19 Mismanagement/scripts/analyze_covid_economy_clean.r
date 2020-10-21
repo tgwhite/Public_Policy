@@ -16,6 +16,10 @@ library(gifski)
 library(readxl)
 library(sf)
 
+library(RColorBrewer)
+par(mar=c(3,4,2,2))
+display.brewer.all()
+
 #### use the imf projections for growth 
 
 
@@ -598,8 +602,17 @@ median_econ_impact = median(us_comparator_countries$diff_projection_avg, na.rm =
 median_mortality = median(us_comparator_countries$mortality_per_100k, na.rm = T)
 
 us_data = filter(us_comparator_countries, country == 'United States')
-
 us_calcs = us_data %>% select(mortality_per_100k, diff_projection_avg) %>% summarise_all(median)
+
+us_calcs$mortality_per_100k / median_mortality
+us_calcs$diff_projection_avg / median_econ_impact
+
+superior_countries = filter(us_comparator_countries, mortality_per_100k <= us_calcs$mortality_per_100k & diff_projection_avg >= us_calcs$diff_projection_avg, country != 'United States')
+length(superior_countries$country) / nrow(us_comparator_countries)
+
+ggplot(covid_stats_by_country, aes(mortality_per_100k, diff_projection_avg)) +
+  geom_point() +
+  stat_smooth()
 
 
 ggplot(covid_stats_by_country, aes(projection_2020)) +
@@ -802,7 +815,8 @@ ggplot(stacked_daily_stats_selected_regions, aes(date, roll_7_new_deaths_per_100
     legend.text = element_text(size = 14),
     legend.title = element_text(size = 15)
   ) +
-  scale_colour_hue(name = 'Region / Country') +
+  scale_color_brewer(name = 'Region / Country', palette = 'Set1') +
+  # scale_colour_hue() +
   scale_x_date(date_breaks = '1 month', date_labels = '%b', limits = c(as.Date('2020-03-01'), max(stats_by_region$date))) +
   guides(colour = guide_legend(override.aes = list(size = 2.5)))
 ggsave('average_daily_mortality_by_region.png', height= 10, width = 12, units = 'in', dpi = 600)
