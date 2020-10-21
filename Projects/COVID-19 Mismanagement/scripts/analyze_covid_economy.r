@@ -14,6 +14,7 @@ library(RcppRoll)
 library(gganimate)
 library(gifski)
 library(readxl)
+library(sf)
 
 setwd("~/Public_Policy/Projects/COVID-19")
 nordics = c('Sweden', 'Finland', 'Norway', 'Denmark')
@@ -36,25 +37,34 @@ europe_cropped <- st_crop(europe, xmin = -24, xmax = 45,
                           ymin = 30, ymax = 73)
 
 
+# a = st_intersects(europe_cropped, europe_cropped)
+# sweden_intersects = a[which(europe_cropped$name == 'Sweden')] %>% unlist()
+# 
+# europe_cropped$name[sweden_intersects]
+
 
 # countrycode(sourcevar = 'South Korea', destination = 'iso3c', origin = 'un.name.en')
 
 ##### Population data #####
 wdi_indicators = c(
-  'SP.POP.TOTL'
+  'SP.POP.TOTL', # population
+  'NE.TRD.GNFS.ZS', # trade / GDP 
+  'SP.POP.65UP.TO.ZS', # age 65+ % of population
+  'NY.GDP.PCAP.CD'
   # 'SP.POP.65UP.TO.ZS', 'SP.URB.TOTL.IN.ZS',
   #                  'SP.URB.MCTY.UR.ZS', 'SH.STA.ACCH.ZS',
   #                  'SH.MED.NURS.ZS', 'SH.STA.DIAB.ZS',
   #                  'SP.POP.65UP.TO.ZS', 'SP.POP.TOTL', 'SP.POP.LAND.ZS', 'SH.XPD.PCAP',
   #                  'SH.MED.CMHW.P3', 'SH.XPD.OOPC.CH.ZS', 'SH.XPD.CHEX.GD.ZS'
 )
-wdi_descriptions = map(wdi_indicators, function(x){
+wdi_descriptions = lapply(wdi_indicators, function(x){
   
-  a = WDIsearch(string = x, field = 'indicator', short = F) %>%
+  a = WDIsearch(string = x, field = 'indicator', short = T) %>%
     as.data.frame() %>%
     mutate(
       orig_indicator = x
     )
+  class(a)
   return(a)
 }) %>%
   bind_rows() %>%
@@ -76,27 +86,28 @@ WDI_data_long = map(wdi_indicators, function(x){
   
 })
 
-wdi_data_stacked = bind_rows(WDI_data_long) %>%
-  left_join(wdi_descriptions) %>% 
-  select(-matches('V[0-9]'), -description, -contains('source'))
+wdi_data_stacked = bind_rows(WDI_data_long) 
+wdi_data_wide = pivot_wider(wdi_data_stacked, id_cols = c('country', 'year', 'income', 'region'), values_from = 'value', names_from = 'indicator') %>%
+  arrange(country, year)
 
-world$name %>% unique()
 
-latest_country_pop = filter(wdi_data_stacked, indicator == 'SP.POP.TOTL', region != 'Aggregates') %>%
+latest_country_pop = filter(wdi_data_wide) %>%
   group_by(country, income, region) %>%
   summarize(
-    latest_year = max(year[!is.na(value)]),
-    population = value[year == latest_year]
+    latest_pop_year = max(year[!is.na(SP.POP.TOTL)], na.rm = T),
+    population = SP.POP.TOTL[year == latest_pop_year],
+    trade_pct_gdp = tail(NE.TRD.GNFS.ZS[!is.na(NE.TRD.GNFS.ZS)], 1) / 100,
+    gdp_per_capita_us = tail(NY.GDP.PCAP.CD[!is.na(NY.GDP.PCAP.CD)], 1),
+    pop_pct_65_over = tail(SP.POP.65UP.TO.ZS[!is.na(SP.POP.65UP.TO.ZS)], 1) / 100
   ) %>%
   rename(
-    year = latest_year
+    year = latest_pop_year
   ) %>%
   left_join(world, by = c('country'= 'name')) %>%
   mutate(
     country = recode(country, `Korea, Rep.` = 'South Korea', `Russian Federation` = 'Russia')
   )
-select(latest_country_pop, region, country) %>% View()
-latest_country_pop$region %>% table()
+
 
 ##### stringency and mobility data #####
 
@@ -139,7 +150,7 @@ country_stringency = filter(oxford_stringency_index, stringency_geo_type == 'cou
   rename(
     mobility = value
   )
-
+head(country_stringency)
 
 ##### Covid data #####
 
@@ -236,6 +247,9 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
     mortality_rate = cumulative_deaths / population,
     mortality_per_100k = mortality_rate * 1e5
   ) 
+
+ggplot(covid_deaths_by_country_date_diffs, aes(GovernmentResponseIndex, StringencyIndex)) +
+  geom_point()
 
 selected_countries = filter(covid_deaths_by_country_date_diffs, country %in% c('United States', 'Japan', 'Germany'))
 
@@ -669,15 +683,19 @@ animate(animated_mortality_map,
         height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
 ##### analysis --- covid response and effectiveness #####
+head(covid_deaths_by_country_date_diffs)
 covid_stats_by_country = 
   covid_deaths_by_country_date_diffs %>%
   filter(population > 10e6) %>%
   group_by(country, income) %>%
   summarize(
+    total_deaths = max(cumulative_deaths, na.rm = T),
     mean_mobility = mean(mobility, na.rm = T),
     median_mobility = median(mobility, na.rm = T),
     max_stringency = max(StringencyIndex, na.rm = T),
     median_stringency = median(StringencyIndex, na.rm = T),
+    median_ContainmentHealthIndex = median(ContainmentHealthIndex, na.rm = T),
+    max_ContainmentHealthIndex = max(ContainmentHealthIndex, na.rm = T),
     mean_stringency = mean(StringencyIndex, na.rm = T),
     mean_new_deaths_pct_of_max = mean(new_deaths_pct_of_max, na.rm = T),
     mean_new_deaths_per_100k = mean(new_deaths_per_100k, na.rm = T),
@@ -697,15 +715,67 @@ covid_stats_by_country =
     projection_2020 = `2020`
   ) %>%
   mutate(
-    three_year_avg_growth = (`2019` + `2018` + `2017` ) / 3
+    three_year_avg_growth = (`2019` + `2018` + `2017` ) / 3,
+    two_year_avg_growth = (`2019` + `2018`) / 2,
+    last_year_growth = `2019`
   )
-min_mortality_not_zero = covid_stats_by_country$mortality_per_100k[covid_stats_by_country$mortality_per_100k > 0] %>% min()
 
+region_growth_stats_by_country = lapply(unique(covid_stats_by_country$country), function(the_country){
+  the_region = filter(covid_stats_by_country, country == the_country)$region
+  stats_for_region_excl_country = filter(covid_stats_by_country, region == the_region, country != the_country)
+  mean_proj_for_region = mean(stats_for_region_excl_country$projection_2020, na.rm = T)
+  covid_deaths = sum(stats_for_region_excl_country$total_deaths, na.rm = T)
+  population = sum(stats_for_region_excl_country$population, na.rm = T)
+  region_deaths_per_100k = (covid_deaths / population) * 1e5
+  data.frame(
+    country = the_country, 
+    mean_proj_for_region = mean_proj_for_region,
+    region_deaths_per_100k = region_deaths_per_100k
+  )
+}) %>%
+  bind_rows()
+
+covid_stats_by_country = left_join(covid_stats_by_country, region_growth_stats_by_country)
+
+
+min_mortality_not_zero = covid_stats_by_country$mortality_per_100k[covid_stats_by_country$mortality_per_100k > 0] %>% min()
 covid_stats_by_country$mortality_per_100k_log = ifelse(covid_stats_by_country$mortality_per_100k == 0, min_mortality_not_zero, covid_stats_by_country$mortality_per_100k)
 
-head(covid_stats_by_country)
-ggplot(covid_stats_by_country, aes(mean_mobility, projection_2020)) +
+options(na.action = na.exclude)
+
+simple_mod = lm(projection_2020 ~ log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
+simple_mod_region_deaths = lm(projection_2020 ~ log(mortality_per_100k_log) + log(region_deaths_per_100k) + last_year_growth, data = covid_stats_by_country)
+
+ggplot(covid_stats_by_country, aes(region_deaths_per_100k, mortality_per_100k_log)) +
   geom_point()
+summary(simple_mod_region_deaths)
+simple_mod_region_proj = lm(projection_2020 ~ log(mortality_per_100k_log) + last_year_growth + mean_proj_for_region, data = covid_stats_by_country)
+simple_mod_region = lm(projection_2020 ~ log(mortality_per_100k_log) + last_year_growth + region, data = covid_stats_by_country)
+simple_mod_region_income = lm(projection_2020 ~ log(mortality_per_100k_log) + last_year_growth + region + income, data = covid_stats_by_country)
+max_health_index = lm(projection_2020 ~ max_ContainmentHealthIndex + pop_pct_65_over + income + trade_pct_gdp + log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
+max_stringency = lm(projection_2020 ~ max_stringency + pop_pct_65_over + income + trade_pct_gdp + log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
+max_stringency_region_proj = lm(projection_2020 ~ max_stringency + pop_pct_65_over + income + trade_pct_gdp * mean_proj_for_region + log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
+median_health_index = lm(projection_2020 ~ median_ContainmentHealthIndex + pop_pct_65_over + income + trade_pct_gdp + log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
+median_stringency = lm(projection_2020 ~ median_stringency + pop_pct_65_over + income + trade_pct_gdp + log(mortality_per_100k_log) + last_year_growth, data = covid_stats_by_country)
+
+anova(simple_mod, simple_mod_region_proj, max_health_index, max_stringency, max_stringency_region_proj, median_health_index, median_stringency)
+summary(max_stringency)
+summary(simple_mod_region_proj)
+summary(simple_mod_region)
+summary(simple_mod_region_income)
+covid_stats_by_country$modeled_growth = predict(max_stringency)
+summary(simple_mod)
+summary(max_stringency_region_proj)
+
+ggplot(covid_stats_by_country, aes(modeled_growth, projection_2020 )) +
+  geom_point(aes(colour = mortality_per_100k_log, size = mortality_per_100k_log)) + 
+  stat_smooth(method = 'lm') +
+  scale_color_viridis_c(option = 'A') + 
+  scale_size(guide=F)
+
+ggplot(covid_stats_by_country, aes(mean_mobility, projection_2020)) +
+  geom_point(aes(colour = mortality_per_100k_log, size = mortality_per_100k_log)) + 
+  scale_color_viridis_c(option = 'A')
 
 
 ggplot(covid_stats_by_country, aes(country, median_mobility)) +
@@ -738,15 +808,9 @@ ggplot(covid_stats_by_country, aes(median_stringency, projection_2020)) +
   geom_point(aes(size = mortality_per_100k, colour = income)) +
   stat_smooth() 
 
-options(na.action = na.exclude)
-simple_mod = lm(projection_2020 ~ max_stringency + income + log(mortality_per_100k_log) + three_year_avg_growth, data = covid_stats_by_country)
-covid_stats_by_country$modeled_growth = predict(simple_mod)
 
+names(covid_stats_by_country)
 
-head(covid_deaths_by_country_date_diffs)
-ggplot(covid_stats_by_country, aes(modeled_growth, projection_2020 )) +
-  geom_point() +
-  stat_smooth(method = 'lm')
 
 ggplot(covid_stats_by_country, aes(three_year_avg_growth, projection_2020)) +
   geom_point(aes(size = mortality_per_100k, colour = income)) +
