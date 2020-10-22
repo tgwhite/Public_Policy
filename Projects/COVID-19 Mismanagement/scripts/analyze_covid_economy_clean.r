@@ -489,8 +489,8 @@ covid_stats_by_country =
     three_year_avg_growth = (`2019` + `2018` + `2017` ) / 3,
     two_year_avg_growth = (`2019` + `2018`) / 2,
     last_year_growth = `2019`,
-    
-    diff_projection_avg = projection_2020 - three_year_avg_growth
+    diff_projection_avg = (1 - ((1 + three_year_avg_growth / 100) / (1 + projection_2020/100))) * 100,
+    diff_projection_avg_simple = projection_2020 - three_year_avg_growth
   ) %>%
   arrange(-diff_projection_avg) %>%
   mutate(
@@ -499,6 +499,7 @@ covid_stats_by_country =
   arrange(-gdp_per_capita_us)
 
 covid_stats_by_country$geometry = NULL
+
 
 ##### rank plots #####
 setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/output")
@@ -602,6 +603,10 @@ median_econ_impact = median(us_comparator_countries$diff_projection_avg, na.rm =
 median_mortality = median(us_comparator_countries$mortality_per_100k, na.rm = T)
 
 us_data = filter(us_comparator_countries, country == 'United States')
+
+us_data$diff_projection_avg
+us_data$three_year_avg_growth
+us_data$pr
 us_calcs = us_data %>% select(mortality_per_100k, diff_projection_avg) %>% summarise_all(median)
 
 us_calcs$mortality_per_100k / median_mortality
