@@ -626,6 +626,7 @@ filter(us_comparator_countries, country %in% c('United States', 'Germany','Japan
 
 
 
+us_data$total_deaths - ((us_data$population / 1e5) * median_mortality)
 
 mortality_rank_plot = ggplot(us_comparator_countries, aes(country_ranked_mortality, mortality_per_100k, fill = mortality_per_100k)) +
   geom_bar(stat = 'identity', fill = 'steelblue') +
