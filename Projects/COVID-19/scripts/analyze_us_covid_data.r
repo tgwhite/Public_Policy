@@ -16,20 +16,31 @@ library(lmtest)
 library(WDI)
 library(plotly)
 library(USAboundaries)
+library(USAboundariesData)
 library(sf)
 library(fuzzyjoin)
 library(tigris)
 library(scales)
 library(ggthemes)
+
 # library(usmap)
 
 library(cowplot)
 library(RcppRoll)
-library(sqldf)
+# library(sqldf)
 library(albersusa)
+
 library(RColorBrewer)
 library(quantreg)
 library(ggrepel)
+
+# library(devtools)
+# remotes::install_git("https://git.sr.ht/~hrbrmstr/albersusa")
+# https://github.com/hrbrmstr/albersusa
+
+# devtools::install_github("ropensci/USAboundariesData")
+
+
 # display.brewer.all(n=NULL, type="all", select=NULL, exact.n=TRUE,
 #                    colorblindFriendly=FALSE)
 
@@ -105,9 +116,6 @@ us_map = USAboundaries::us_boundaries()
 us_states_tigris = tigris::states()
 us_counties_tigris = tigris::counties()
 
-
-# remotes::install_git("https://git.sr.ht/~hrbrmstr/albersusa")
-# https://github.com/hrbrmstr/albersusa
 
 us_sf <- usa_sf("laea")
 cty_sf <- counties_sf("aeqd")
@@ -266,6 +274,7 @@ all_covid_data_diffs =
     state_pop = NULL, us_pop = NULL
   )
 
+
 ### get timing of when the 20th case occurred ### 
 case_20_dates = group_by(all_covid_data_diffs, location_key) %>%
   summarize(
@@ -287,13 +296,14 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
   new_cases_zoo = zoo(cum_diff_value_total_cases, 1:length(cum_diff_value_total_cases))
   r0_rolling = rep(NA, length(new_cases_zoo)) %>% as.numeric()
   
-  tryCatch({
-    r0_rolling = c(rep(NA, r0_window_size-1), rollapply(new_cases_zoo %>% na.approx(new_cases_zoo, na.rm = F), r0_window_size, est_r0_window)) %>% 
-      lead(r0_window_size) %>% as.numeric()  
-  }, error = function(e){
-    print( e)
-    
-  })
+  # tryCatch({
+  #   r0_rolling = c(rep(NA, r0_window_size-1), rollapply(new_cases_zoo %>% na.approx(new_cases_zoo, na.rm = F), r0_window_size, est_r0_window)) %>% 
+  #     lead(r0_window_size) %>% as.numeric()  
+  # }, error = function(e){
+  #   print( e)
+  #   
+  # })
+  # 
   
   # Median is 5.1 days, mean is 6.4 days
   # https://annals.org/aim/fullarticle/2762808/incubation-period-coronavirus-disease-2019-covid-19-from-publicly-reported
@@ -331,8 +341,13 @@ effective_r0_dat = all_covid_data_diffs_dt[, {
   r0_rolling_lead_7 = lead(r0_rolling, 7)
   effective_r0_interpolated_lead_7 = lead(effective_r0_interpolated, 7)
   
+  new_deaths_per_100k = cum_diff_value_total_deaths / pop_100k
+  new_deaths_per_100k_roll7 = c(rep(NA, 6), roll_mean(new_deaths_per_100k, 7))
+  
   list(
     date = date,
+    new_deaths_per_100k = new_deaths_per_100k, 
+    new_deaths_per_100k_roll7 = new_deaths_per_100k_roll7,
     effective_r0_interpolated = effective_r0_interpolated_lead,
     effective_r0_interpolated_lead_7 = effective_r0_interpolated_lead_7,
     r0_rolling = r0_rolling,
@@ -366,11 +381,10 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
     days_since_first_state_lockdown = as.numeric(date - min(lockdown_start, na.rm = T)),
     post_first_lockdown = days_since_first_state_lockdown >= 0,
     new_tests_per_100k = cum_diff_value_total_tests / pop_100k,
+    deaths_per_100k = value_total_deaths / pop_100k,
     tests_per_100k = value_total_tests / pop_100k,
     cases_per_100k = value_total_cases / pop_100k,
     new_cases_per_100k = cum_diff_value_total_cases / pop_100k,
-    new_deaths_per_100k = cum_diff_value_total_deaths / pop_100k,
-    deaths_per_100k = value_total_deaths / pop_100k,
     diff_value_avg_3_total_tests_per_100k = diff_value_avg_3_total_tests / pop_100k,
     week_day = lubridate::wday(date),
     weekend_ind = ifelse(week_day %in% c(7, 1), 'Weekend', "Week Day"),
@@ -383,7 +397,15 @@ all_covid_data_diffs_dates = left_join(all_covid_data_diffs, case_20_dates) %>%
     location %in% c(state.abb, 'United States')
   )
 
+
+
 write.csv(all_covid_data_diffs_dates, 'data/us_covid_data_by_state_with_calcs.csv', row.names = F)
+
+all_covid_data_diffs_dates %>% filter(location_name %in% c('Florida', 'California', 'Texas', 'New York', 'Arizona', 
+                                                           'Michigan', 'Georgia', 'South Carolina')) %>% 
+ggplot(aes(date, new_deaths_per_100k_roll7)) +
+  facet_wrap(~location_name, ncol = 4) + 
+  geom_line()
 
 
 r0_stats_by_date = group_by(all_covid_data_diffs_dates, date, lockdown_period) %>%
