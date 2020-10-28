@@ -22,14 +22,46 @@ stacked_presidential_approval = map(the_sheets, function(the_president){
     )
 }) %>%
   bind_rows() %>%
-  arrange(End_Date)
+  arrange(End_Date) %>%
+  mutate(
+    year = year(End_Date),
+    month = month(End_Date)
+  ) %>%
+  group_by(
+    President, year, month
+  ) %>%
+  summarize(
+    mean_monthly_approval = mean(Approving, na.rm = T)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    month_date = paste(year, month, '01', sep = '-') %>% as.Date()
+  ) %>%
+  arrange(
+    month_date 
+  )
 
-pres_stats = group_by(stacked_presidential_approval, President)
+president_stats = group_by(stacked_presidential_approval, President) %>%
+  summarize(
+    start_date = min(month_date, na.rm = T),
+    end_date = max(month_date, na.rm = T),
+    mean_approve = mean(mean_monthly_approval),
+    median_approve = median(mean_monthly_approval)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    midpoint = as.numeric(end_date - start_date) / 2 + start_date,
+    last_name = str_extract(President, '( [a-zA-Z]+)$') %>% str_trim()
+  ) %>% 
+  arrange(
+    start_date
+  ) 
+
+stacked_presidential_approval$President = factor(stacked_presidential_approval$President, levels = president_stats$President)
 
 
+setwd("~/Public_Policy/Projects/Presidential Approval/output")
 
-
-setwd("~/Public_Policy/Projects/Finance/output")
 
 
 large_text_theme = theme(
@@ -198,20 +230,46 @@ date_df = tribble(
   as.Date('2013-01-15'), 'Debt Ceiling Crisis'
 )
 
+blank_df = data.frame(
+  description = c('Presidential Approval', 'Real GDP Growth'), 
+  x = rep(as.Date('1947-01-01'), 2), 
+  y = 0
+)
 
-ggplot(stacked_presidential_approval %>% filter(End_Date >= as.Date('1975-01-01')), aes(End_Date, scale(Approving))) +
-  theme_bw() +
+stacked_presidential_approval %>% head()
+ggplot(stacked_presidential_approval %>% filter(month_date >= as.Date('1947-01-01'))) +
   labs(
-    y = 'Scaled Value'
+    y = 'Scaled Value', x = '', title = 'Presidential Approval vs. Real GDP Growth', 
+    caption = 'Chart: Taylor G. White\nData: UCSB Presidency Project, St. Louis Federal Reserve\nScaled values represent standard deviations from the mean for both presidential approval and economic growth.'
   ) +
-  large_text_theme +
+  geom_bar(data = blank_df, aes(x, y, fill = description), stat = 'identity', alpha = 0) +
+  guides(fill = guide_legend(override.aes = list(alpha = 1))) +
+  scale_fill_manual(values = c('Presidential Approval' = 'steelblue', 'Real GDP Growth' = 'orange'), name = '') +
+  theme_minimal() +
+  theme(
+    legend.position = 'bottom',
+    panel.grid.minor = element_blank()
+    ) +
+  geom_rect(data = president_stats %>% filter(end_date >= as.Date('1947-01-01')), 
+            aes(xmin = start_date, xmax = end_date, ymin = -3.5, ymax = 3.5), size = 0.5, alpha = 0.10, show.legend = F, colour = 'black') + 
+  geom_text(data = president_stats %>% filter(end_date >= as.Date('1947-01-01')), aes(x = midpoint, y = -2.75, 
+                                                                                      label = paste0(last_name, '\n', sprintf('(%s)', percent(median_approve/100, accuracy = 1)))), fontface = 'bold') + 
+  scale_colour_hue(guide = F) +
+  scale_y_continuous(breaks = seq(-3, 3, by = 1)) +
+  scale_x_date(date_breaks = '4 years', date_labels = '%Y') +
   geom_hline(aes(yintercept = 0)) +
-  geom_line(data = annual_comparison %>% filter(month_date >= as.Date('1975-01-01')), aes(month_date, scaled_growth), size = 0.75, colour = 'black') +
-  geom_point(aes(color = President)) +
-  geom_vline(data = date_df, aes(xintercept = date)) +
-  geom_text(data = date_df, aes(x = date, y = 2, label = description, angle = 90), vjust = 0, hjust = 0, fontface = 'bold')
+  # geom_bar(data = annual_comparison %>% filter(month_date >= as.Date('1947-01-01'), year < 2020), aes(month_date, scaled_growth), stat = 'identity', fill = 'orange', alpha = 0.5, colour = 'black') +
   
-ggsave('presidential_approval_timeline.png', height = 9, width = 12, units = 'in', dpi = 400)
+  geom_point(aes( month_date, scale(mean_monthly_approval )), colour = 'steelblue') +
+  geom_line(data = annual_comparison %>% filter(month_date >= as.Date('1947-01-01'), year < 2020), aes(month_date, scaled_growth), size = 0.75, colour = 'orange') +
+  geom_point(data = annual_comparison %>% filter(month_date >= as.Date('1947-01-01'), year < 2020), aes(month_date, scaled_growth), size = 1, colour = 'orange') +
+  # stat_smooth(aes(colour = NA), span = .1) +
+  
+  large_text_theme 
+  # geom_vline(data = date_df, aes(xintercept = date)) +
+  # geom_text(data = date_df, aes(x = date, y = 2, label = description, angle = 90), vjust = 0, hjust = 0, fontface = 'bold')
+  
+ggsave('presidential_approval_timeline.png', height = 10, width = 20, units = 'in', dpi = 600)
 getwd()
 
 head(stacked_presidential_approval)
