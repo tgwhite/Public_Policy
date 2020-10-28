@@ -4,9 +4,27 @@ library(tidyverse)
 # library(quantmod)
 library(data.table)
 library(scales)
-
+library(readxl)
 
 setwd("~/Public_Policy/Projects/Presidential Approval/data")
+the_sheets = excel_sheets("American Presidency Project - Approval Ratings for POTUS.xlsx")
+stacked_presidential_approval = map(the_sheets, function(the_president){
+  read_excel("American Presidency Project - Approval Ratings for POTUS.xlsx", the_president) %>% 
+    mutate(
+      End_Date = as.Date(`End Date`),
+      President = the_president,
+      net_approve = Approving - Disapproving
+      ) %>%
+    arrange(End_Date) %>%
+    mutate(
+      delta_net_approve = c(NA, diff(net_approve, 1)),
+      period_diff = as.numeric(End_Date - lag(End_Date, 1))
+    )
+}) %>%
+  bind_rows() %>%
+  arrange(End_Date)
+
+pres_stats = group_by(stacked_presidential_approval, President)
 
 
 
@@ -19,7 +37,9 @@ large_text_theme = theme(
   plot.subtitle = element_text(size = 18, face = 'italic'),
   plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
   axis.text = element_text(size = 16),
-  axis.title = element_text(size = 18)
+  axis.title = element_text(size = 18),
+  legend.text = element_text(size = 16),
+  legend.title = element_text(size = 18)
 ) 
 
 get_monthly_annual_index_fred = function(symbol) {
@@ -153,13 +173,51 @@ annual_comparison = filter(joined_inflation_gold_growth, !is.na(annual_inflation
     scaled_sp500 = scale(annual_sp500) %>% as.numeric()
   )
 
-monthly_comparison = filter(joined_inflation_gold_growth, !is.na(monthly_gold)) %>%
+monthly_comparison = filter(joined_inflation_gold_growth) %>%
   mutate(
+    scaled_sp500 = scale(monthly_sp500) %>% as.numeric(),
     scaled_gold = scale(monthly_gold) %>% as.numeric(),
     scaled_gold_close = scale(gold_adjusted_close) %>% as.numeric(),
     scaled_ten_two_spread = scale(ten_two_spread) %>% as.numeric(),
     scaled_inflation = scale(monthly_inflation) %>% as.numeric()
   )
+
+
+ggplot(stacked_presidential_approval %>% filter(End_Date >= as.Date('1975-01-01')), aes(End_Date, scale(Approving))) +
+  geom_line(data = monthly_comparison %>% filter(month_date >= as.Date('1975-01-01')), aes(month_date, scaled_sp500), size = 0.75, colour = 'gray') +
+  geom_point(aes(color = President)) 
+
+date_df = tribble(
+  ~date, ~description, 
+  as.Date('1979-11-04'), 'Iran Hostage Crisis',
+  as.Date('1986-11-01'), 'Iran Contra Affair',
+  as.Date('1990-08-02'), 'First Gulf War',
+  as.Date('2001-09-11'), 'September 11 Attacks',
+  as.Date('2008-09-15'), 'Lehman Bankruptcy',
+  as.Date('2010-03-23'), 'Obamacare Signed',
+  as.Date('2013-01-15'), 'Debt Ceiling Crisis'
+)
+
+
+ggplot(stacked_presidential_approval %>% filter(End_Date >= as.Date('1975-01-01')), aes(End_Date, scale(Approving))) +
+  theme_bw() +
+  labs(
+    y = 'Scaled Value'
+  ) +
+  large_text_theme +
+  geom_hline(aes(yintercept = 0)) +
+  geom_line(data = annual_comparison %>% filter(month_date >= as.Date('1975-01-01')), aes(month_date, scaled_growth), size = 0.75, colour = 'black') +
+  geom_point(aes(color = President)) +
+  geom_vline(data = date_df, aes(xintercept = date)) +
+  geom_text(data = date_df, aes(x = date, y = 2, label = description, angle = 90), vjust = 0, hjust = 0, fontface = 'bold')
+  
+ggsave('presidential_approval_timeline.png', height = 9, width = 12, units = 'in', dpi = 400)
+getwd()
+
+head(stacked_presidential_approval)
+filter(stacked_presidential_approval, President == 'Jimmy Carter')
+  
+
 
 ggplot(monthly_comparison, aes(month_date, scaled_gold_close)) +
   theme_bw() +
