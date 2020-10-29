@@ -8,6 +8,23 @@ library(readxl)
 
 setwd("~/Public_Policy/Projects/Presidential Approval/data")
 the_sheets = excel_sheets("American Presidency Project - Approval Ratings for POTUS.xlsx")
+
+president_start_dates = tibble(
+  President = c('Franklin D. Roosevelt','Harry S. Truman','Dwight D. Eisenhower','John F. Kennedy',
+  'Lyndon B. Johnson','Richard Nixon','Gerald R. Ford','Jimmy Carter','Ronald Reagan','George Bush',
+  'William J. Clinton','George W. Bush','Barack Obama','Donald Trump'),
+  start_date = c('1933-03-04', '1945-04-12', '1953-01-20', '1961-01-20', 
+           '1963-11-22', '1969-01-20', '1974-08-09', '1977-01-20', 
+           '1981-01-20', '1989-01-20', '1993-01-20', '2001-01-20', 
+           '2009-01-20', '2017-01-20') %>% as.Date(),
+  end_date = lead(start_date, 1) %>% as.Date()
+) 
+
+president_start_dates$end_date[is.na(president_start_dates$end_date)] = as.Date('2021-01-20')
+president_start_dates = mutate(president_start_dates, 
+    n_terms = ifelse(year(end_date) - year(start_date) >= 6, 2, 1)
+  )
+
 stacked_presidential_approval = map(the_sheets, function(the_president){
   read_excel("American Presidency Project - Approval Ratings for POTUS.xlsx", the_president) %>% 
     mutate(
@@ -15,11 +32,15 @@ stacked_presidential_approval = map(the_sheets, function(the_president){
       President = the_president,
       net_approve = Approving - Disapproving
       ) %>%
+    left_join(president_start_dates) %>%
+    rename(term_start = start_date, term_end = end_date) %>%
     arrange(End_Date) %>%
     mutate(
+      first_term = End_Date <= term_start + years(4),
       delta_net_approve = c(NA, diff(net_approve, 1)),
       period_diff = as.numeric(End_Date - lag(End_Date, 1))
-    )
+    ) 
+    
 }) %>%
   bind_rows() %>%
   arrange(End_Date) %>%
@@ -28,7 +49,7 @@ stacked_presidential_approval = map(the_sheets, function(the_president){
     month = month(End_Date)
   ) %>%
   group_by(
-    President, year, month
+    President, year, month, first_term
   ) %>%
   summarize(
     mean_monthly_approval = mean(Approving, na.rm = T)
@@ -43,6 +64,7 @@ stacked_presidential_approval = map(the_sheets, function(the_president){
 
 president_stats = group_by(stacked_presidential_approval, President) %>%
   summarize(
+    obs = n(),
     start_date = min(month_date, na.rm = T),
     end_date = max(month_date, na.rm = T),
     mean_approve = mean(mean_monthly_approval),
@@ -57,6 +79,33 @@ president_stats = group_by(stacked_presidential_approval, President) %>%
     start_date
   ) 
 
+president_stats_by_term = group_by(stacked_presidential_approval, President, first_term) %>% summarize(
+  obs = n(),
+  first_poll_date = min(month_date, na.rm = T),
+  last_poll_date = max(month_date, na.rm = T),
+  mean_approve = mean(mean_monthly_approval),
+  median_approve = median(mean_monthly_approval)
+) %>%
+  arrange(first_poll_date )
+
+first_term_stats = president_stats_by_term %>% filter(first_term) %>% ungroup() %>% arrange(mean_approve) %>% 
+  mutate(pres_sorted = factor(President, levels = President)) 
+
+ggplot(first_term_stats, aes(pres_sorted, mean_approve / 100)) +
+  geom_bar(stat = 'identity', fill = 'steelblue') +
+  geom_text(aes(label = percent(mean_approve/100, accuracy = 0.1)), hjust = 1, fontface = 'bold') +
+  coord_flip() +
+  scale_y_continuous(labels = percent) + 
+  large_text_theme + 
+  labs(
+    x = '', y = 'Average Monthly Approval Rating',
+    title = 'U.S. Presidential Approval Ratings',
+    subtitle = 'First Term',
+    caption = 'Chart: Taylor G. White\nData: UCSB Presidency Project'
+  )
+
+
+
 stacked_presidential_approval$President = factor(stacked_presidential_approval$President, levels = president_stats$President)
 
 
@@ -65,7 +114,7 @@ setwd("~/Public_Policy/Projects/Presidential Approval/output")
 
 
 large_text_theme = theme(
-  plot.title = element_text(size = 24),
+  plot.title = element_text(size = 28),
   plot.subtitle = element_text(size = 18, face = 'italic'),
   plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
   axis.text = element_text(size = 16),
@@ -250,10 +299,10 @@ ggplot(stacked_presidential_approval %>% filter(month_date >= as.Date('1947-01-0
     legend.position = 'bottom',
     panel.grid.minor = element_blank()
     ) +
-  geom_rect(data = president_stats %>% filter(end_date >= as.Date('1947-01-01')), 
+  geom_rect(data = president_start_dates %>% filter(end_date   >= as.Date('1947-01-01')), 
             aes(xmin = start_date, xmax = end_date, ymin = -3.5, ymax = 3.5), size = 0.5, alpha = 0.10, show.legend = F, colour = 'black') + 
   geom_text(data = president_stats %>% filter(end_date >= as.Date('1947-01-01')), aes(x = midpoint, y = -2.75, 
-                                                                                      label = paste0(last_name, '\n', sprintf('(%s)', percent(median_approve/100, accuracy = 1)))), fontface = 'bold') + 
+                                                                                      label = paste0(last_name, '\n', sprintf('(%s)', percent(mean_approve /100, accuracy = 1)))), fontface = 'bold') + 
   scale_colour_hue(guide = F) +
   scale_y_continuous(breaks = seq(-3, 3, by = 1)) +
   scale_x_date(date_breaks = '4 years', date_labels = '%Y') +
