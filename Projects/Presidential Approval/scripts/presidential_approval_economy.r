@@ -91,10 +91,14 @@ president_stats_by_term = group_by(stacked_presidential_approval, President, fir
 first_term_stats = president_stats_by_term %>% filter(first_term) %>% ungroup() %>% arrange(mean_approve) %>% 
   mutate(pres_sorted = factor(President, levels = President)) 
 
+
+setwd("~/Public_Policy/Projects/Presidential Approval/output")
+
 ggplot(first_term_stats, aes(pres_sorted, mean_approve / 100)) +
   geom_bar(stat = 'identity', fill = 'steelblue') +
   geom_text(aes(label = percent(mean_approve/100, accuracy = 0.1)), hjust = 1, fontface = 'bold') +
   coord_flip() +
+  theme_bw() +
   scale_y_continuous(labels = percent) + 
   large_text_theme + 
   labs(
@@ -103,13 +107,12 @@ ggplot(first_term_stats, aes(pres_sorted, mean_approve / 100)) +
     subtitle = 'First Term',
     caption = 'Chart: Taylor G. White\nData: UCSB Presidency Project'
   )
-
+ggsave('first_term_approval.png', height = 10, width = 10, units = 'in', dpi = 600)
 
 
 stacked_presidential_approval$President = factor(stacked_presidential_approval$President, levels = president_stats$President)
 
 
-setwd("~/Public_Policy/Projects/Presidential Approval/output")
 
 
 
@@ -288,7 +291,7 @@ blank_df = data.frame(
 stacked_presidential_approval %>% head()
 ggplot(stacked_presidential_approval %>% filter(month_date >= as.Date('1947-01-01'))) +
   labs(
-    y = 'Scaled Value', x = '', title = 'Presidential Approval vs. Real GDP Growth', 
+    y = 'Scaled Value', x = '', title = 'U.S. Presidential Approval Ratings vs. Economic Growth', 
     caption = 'Chart: Taylor G. White\nData: UCSB Presidency Project, St. Louis Federal Reserve\nScaled values represent standard deviations from the mean for both presidential approval and economic growth.'
   ) +
   geom_bar(data = blank_df, aes(x, y, fill = description), stat = 'identity', alpha = 0) +
