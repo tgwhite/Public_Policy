@@ -2,9 +2,20 @@
 library(tidyquant)
 library(tidyverse)
 # library(quantmod)
-library(data.table)
 library(scales)
 library(readxl)
+library(fuzzyjoin)
+library(data.table)
+library(ggrepel)
+
+
+large_text_theme = theme(
+  plot.title = element_text(size = 24),
+  plot.subtitle = element_text(size = 18, face = 'italic'),
+  plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
+  axis.text = element_text(size = 16),
+  axis.title = element_text(size = 18)
+) 
 
 setwd("~/Public_Policy/Projects/Presidential Approval/data")
 the_sheets = excel_sheets("American Presidency Project - Approval Ratings for POTUS.xlsx")
@@ -19,6 +30,19 @@ president_start_dates = tibble(
            '2009-01-20', '2017-01-20') %>% as.Date(),
   end_date = lead(start_date, 1) %>% as.Date()
 ) 
+
+
+date_df = tribble(
+  ~date, ~description, 
+  as.Date('1979-11-04'), 'Iran Hostage Crisis',
+  as.Date('1986-11-01'), 'Iran Contra Affair',
+  as.Date('1990-08-02'), 'First Gulf War',
+  as.Date('2001-09-11'), 'September 11 Attacks',
+  as.Date('2008-09-15'), 'Lehman Bankruptcy',
+  as.Date('2010-03-23'), 'Obamacare Signed',
+  as.Date('2013-01-15'), 'Debt Ceiling Crisis'
+)
+
 
 president_start_dates$end_date[is.na(president_start_dates$end_date)] = as.Date('2021-01-20')
 president_start_dates = mutate(president_start_dates, 
@@ -67,6 +91,7 @@ president_stats = group_by(stacked_presidential_approval, President) %>%
     obs = n(),
     start_date = min(month_date, na.rm = T),
     end_date = max(month_date, na.rm = T),
+    min_approval = min(mean_monthly_approval), 
     mean_approve = mean(mean_monthly_approval),
     median_approve = median(mean_monthly_approval)
   ) %>%
@@ -78,6 +103,7 @@ president_stats = group_by(stacked_presidential_approval, President) %>%
   arrange(
     start_date
   ) 
+arrange(president_stats, min_approval)
 
 president_stats_by_term = group_by(stacked_presidential_approval, President, first_term) %>% summarize(
   obs = n(),
@@ -130,7 +156,6 @@ get_monthly_annual_index_fred = function(symbol) {
   
   the_dat = getSymbols(symbol, from = 1940, to = 2020, src = 'FRED', auto.assign = F)
   
-  
   interest_rate_spread_df = tibble(
     date = index(the_dat),
     period_index = as.numeric(the_dat[,symbol])
@@ -148,15 +173,17 @@ get_monthly_annual_index_fred = function(symbol) {
   
 }
 
-ten_year_interest_rates = get_monthly_annual_index_fred('DGS10') %>% rename(ten_year_yield = last_val) 
-interest_rate_spread = get_monthly_annual_index_fred('T10Y2Y') %>% rename(ten_two_spread = last_val) 
+ten_year_interest_rates_df = get_monthly_annual_index_fred('DGS10') %>% rename(ten_year_yield = last_val) 
+interest_rate_spread_df = get_monthly_annual_index_fred('T10Y2Y') %>% rename(ten_two_spread = last_val) 
+unemployment_rate_df = get_monthly_annual_index_fred('UNRATE') %>% rename(unemployment_rate = last_val) 
+
 
 gdp = getSymbols('GDPC1', from = 1940, to = 2020, src = 'FRED', auto.assign = F)
 index(gdp) = index(gdp) - 1 # change the reporting dates to end of period 
 gdp_changes = allReturns(gdp) %>% as.data.frame()
 gdp_df = tibble(
   date = index(gdp), 
-  quarterly_index = as.numeric(gdp$GDPC1)
+  quarterly_value = as.numeric(gdp$GDPC1)
 ) %>% 
   bind_cols(
     gdp_changes
@@ -232,16 +259,17 @@ gold_df = get_monthly_symbol_returns('IAU')
 # get month end returns
 
 
-joined_inflation_gold_growth = left_join(
+financial_statistics_with_presidents = left_join(
   inflation_df %>% select(year, month, annual_inflation, monthly_inflation), 
   gold_df %>% select(year, month, annual_gold = last_yearly_value, monthly_gold = last_monthly_value, gold_adjusted_close = last_close_val)
 ) %>%
   left_join(
     sp500_df %>% select(year, month, annual_sp500 = last_yearly_value, monthly_sp500 = last_monthly_value, sp500_adjusted_close = last_close_val)
   ) %>%
-  left_join(gdp_df %>% select(year, month, annual_gdp, quarterly_gdp)) %>%
-  left_join(interest_rate_spread) %>%
-  left_join(ten_year_interest_rates) %>%
+  left_join(gdp_df %>% select(year, month, annual_gdp, quarterly_gdp, quarterly_gdp_value = quarterly_value)) %>%
+  left_join(interest_rate_spread_df) %>%
+  left_join(ten_year_interest_rates_df) %>%
+  left_join(unemployment_rate_df) %>%
   filter(
     !is.na(monthly_inflation)
   ) %>%
@@ -249,9 +277,72 @@ joined_inflation_gold_growth = left_join(
     month_date = as.Date(paste(year, month, '01', sep = '-')),
     ten_two_spread = ten_two_spread  / 100,
     ten_year_yield = ten_year_yield  / 100
-  )
+  )  %>%
+  fuzzy_left_join(
+    president_start_dates, by = c('month_date' = 'start_date', 'month_date' = 'end_date'), 
+    match_fun = list(`>=`, `<=`)
+  ) %>%
+  mutate(
+    last_name = str_extract(President, '( [a-zA-Z]+)$') %>% str_trim()
+  ) %>%
+  arrange(month_date)
 
-annual_comparison = filter(joined_inflation_gold_growth, !is.na(annual_inflation), month == 12) %>%
+financial_statistics_with_presidents_dt = data.table(financial_statistics_with_presidents)
+president_indexes = financial_statistics_with_presidents_dt[, {
+  # obama_df = financial_statistics_with_presidents_dt[President == 'Barack Obama',]
+  # attach(obama_df)
+  filled_gdp = na.fill(quarterly_gdp_value, 'extend')
+  list(
+    month_date = month_date, 
+    last_val = month_date == max(month_date),
+    month_index = 1:length(month_date) - 1,
+    last_month_index = length(month_date) -1,
+    gdp_index = filled_gdp / filled_gdp[1],
+    unemployment_index = unemployment_rate / unemployment_rate[1],
+    sp500_index = sp500_adjusted_close / sp500_adjusted_close[1]
+  )
+  # detach(obama_df)
+}, by = list(President, last_name)] 
+
+ggplot(financial_statistics_with_presidents_dt, aes(month_date, sp500_adjusted_close, colour = President)) + geom_point()
+
+
+ggplot(president_indexes %>% filter(year(month_date) >= 1981), aes(month_index, gdp_index - 1, colour = President)) +
+  geom_line(size = 1) + 
+  scale_y_continuous(labels = percent)
+
+ggplot(president_indexes %>% filter(month_index <= 48, month_date >= as.Date('1981-01-20')), aes(month_index, sp500_index-1, colour = President)) +
+  theme_bw() +
+  geom_line(size = 1) + 
+  scale_y_continuous(labels = percent) + 
+  scale_x_continuous(breaks = seq(0, 50, by = 10)) +
+  large_text_theme + 
+  scale_colour_hue(guide = F) +
+  geom_label_repel(
+    data = filter(president_indexes, ifelse(last_month_index < 48, last_month_index == month_index, month_index == 48),  
+                  month_date >= as.Date('1981-01-20')), aes(month_index + 6, label = paste(President, percent(sp500_index-1, accuracy = 1))), show.legend = F) +
+  labs(
+    x = 'Month of Presidency', y = 'S&P 500 Index Cumulative Return',
+    title = 'Stock Market Returns by President',
+    subtitle = 'First four years in office',
+    caption = 'Chart: Taylor G. White\nData: Yahoo Finance'
+  )
+ggsave('stock_market_by_president.png', height = 9, width = 12, units = 'in', dpi = 600)
+
+View(president_indexes)
+
+
+financial_statistics_with_presidents_dt[, {month_date[1]}, by = list(year)]
+
+
+ggplot(financial_statistics_with_presidents, aes(month_date, unemployment_rate, colour = President)) +
+  geom_point()
+
+
+ggplot(financial_statistics_with_presidents, aes(month_date, quarterly_gdp_value, colour = President)) +
+  geom_point()
+
+annual_comparison = filter(financial_statistics_with_presidents, !is.na(annual_inflation), month == 12) %>%
   mutate(
     scaled_growth = scale(annual_gdp) %>% as.numeric(),
     scaled_sp500 = scale(annual_sp500) %>% as.numeric()
@@ -267,28 +358,13 @@ monthly_comparison = filter(joined_inflation_gold_growth) %>%
   )
 
 
-ggplot(stacked_presidential_approval %>% filter(End_Date >= as.Date('1975-01-01')), aes(End_Date, scale(Approving))) +
-  geom_line(data = monthly_comparison %>% filter(month_date >= as.Date('1975-01-01')), aes(month_date, scaled_sp500), size = 0.75, colour = 'gray') +
-  geom_point(aes(color = President)) 
-
-date_df = tribble(
-  ~date, ~description, 
-  as.Date('1979-11-04'), 'Iran Hostage Crisis',
-  as.Date('1986-11-01'), 'Iran Contra Affair',
-  as.Date('1990-08-02'), 'First Gulf War',
-  as.Date('2001-09-11'), 'September 11 Attacks',
-  as.Date('2008-09-15'), 'Lehman Bankruptcy',
-  as.Date('2010-03-23'), 'Obamacare Signed',
-  as.Date('2013-01-15'), 'Debt Ceiling Crisis'
-)
-
 blank_df = data.frame(
   description = c('Presidential Approval', 'Real GDP Growth'), 
   x = rep(as.Date('1947-01-01'), 2), 
   y = 0
 )
 
-stacked_presidential_approval %>% head()
+
 ggplot(stacked_presidential_approval %>% filter(month_date >= as.Date('1947-01-01'))) +
   labs(
     y = 'Scaled Value', x = '', title = 'U.S. Presidential Approval Ratings vs. Economic Growth', 

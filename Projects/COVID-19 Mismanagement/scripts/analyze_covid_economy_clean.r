@@ -17,10 +17,18 @@ library(readxl)
 library(sf)
 library(RColorBrewer)
 library(gridExtra)
-
 library(fpc)
 library(dbscan)
 library(factoextra)
+library(ggrepel)
+
+large_text_theme = theme(
+  plot.title = element_text(size = 24),
+  plot.subtitle = element_text(size = 18, face = 'italic'),
+  plot.caption = element_text(size = 13, face = 'italic', hjust = 0),
+  axis.text = element_text(size = 16),
+  axis.title = element_text(size = 18)
+) 
 
 #### use the imf projections for growth 
 
@@ -45,6 +53,7 @@ europe = filter(world, continent == 'Europe')
 europe_cropped <- st_crop(europe, xmin = -24, xmax = 45,
                           ymin = 30, ymax = 73)
 
+political_freedom_index = read_csv('https://object.cato.org/sites/cato.org/files/human-freedom-index-files/human-freedom-index-2019.csv')
 
 # a = st_intersects(europe_cropped, europe_cropped)
 # sweden_intersects = a[which(europe_cropped$name == 'Sweden')] %>% unlist()
@@ -59,22 +68,12 @@ wdi_indicators = c(
   'SP.POP.TOTL', # population
   'NE.TRD.GNFS.ZS', # trade / GDP 
   'SP.POP.65UP.TO.ZS', # age 65+ % of population
-  'NY.GDP.PCAP.CD' # per capita gdp 
+  'NY.GDP.PCAP.CD', # per capita gdp 
+  'SI.POV.GINI', # gini index
+  'SH.XPD.CHEX.GD.ZS', # health exp % gdp
+  'ST.INT.ARVL' # tourist arrivals
 )
-wdi_descriptions = lapply(wdi_indicators, function(x){
-  
-  a = WDIsearch(string = x, field = 'indicator', short = T) %>%
-    as.data.frame() %>%
-    mutate(
-      orig_indicator = x
-    )
-  class(a)
-  return(a)
-}) %>%
-  bind_rows() %>%
-  filter(
-    indicator == orig_indicator
-  )
+
 
 WDI_data_long = map(wdi_indicators, function(x){
   tryCatch({
@@ -95,24 +94,49 @@ wdi_data_wide = pivot_wider(wdi_data_stacked, id_cols = c('country', 'year', 'in
   arrange(country, year)
 
 
+##### OECD Data trust in government #####
+setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/data/OECD")
+
+trust_in_government = fread('DP_LIVE_30102020213545055.csv') %>%
+  mutate(
+    country = countrycode(LOCATION, origin = 'iso3c', destination = 'country.name'),
+    trust_in_government_pct = Value / 100
+  ) %>%
+  rename(
+    year = TIME
+  ) %>%
+  group_by(country) %>%
+  summarize(
+    mean_trust_in_gov = mean(trust_in_government_pct), 
+    last_trust_in_gov = trust_in_government_pct[year == max(year)]
+  ) %>%
+  ungroup()
+# summarize_if(trust_in_government, is.character, unique)
+
 latest_country_pop = filter(wdi_data_wide) %>%
   group_by(country, income, region) %>%
   summarize(
     latest_pop_year = max(year[!is.na(SP.POP.TOTL)], na.rm = T),
     population = SP.POP.TOTL[year == latest_pop_year],
+    gini_index = tail(SI.POV.GINI[!is.na(SI.POV.GINI)], 1),
+    international_tourism = tail(ST.INT.ARVL[!is.na(ST.INT.ARVL)], 1),
     trade_pct_gdp = tail(NE.TRD.GNFS.ZS[!is.na(NE.TRD.GNFS.ZS)], 1) / 100,
     gdp_per_capita_us = tail(NY.GDP.PCAP.CD[!is.na(NY.GDP.PCAP.CD)], 1),
-    pop_pct_65_over = tail(SP.POP.65UP.TO.ZS[!is.na(SP.POP.65UP.TO.ZS)], 1) / 100
+    pop_pct_65_over = tail(SP.POP.65UP.TO.ZS[!is.na(SP.POP.65UP.TO.ZS)], 1) / 100,
+    health_exp_gdp = tail(SH.XPD.CHEX.GD.ZS[!is.na(SH.XPD.CHEX.GD.ZS)], 1) / 100
   ) %>%
   rename(
     year = latest_pop_year
   ) %>%
   left_join(world, by = c('country'= 'name')) %>%
+  left_join(trust_in_government) %>%
   mutate(
     country = recode(country, `Korea, Rep.` = 'South Korea', `Russian Federation` = 'Russia')
   )
 
 ##### stringency and mobility data #####
+
+
 
 setwd("~/Public_Policy/Projects/COVID-19")
 
@@ -258,6 +282,7 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
 
 covid_deaths_by_country_date_diffs_dt = data.table(arrange(covid_deaths_by_country_date_diffs, region, country, date))
 
+
 stats_by_region = covid_deaths_by_country_date_diffs_dt[!is.na(date),{
   the_countries = country
   
@@ -305,7 +330,7 @@ setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/data/OECD")
 
 ## MEASURE -- PC_CHGPY -- SAME PERIOD PRIOR YEAR
 ## PC_CHGPP 
-quarterly_gdp = fread('quarterly_gdp.csv') %>% 
+quarterly_gdp = fread('quarterly_gdp.csv') %>%
   filter(FREQUENCY == 'Q', SUBJECT == 'TOT', MEASURE == 'PC_CHGPP') %>%
   mutate(
     Value_Pct = Value / 100,
@@ -333,7 +358,7 @@ last_month_by_country = group_by(monthly_unemployment_rate, country) %>%
     last_month = max(month_date)
   )
 
-most_common_months_latest_data = 
+most_common_months_latest_data =
   last_month_by_country %>%
   group_by(last_month) %>%
   summarize(obs = n()) %>%
@@ -341,7 +366,7 @@ most_common_months_latest_data =
 
 selected_ur_countries = filter(last_month_by_country, last_month >= most_common_months_latest_data$last_month[1])
 
-monthly_2020_unemployment_rate_dt = filter(monthly_unemployment_rate, 
+monthly_2020_unemployment_rate_dt = filter(monthly_unemployment_rate,
                                            year == 2020,
                                            month_date <= most_common_months_latest_data$last_month[1],
                                            country %in% selected_ur_countries$country
@@ -356,28 +381,28 @@ monthly_2020_unemployment_rate_dt_indexes = monthly_2020_unemployment_rate_dt[, 
     month_date = month_date,
     is_last_date = month_date == max(month_date)
   )
-  
+
 }, by = list(country)]
 
 covid_ur_indexes = monthly_2020_unemployment_rate_dt[, {
   starting_value = Value_Pct[1]
   ending_value = tail(Value_Pct, 1)
-  
+
   avg_value = mean(Value_Pct)
   val_index = Value_Pct / starting_value
   mean_index = mean(val_index)
-  
+
   list(
     obs = length(month_date),
-    starting_value = starting_value, 
-    ending_value = ending_value, 
-    period_index = ending_value / starting_value, 
-    mean_index = mean_index, 
-    avg_value = avg_value, 
+    starting_value = starting_value,
+    ending_value = ending_value,
+    period_index = ending_value / starting_value,
+    mean_index = mean_index,
+    avg_value = avg_value,
     starting_month = month_date[1],
     ending_month = tail(month_date, 1)
   )
-  
+
 }, by = list(country)] %>%
   arrange(-mean_index) %>%
   mutate(
@@ -429,7 +454,8 @@ covid_stats_by_country =
     two_year_avg_growth = (`2019` + `2018`) / 2,
     last_year_growth = `2019`,
     diff_projection_avg = (1 - ((1 + three_year_avg_growth / 100) / (1 + projection_2020/100))) * 100,
-    diff_projection_avg_simple = projection_2020 - three_year_avg_growth
+    diff_projection_avg_simple = projection_2020 - three_year_avg_growth,
+    international_tourism_pop = international_tourism / population
   ) %>%
   arrange(-diff_projection_avg) %>%
   mutate(
@@ -437,11 +463,78 @@ covid_stats_by_country =
   ) %>%
   arrange(-gdp_per_capita_us)
 
-
 covid_stats_by_country$geometry = NULL
-
 min_mortality_not_zero = covid_stats_by_country$mortality_per_100k[covid_stats_by_country$mortality_per_100k > 0] %>% min()
 covid_stats_by_country$mortality_per_100k_log = ifelse(covid_stats_by_country$mortality_per_100k == 0, min_mortality_not_zero, covid_stats_by_country$mortality_per_100k)
+
+ggplot(covid_stats_by_country , aes(last_trust_in_gov, log(mortality_per_100k_log))) +
+  geom_point() +
+  stat_smooth(method = 'lm')
+View(covid_stats_by_country)
+ggplot(covid_stats_by_country%>% filter(!is.na(last_trust_in_gov)), aes(country, last_trust_in_gov)) +
+  geom_bar(stat = 'identity')
+
+
+ggplot(covid_stats_by_country , aes(gini_index, last_trust_in_gov)) +
+  theme_bw() +
+  # geom_point(aes(size = mortality_per_100k_log)) +
+  geom_text_repel(aes(label = country)) +
+  large_text_theme +
+  labs(x = 'GINI Index (Inequality)', y = 'Trust in National Government', title = 'Income Inequality vs. Trust in Government') +
+  scale_y_continuous(labels = percent) +
+  geom_quantile(quantiles = 0.5, size = 1) 
+
+  # stat_smooth(method = 'lm')
+ggsave('inequality_vs_trust.png', height = 8, width = 10, units = 'in')
+
+head(covid_stats_by_country)
+names(covid_stats_by_country)
+
+ggplot(covid_stats_by_country, aes(log(international_tourism), log(mortality_per_100k_log))) +
+  geom_point(aes(colour = region)) +
+  stat_smooth(span = 1)
+
+ggplot(covid_stats_by_country, aes(international_tourism_pop, log(mortality_per_100k_log))) +
+  geom_point(aes(colour = region)) +
+  stat_smooth(span = 1)
+
+
+ggplot(covid_stats_by_country, aes(international_tourism_pop, log(mortality_per_100k_log))) +
+  facet_wrap(~continent, scales = 'free_x') +
+  geom_point(aes(size = gdp_per_capita_us)) +
+  stat_smooth(span = 1)
+
+ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
+  facet_wrap(~continent) +
+  geom_point() +
+  stat_smooth(span = 1)
+
+ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
+  facet_wrap(~continent) +
+  geom_point() +
+  stat_smooth(span = 1)
+
+
+
+
+ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
+  geom_point(aes(size = gdp_per_capita_us)) +
+  stat_smooth(span = 1)
+
+ggplot(covid_stats_by_country, aes(gini_index, gdp_per_capita_us)) +
+  geom_point() +
+  stat_smooth(span = 1)
+
+ggplot(covid_stats_by_country, aes(health_exp_gdp, log(mortality_per_100k_log))) +
+  geom_point() +
+  stat_smooth(span = 1)
+
+
+ggplot(covid_stats_by_country, aes(health_exp_gdp, pop_pct_65_over)) +
+  geom_point(aes(size = gdp_per_capita_us, colour = log(mortality_per_100k_log))) +
+  scale_color_viridis_c(option = 'A') +
+  stat_smooth(method = 'lm')
+
 
 
 ##### rank plots #####
@@ -635,6 +728,25 @@ ggplot(europe_map_data) +
   )
 
 ggsave('europe_mortality_rate_map.png', height = 9, width = 12, units = 'in', dpi = 600)
+europe_map_data$last_trust_in_gov
+ggplot(europe_map_data) +
+  geom_sf(aes(fill = gini_index)) +
+  scale_fill_viridis_c(name = 'GINI Index',option = 'A') +
+  theme_map() +
+  # theme_dark() +
+  # theme_minimal() +
+  # geom_sf_label(data = filter(europe_map_data, name %in% selected_european_countries), aes(label = paste0(name, '\n', comma(mortality_per_100k, accuracy = 0.1))), size = 3.5) +
+  labs(
+    x = '', y = '', 
+    title = 'Trust in Government',
+    # subtitle = sprintf('Data through %s', max(covid_stats_by_country$as_of_date, na.rm=T) %>% format('%b %d, %Y')),
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE, World Bank'
+  ) +
+  theme(
+    # axis.text = element_blank(),
+    plot.subtitle = element_text(face = 'italic'),
+    plot.caption = element_text(hjust = 0, face = 'italic')
+  )
 
 # date_seq = seq.Date(min(europe_map_data_daily$date, na.rm = T), max(europe_map_data_daily$date, na.rm = T), by = 7)
 

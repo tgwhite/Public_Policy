@@ -22,7 +22,7 @@ library(scales)
 library(quantreg)
 
 refresh_downloads = FALSE
-setwd('data')
+setwd('~\Public_Policy\Projects\Taxes vs. Deficits\data')
 
 ##### Get political data #####
 

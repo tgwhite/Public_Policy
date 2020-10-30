@@ -4,12 +4,7 @@ library(tidyverse)
 # library(quantmod)
 library(data.table)
 library(scales)
-
-
-setwd("~/Public_Policy/Projects/Presidential Approval/data")
-
-
-
+library(quantreg)
 
 setwd("~/Public_Policy/Projects/Finance/output")
 
@@ -174,6 +169,7 @@ ggplot(annual_comparison, aes(annual_inflation, annual_sp500)) +
 ggplot(annual_comparison, aes(annual_gdp, annual_sp500)) +
   geom_point() +
   stat_smooth(method = 'lm') +
+  # geom_quantile(quantiles = 0.5) +
   theme_bw() +
   scale_x_continuous(labels = percent, limits = c(-0.04, 0.065)) +
   scale_y_continuous(labels = percent, breaks = seq(-0.4, 0.3, by = 0.1)) +
