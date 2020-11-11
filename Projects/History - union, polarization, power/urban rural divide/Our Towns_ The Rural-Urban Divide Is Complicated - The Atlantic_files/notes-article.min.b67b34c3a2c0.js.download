@@ -1,0 +1,174 @@
+window.Atlantic = window.Atlantic || {};
+
+Atlantic.Notes = {
+    init: function() {
+        this.isThread = (Atlantic.page_info.article_type === 'thread');
+
+        this.bindEvents();
+
+        if (this.isThread) {
+            this.setupAutoUrl();
+        }
+    },
+
+    bindEvents: function() {
+        // Clicking read on expands the note and
+        // loads the ads inside it
+        // AB-test Read More added .continue-reading ATL-14053
+        $(document).on('click', '.continue-reading', function() {
+            // eslint-disable-next-line no-unused-vars
+            var ads = [];
+            var $note = $(this).closest('.note-detail');
+            $note.find('.content').removeClass('content-truncated');
+            $note.find('.extended').slideDown();
+            $note.find('gpt-ad[defer]').removeAttr('defer');
+            $(this).hide();
+            $.waypoints('refresh');
+        });
+
+        $(document).on('click touchstart', '.show-about', function(e) {
+            var $this = $(this);
+            $this.hide();
+            $this.parent().find('.content').show();
+            e.preventDefault();
+            e.stopPropogation();
+        });
+
+        // Ads in the river following collapsed articles
+        // were deferred. Allow them to lazy load normally
+        // after their sibling stories are visibile.
+        $(document).on('click', '.show-all', function() {
+            $('.thread-note').slideDown({
+                complete:  $('.thread-note + .ad-wrapper').show().find('gpt-ad[defer]').removeAttr('defer')
+            });
+
+            $(this).hide();
+            $.waypoints('refresh');
+        });
+
+        // Returns to top of the page
+        $(document).on('click', '.to-top', function() {
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+            $.waypoints('refresh');
+            return false;
+        });
+
+        // Scroll to anchor links in toc if appli
+        $('body').on('click', '.toc a', function(e){
+            var $note = $(e.target.getAttribute('data-internal-id'));
+            if ($note.length) {
+                e.preventDefault();
+                $('html,body').animate({
+                    scrollTop: $note.offset().top - 40 // Account for sticky header
+                });
+                $.waypoints('refresh');
+            }
+        });
+    },
+
+    /**
+     * Threads only: as the user scrolls, update the url
+     * in place to the note that's dominant on the screen.
+     */
+    updateUrl: function() {
+
+        // A note controls the screen if its in the top
+        // quarter
+        var windowHeight = $(window).height();
+        var threshold = (0.25 * windowHeight) + window.pageYOffset;
+
+        // Find the last note to meet that threshold.
+        var $notes = $('article.note-detail');
+        var $note;
+        for (var i = 0; i < $notes.length; i++) {
+            if ($notes.eq(i).offset().top > threshold){
+                break;
+            }
+            $note = $notes.eq(i);
+        }
+
+        // Get the title and url for the note.
+        // If no note meets the criteria because the user
+        // is at the top of the page, the correct
+        // url is the thread.
+        var url, title;
+        if ($note) {
+            url = $note.data().url;
+            title = $note.find('h1').first().text();
+        } else {
+            url = Atlantic.page_info.path;
+            title = Atlantic.page_info.title;
+        }
+
+        // Replace state instead of pushstate so as not to clutter
+        // the history with meaningless pages as you scroll.
+        // This also means we don't have to think about popstate,
+        // since the back button will always return to a reasonable
+        // place.
+        if (url !== window.location.pathname && window.history) {
+            history.replaceState(null, title, url);
+
+            // And the tab title, because replaceState's title
+            // attribute is ignored in some browsers
+            document.title = title + ' - The Atlantic';
+        }
+    },
+
+    setupAutoUrl: function() {
+        setInterval(this.updateUrl.bind(this), 500);
+    }
+};
+
+
+Atlantic.Notes.init();
+
+;(function(){
+    function setProportion($chart) {
+        var height;
+        var data = $chart.data().wrapperHeights;
+        var $responsiveWrapper = $chart.parent(".embed-wrapper");
+        
+        // Get sizing JSON
+        if (!$.isPlainObject(data)) {
+            return;
+        }
+
+        /***
+         * Convert to [width, height] pairs so they
+         * can be reliably sorted. 
+         * 
+         *   * Using _.map instead of $.map because 
+         *     the latter flatten arrays.
+         *
+         **/
+        data = _.map(data, function(value, key){
+            key = parseInt(key, 10);
+            return [key, value];
+        });
+        data = data.sort(function(a, b){
+            return a[0] > b[0];
+        })
+
+        var height = $chart.height();
+        var width = $chart.width();
+        for (var i = data.length - 1; i >= 0; i--) {
+            if (width > data[i][0]) {
+                break;
+            } else {
+                height = data[i][1];
+            }
+        }
+
+        if ($responsiveWrapper.length) {
+            var proportion = (height / width) * 100 + "%";
+            $responsiveWrapper.css({paddingBottom: proportion});
+        } else {
+            $chart.css({"height": height});
+        }
+    }
+
+    var $charts = $("iframe[data-wrapper-heights]");
+    for (var i = $charts.length - 1; i >= 0; i--) {
+        setProportion($charts.eq(i));
+    }
+})();

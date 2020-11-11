@@ -1,0 +1,1 @@
+define("IeQuirksSizingHack",["EventUtils",document],function(b,a){return{fix:function(){"BackCompat"===a.compatMode&&(a.getElementById("container").style.cssText=void 0)}}});

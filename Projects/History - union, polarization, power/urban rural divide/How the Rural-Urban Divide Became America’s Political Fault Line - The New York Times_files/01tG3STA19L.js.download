@@ -1,0 +1,1 @@
+define("LogoUtils",[document,nut],function(e,f){var d=function(b){var c=e.getElementById("logo"),a=f("#items .item");a&&a[b]&&(c.href=a[b].href,c.title=a[b].title,c.target=a[b].target)};return{fixLogo:d,firstItem:function(){d(0)}}});

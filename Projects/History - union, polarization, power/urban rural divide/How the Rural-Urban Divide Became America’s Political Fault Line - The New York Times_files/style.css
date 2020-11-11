@@ -1,0 +1,485 @@
+* {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    mobile webkit -moz-tap-highlight-color: rgba(255, 255, 255, 0);
+    -ms-tap-highlight-color: rgba(255, 255, 255, 0);
+    tap-highlight-color: rgba(255, 255, 255, 0);
+    vertical-align: baseline;
+    font-weight: inherit;
+    font-family: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    border: 0 none;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    line-height: 1;
+}
+
+@font-face {
+    font-family: 'HP-Simplified-Regular';
+    src: url('../fonts/hp-simplified-regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'HP-Simplified-Regular_v2';
+    src: url('../fonts/hp-simplified-regular_v2.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'HP-Simplified-Light';
+    src: url('../fonts/hp-simplified-light.woff') format('woff');
+}
+
+
+div {
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.main {
+    width: 968px;
+    height: 248px;
+    border: 1px solid black;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+    visibility: hidden;
+    position: absolute;
+    background-color: white;
+    cursor: pointer;
+}
+
+.logo {
+    width: 970px;
+    height: 250px;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+}
+
+.exit {
+    width: 970px;
+    height: 250px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    cursor: pointer;
+}
+
+#intro_frame_cont {
+    width: 970px;
+    height: 250px;
+    left: 0px;
+    top: 0px;
+    transform: translateX(0px);
+    position: absolute;
+    visibility: hidden;
+    z-index: 100;
+}
+
+#intro_frame_bg_image {
+    width: 970px;
+    height: 250px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+}
+
+#f1_headline_cont {
+    width: 970px;
+    height: 250px;
+    left: 0px;
+    top: 0px;
+    transform: translateX(-970px);
+    position: absolute;
+}
+
+#F1_headline1_txt {
+    left: 56px;
+    top: 38px;
+    position: absolute;
+    line-height: 1.14em;
+    font-family: HP-Simplified-Regular, sans-serif;
+}
+
+#F1_headline2_txt {
+    left: 57px;
+    top: 114px;
+    position: absolute;
+    line-height: 1.2em;
+    font-family: HP-Simplified-Regular, sans-serif;
+}
+
+#F1_headline3_txt {
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    line-height: 1.14em;
+    font-family: HP-Simplified-Regular, sans-serif;
+}
+
+#f1_cta {
+    position: absolute;
+    top: 151px;
+    left: 774px;
+    width: 272px;
+    opacity: 0;
+}
+
+#f1_cta_button {
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid;
+    font-family: HP-Simplified-Regular, sans-serif;
+    letter-spacing: 0.06em;
+    padding: 0.6em 2.1em;
+    pointer-events: auto;
+}
+
+#f1_main_logo_cont {
+    position: absolute;
+    top: 50px;
+    left: 858px;
+}
+
+#f1_main_logo {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+#f1_partner_logo_cont {
+    position: absolute;
+    top: 57px;
+    left: 774px;
+}
+
+#f1_partner_logo {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+#carousel_static_elem {
+    width: 970px;
+    height: 250px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+}
+
+#carousel_background_image {
+    width: 968px;
+    height: 248px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+}
+
+#carousel_cont {
+    height: 248px;
+    position: absolute;
+    pointer-events: none;
+}
+
+.carousel_frame {
+    width: 968px;
+    height: 248px;
+    left: 0px;
+    top: 0px;
+    float: left;
+    position: relative;
+    pointer-events: none;
+    transform: translate(-968px)
+}
+
+#arrowCont {
+    width: 968px;
+    height: 0px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+}
+
+.promo_txt {
+    letter-spacing: 0.06em;
+    top: 0px;
+    left: 0px;
+    /* height: 25px; */
+    padding-right: 9px;
+    padding-bottom: 4px;
+    position: absolute;
+    line-height: 120%;
+    font-family: HP-Simplified-Regular, sans-serif;
+    /*    z-index: 99;*/
+}
+
+@supports (-moz-osx-font-smoothing:auto) {
+    .promo_txt {
+        line-height: 1.35em;
+    }
+}
+
+.product_name {
+    left: 118px;
+    top: 63px;
+    width: 230px;
+    /* letter-spacing: -0.0em; */
+    line-height: 1.1em;
+    padding-right: 10px;
+    position: relative;
+    font-family: HP-Simplified-Regular, sans-serif;
+}
+
+.product_name2 {
+    line-height: 1.15em;
+}
+
+.sku {
+    left: 0px;
+    top: 0px;
+    text-align: center;
+    /*    margin-top: 5px;*/
+    position: relative;
+    font-family: HP-Simplified-Regular, sans-serif;
+}
+
+.footer_text {
+    left: 0px;
+    top: 5px;
+    text-align: left;
+    /*    margin-top: 5px;*/
+    position: relative;
+    font-family: HP-Simplified-Regular, sans-serif;
+}
+
+.processor_name {
+    left: 119px;
+    top: 67px;
+    text-align: left;
+    position: relative;
+    letter-spacing: 0.03em;
+    font-family: HP-Simplified-Light, sans-serif;
+}
+
+.product_image {
+    left: 0px;
+    top: 0px;
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+}
+
+.product_image_cont {
+    left: 362px;
+    top: 17px;
+    position: absolute;
+}
+
+.product_shadow_cont {
+    top: 184px;
+    left: 0px;
+    position: absolute;
+    text-align: center;
+    width: 970px;
+}
+
+.product_shadow {
+    display: inline-block;
+    position: relative;
+    border-radius: 970px/50px;
+}
+
+.price_cont {
+    width: 968px;
+    display: flex;
+    /* justify-content: center; */
+}
+
+.price_prefix {
+    left: 119px;
+    top: 73px;
+    display: inline-block;
+    position: relative;
+    font-family: HP-Simplified-Light, sans-serif;
+}
+
+.regular_price {
+    left: 116px;
+    top: 74px;
+    display: inline-block;
+    position: relative;
+    font-family: HP-Simplified-Light, sans-serif;
+}
+
+.strikeout {}
+
+.strikeout::after {
+    border-bottom: 0.1em solid;
+    content: "";
+    left: 0;
+    margin-top: calc(0.125em / 2 * -1);
+    position: absolute;
+    right: 0;
+    top: 55%;
+}
+
+.sale_price {
+    left: 119px;
+    top: 73px;
+    display: inline-block;
+    position: relative;
+    font-family: HP-Simplified-Light, sans-serif;
+}
+
+.f2_cta {
+    position: absolute;
+    top: 151px;
+    left: 774px;
+    width: 272px;
+}
+
+.f2_cta_button {
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid;
+    font-family: HP-Simplified-Regular, sans-serif;
+    letter-spacing: 0.06em;
+    padding: 0.6em 2.1em;
+    pointer-events: auto;
+}
+
+.f2_main_logo_cont {
+    position: absolute;
+    top: 50px;
+    left: 858px;
+}
+
+.f2_main_logo {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.f2_partner_logo_cont {
+    position: absolute;
+    top: 57px;
+    left: 774px;
+}
+
+.f2_partner_logo {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.carousel_hotspot {
+    width: 670px;
+    height: 250px;
+    top: -1px;
+    left: 41px;
+    position: absolute;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.arrow {
+    position: absolute;
+}
+
+#leftbtn {
+    top: 90px;
+    left: 23px;
+}
+
+#rightbtn {
+    top: 90px;
+    left: 672px;
+}
+
+.animate {
+    -webkit-transition-duration: 1s;
+    -moz-transition-duration: 1s;
+    -o-transition-duration: 1s;
+    transition-duration: 1s;
+    -webkit-transition-property: -webkit-transform;
+    -moz-transition-property: -moz-transform;
+    -o-transition-property: -o-transform;
+    transition-property: transform;
+}
+
+.backUpImage {
+    width: 970px;
+    height: 250px;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.defaultBackUpImage {
+    width: 970px;
+    height: 250px;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    cursor: pointer;
+}
+
+
+.guide {
+    width: 970px;
+    height: 250px;
+    top: -1px;
+    left: -1px;
+    opacity: 0.5;
+    cursor: pointer;
+    background-image: url(../images/guide_970x250.png);
+    position: absolute;
+}
+
+.promo_message_container {
+    font-family: HP-Simplified-Light, sans-serif;
+    display: inline-table;
+    pointer-events: none;
+    perspective: 100px;
+    position: relative;
+    left: 117px;
+    top: 80px;
+    z-index: 2;
+}
+
+.promo_message {
+    -webkit-transform-origin: 50% 53%;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    display: inline-block;
+}
+
+.promo_specialImage {
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+    left: -1px;
+    top: -1px;
+}
+
+/*
+.carousel_frame {
+    overflow: hidden;
+}
+*/

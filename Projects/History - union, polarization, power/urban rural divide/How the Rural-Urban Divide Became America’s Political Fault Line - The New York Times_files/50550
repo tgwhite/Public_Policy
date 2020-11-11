@@ -1,0 +1,242 @@
+var bk_results = {
+ "campaigns": [
+  {
+    "campaign": 221252,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 1024818,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 284641,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 221922,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 1021884,
+     "timestamp": 1605027359
+    }
+    ]
+  },
+  {
+    "campaign": 221329,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 1024818,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 260643,
+    "advertiser_account_id": "18ce53x7oc4",
+    "audience_names": "MKTG_Subs_1PD_Global_Crossword+Standalone+Subs_1x90",
+    "score": "100",
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    },
+    {
+     "categoryID": 1021869,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 216277,
+    "advertiser_account_id": "18ce53x7oc4",
+    "audience_names": "MKTG_Subs_AlwaysOn",
+    "score": "100",
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 262150,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    },
+    {
+     "categoryID": 1021869,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 216270,
+    "advertiser_account_id": "18ce53wa1m5",
+    "audience_names": "MKTG_Subs_AlwaysOn",
+    "score": "100",
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 218185,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 260642,
+    "advertiser_account_id": "18ce53vsdwh",
+    "audience_names": "MKTG_Subs_1PD_Global_Crossword+Standalone+Subs_1x90",
+    "score": "100",
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    },
+    {
+     "categoryID": 1021869,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 221925,
+    "advertiser_account_id": "18ce53vsdwh",
+    "audience_names": "MKTG_All_1PD_US_AD+4+_1x30+",
+    "score": "100",
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 1021884,
+     "timestamp": 1605027359
+    }
+    ]
+  },
+  {
+    "campaign": 216268,
+    "advertiser_account_id": "18ce53vsdwh",
+    "audience_names": "MKTG_Subs_AlwaysOn",
+    "score": "100",
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 221246,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    },
+    {
+     "categoryID": 1021869,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 216269,
+    "advertiser_account_id": "18ce53vsdwh",
+    "audience_names": "MKTG_Subs_AlwaysOn",
+    "score": "100",
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 221926,
+    "advertiser_account_id": "18ce53wa1m5",
+    "audience_names": "MKTG_All_1PD_US_AD+4+_1x30+",
+    "score": "100",
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 1021884,
+     "timestamp": 1605027359
+    }
+    ]
+  },
+  {
+    "campaign": 209855,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 408098,
+     "timestamp": 1605028078
+    },
+    {
+     "categoryID": 997861,
+     "timestamp": 1605027380
+    }
+    ]
+  },
+  {
+    "campaign": 228381,
+    "timestamp": 1605028078,
+    "categories": [
+    {
+     "categoryID": 679835,
+     "timestamp": 1605019858
+    },
+    {
+     "categoryID": 763863,
+     "timestamp": 1605018081
+    },
+    {
+     "categoryID": 765427,
+     "timestamp": 1605019858
+    },
+    {
+     "categoryID": 765465,
+     "timestamp": 1605019858
+    },
+    {
+     "categoryID": 800249,
+     "timestamp": 1605019836
+    },
+    {
+     "categoryID": 816903,
+     "timestamp": 1605019848
+    },
+    {
+     "categoryID": 839894,
+     "timestamp": 1605019848
+    }
+    ]
+  }
+ ]
+};

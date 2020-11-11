@@ -1,4 +1,4 @@
-fredr_set_key('d0b9e64aba30b479343a06037a5a10c1')
+# fredr_set_key('d0b9e64aba30b479343a06037a5a10c1')
 
 library(rvest)
 library(httr)
@@ -12,20 +12,23 @@ library(plm)
 library(rvest)
 library(httr)
 library(quantmod)
-library(fredr)
+# library(fredr)
 library(scales)
 library(quantreg)
 library(xtable)
 library(stargazer)
 
+setwd('~\\Public_Policy\\Projects\\Taxes vs. Deficits\\data')
+
+
 caption_text = 'Chart: Taylor G. White\nData: OECD, FRED, WDI'
 
 ##### Data import and cleanup #####
-stacked_oecd_wdi_data_lags_diffs = read.csv('data/stacked_oecd_wdi_data_lags_diffs.csv')
-wide_oecd_wdi_data = read.csv('data/wide_oecd_wdi_data.csv')
-concurrence_with_president_clean = read_csv('data/concurrence_with_president_clean.csv')
+stacked_oecd_wdi_data_lags_diffs = read.csv('stacked_oecd_wdi_data_lags_diffs.csv')
+wide_oecd_wdi_data = read.csv('wide_oecd_wdi_data.csv')
+concurrence_with_president_clean = read_csv('concurrence_with_president_clean.csv')
 
-brookings_house_senate_representation = read_csv('data/brookings congressional stats/1-20.csv',
+brookings_house_senate_representation = read_csv('brookings congressional stats/1-20.csv',
                                                  na=c('', 'NA', '.')
                                                  ) %>%
   separate(Years, sep = '[ ]*[-]{1}[ ]*', into = c('start', 'end'), convert = T) %>%
@@ -68,35 +71,35 @@ ggplot(brookings_house_senate_representation_stats_by_congress, aes(congress_sta
   facet_wrap(~Chamber, ncol = 1, scales = 'free_y')
 
 # get additional data from FRED
-us_real_gdp_per_capita = fredr('A939RX0Q048SBEA', aggregation_method = 'eop', frequency = 'a', units = 'pch') %>%
-  rename(value_real_per_capita_gdp_growth = value) %>%
-  mutate(
-    Year = year(date),
-    lag_value_real_per_capita_gdp_growth = dplyr::lag(value_real_per_capita_gdp_growth, 1)
-  ) %>% 
-  select(-date, -series_id)
+# us_real_gdp_per_capita = fredr('A939RX0Q048SBEA', aggregation_method = 'eop', frequency = 'a', units = 'pch') %>%
+#   rename(value_real_per_capita_gdp_growth = value) %>%
+#   mutate(
+#     Year = year(date),
+#     lag_value_real_per_capita_gdp_growth = dplyr::lag(value_real_per_capita_gdp_growth, 1)
+#   ) %>% 
+#   select(-date, -series_id)
 
-recession_years = fredr('JHDUSRGDPBR', aggregation_method = 'sum', frequency = 'a') %>%
-  rename(
-    n_recession_quarters = value
-  ) %>% 
-  mutate(
-    Year = year(date),
-    pct_of_year_in_recession = n_recession_quarters / 4,
-    recession_year = n_recession_quarters > 0
-  ) %>%
-  select(-date, -series_id)
+# recession_years = fredr('JHDUSRGDPBR', aggregation_method = 'sum', frequency = 'a') %>%
+#   rename(
+#     n_recession_quarters = value
+#   ) %>% 
+#   mutate(
+#     Year = year(date),
+#     pct_of_year_in_recession = n_recession_quarters / 4,
+#     recession_year = n_recession_quarters > 0
+#   ) %>%
+#   select(-date, -series_id)
 
 # join everything together
 US_wide = filter(wide_oecd_wdi_data, Country == 'United States') %>%
   left_join(concurrence_with_president_clean) %>%
-  left_join(us_real_gdp_per_capita) %>%
-  left_join(recession_years) %>%
+  # left_join(us_real_gdp_per_capita) %>%
+  # left_join(recession_years) %>%
   # inner join because there are way more years here
   inner_join(wide_brookings_house_senate_representation_stats_by_congress) %>% 
   mutate(
-    real_gdp_per_capita_z = (value_real_per_capita_gdp_growth - mean(value_real_per_capita_gdp_growth)) / sd(value_real_per_capita_gdp_growth),
-    lag_real_gdp_per_capita_z = dplyr::lag(real_gdp_per_capita_z, 1),
+    # real_gdp_per_capita_z = (value_real_per_capita_gdp_growth - mean(value_real_per_capita_gdp_growth)) / sd(value_real_per_capita_gdp_growth),
+    # lag_real_gdp_per_capita_z = dplyr::lag(real_gdp_per_capita_z, 1),
     z_value_NY.GDP.PCAP.KD.ZG = (value_NY.GDP.PCAP.KD.ZG - mean(value_NY.GDP.PCAP.KD.ZG, na.rm=T)) / sd(value_NY.GDP.PCAP.KD.ZG, na.rm =T),
     lag_z_value_NY.GDP.PCAP.KD.ZG = dplyr::lag(z_value_NY.GDP.PCAP.KD.ZG, 1),
     dem_congress = House > 0 & Senate > 0,
@@ -111,7 +114,7 @@ filter(US_wide, diff_value_top_tax_rate != 0) %>% select(Year, President, diff_v
 
 US_long = filter(stacked_oecd_wdi_data_lags_diffs, Country == 'United States')
 
-save(US_wide, US_long, file = 'data/US_political_economic_data.rdata')
+save(US_wide, US_long, file = 'US_political_economic_data.rdata')
 
 ##### get clean dataset to model YOY differences in net lending (budget deficits) #####
 options(na.action = na.exclude)  

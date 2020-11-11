@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://dra.amazon-adsystem.com/cookieDropper.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <title>DA CREATIVE KEY BLOCKER</title>
+    </head>
+    <body>
+        <script>
+            if (!String.prototype.trim) {
+                String.prototype.trim = function () {
+                    return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+                };
+            }
+
+            var COOKIE_EXPIRY_TIME = 30 * 24 * 60 * 60 * 1000; // 30 days
+            var COOKIE_PREFIX = 'phfww_';
+
+            var TRASH_COMMAND = 'TRASH';
+            var RESTORE_COMMAND = 'RESTORE';
+
+            function getBlockedCreativeKeys() {
+                var data = [];
+                var cookies = document.cookie.split( ';' );
+                for( var i = 0; i < cookies.length; ++i ) {
+                    var cookie = cookies[i].trim().split( '=' )[0].trim();
+                    if( cookie.indexOf( COOKIE_PREFIX ) === 0 ) {
+                        data.push( cookie.substring( COOKIE_PREFIX.length ) );
+                    }
+                }
+                return data;
+            }
+
+            function receiveMessage( event ) {
+                if (typeof event.data.split === "function") {
+                    var keys = event.data.split(',');
+                    var command = keys.shift();
+
+                    var expiryDate = new Date();
+                    if (keys) {
+                        switch (command) {
+                            case RESTORE_COMMAND:
+                                expiryDate.setTime(expiryDate.getTime() - COOKIE_EXPIRY_TIME);
+                                break;
+                            case TRASH_COMMAND:
+                                expiryDate.setTime(expiryDate.getTime() + COOKIE_EXPIRY_TIME);
+                                break;
+                        }
+
+                        try {
+                            for (var i = 0; i < keys.length; ++i) {
+                                var key = keys[i];
+                                document.cookie = COOKIE_PREFIX + key + '=' + 1 + '; expires=' + expiryDate.toUTCString();
+                            }
+                        } catch (ignored) {
+                        }
+                    }
+                }
+            }
+
+            window.addEventListener( 'message', receiveMessage, false );
+            window.parent.postMessage( getBlockedCreativeKeys().join( ',' ), '*' );
+        </script>
+    
+</body></html>

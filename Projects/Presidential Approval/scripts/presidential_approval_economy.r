@@ -8,6 +8,23 @@ library(fuzzyjoin)
 library(data.table)
 library(ggrepel)
 
+setwd('~\\Public_Policy\\Projects\\Taxes vs. Deficits\\data')
+
+##### Get political data #####
+
+
+  the_url = 'https://www.presidency.ucsb.edu/statistics/data/house-and-senate-concurrence-with-presidents'
+  concurrence_table = html_table(GET(the_url) %>% content(), fill = TRUE)
+  
+
+# MIT data lab 
+house_elections = read.csv('1976-2018-house.csv') %>% 
+  mutate(candidate_votes = as.numeric(candidatevotes)) %>%
+  filter(stage == 'gen') %>% data.table()
+
+senate_elections = read.csv('1976-2018-senate.csv') %>% filter(stage == 'gen') %>% data.table()
+presidential_elections = read.csv('1976-2016-president.csv') %>% data.table()
+
 
 large_text_theme = theme(
   plot.title = element_text(size = 24),

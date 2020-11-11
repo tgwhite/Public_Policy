@@ -17,12 +17,12 @@ library(plm)
 library(rvest)
 library(httr)
 library(quantmod)
-library(fredr)
+# library(fredr)
 library(scales)
 library(quantreg)
 
-refresh_downloads = FALSE
-setwd('~\Public_Policy\Projects\Taxes vs. Deficits\data')
+refresh_downloads = T
+setwd('~\\Public_Policy\\Projects\\Taxes vs. Deficits\\data')
 
 ##### Get political data #####
 
@@ -54,12 +54,12 @@ presidential_elections = read.csv('1976-2016-president.csv') %>% data.table()
 brookings_oecd_toptax = read_csv('oecd_historical_toprate_raw.csv', na = '--') %>%
   pivot_longer(cols = paste(c(1975:2013)), names_to = 'Year', values_to = 'TOP_TRATE')
 
-current_oecd_toptax = read_csv('TABLE_I7_10022020181538921.csv') %>% 
+current_oecd_toptax = read_csv('TABLE_I7_30102020214927846.csv') %>% 
   pivot_wider(id_cols = c('Country', 'Year'), names_from = 'TAX', values_from = 'Value')
 
 # get tax revenues to GDP
-all_oecd_downloads = list.files(pattern = 'DP_LIVE') %>% 
-  unique() %>%
+all_oecd_downloads = 
+  c("oecd_net_lending.csv"   ,         "oecd_revenue.csv"   ,             "oecd_spending.csv" ) %>%
   map(read_csv) %>% 
   bind_rows() %>% 
   filter(LOCATION != 'OAVG', MEASURE == 'PC_GDP', SUBJECT == 'TOT')
@@ -176,7 +176,7 @@ start_year = min(joined_oecd_brookings_toptax_filled$Year, na.rm = T)
 end_year = max(joined_oecd_brookings_toptax_filled$Year, na.rm = T)
 
 wdi_indicators = c('NY.GDP.PCAP.KD.ZG', 'GC.TAX.TOTL.GD.ZS', 
-                   'DT.DOD.DECT.GN.ZS', 'DT.INT.DECT.GN.ZS', 'GC.TAX.YPKG.RV.ZS', 'GC.XPN.INTP.RV.ZS',
+                   'DT.DOD.DECT.GN.ZS', 'GC.TAX.YPKG.RV.ZS', 'GC.XPN.INTP.RV.ZS',
                    'GC.REV.TOTL.CD', 'PAY.TAX.RK.DB19', 'NY.GDP.MKTP.KD.ZG', 'NY.GDP.PCAP.KD', 'GC.DOD.TOTL.GD.ZS')
 
 wdi_names = map(wdi_indicators, function(ind){

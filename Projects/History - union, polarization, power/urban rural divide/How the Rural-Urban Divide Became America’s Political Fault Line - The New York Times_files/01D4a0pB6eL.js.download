@@ -1,0 +1,1 @@
+define("OrientationWatcher",[document,nut,"StyleUtils","EventUtils"],function(c,e,d,b){return{run:function(){b.attach({event:"dra-creative-rendered",custom:!0,callback:function(){var a=c.getElementById("container"),a=d.existsClass("first-image-portrait",a.className);b.trigger(a?"dra-portrait":"dra-landscape",!0)}})}}});

@@ -1,0 +1,38 @@
+
+var ftGUID_5062051="431651BA23D68F";
+var ftConfID_5062051="22951850";
+var ftParams_5062051="ftx=&fty=&ftadz=&ftscw=&ft_custom=&ftOBA=1&ft_ifb=1&ft_domain=www.nytimes.com&ft_agentEnv=0&ft_referrer=https%3A%2F%2Fwww.nytimes.com%2F&gdpr=0&gdpr_consent=&us_privacy=&cachebuster=64533.03427197276";
+var ftKeyword_5062051="";
+var ftCustom_5062051="";
+var ftSection_5062051="";
+var ftSegment_5062051="w2b,lbwLW0612,lge,acfu,um2,acjq,xtx,abxm,ad30,adre,xp6,ado6,n7h,ad0x,aeqm,uhy,ad4x,aet1,aeuq,fs18_13972_5_1603418748,v6j,xqr";
+var ftSegmentList_5062051=[{s:'w2b'},{m:'c8263_prop',s:'lbwLW0612'},{s:'lge'},{s:'acfu'},{s:'um2'},{s:'acjq'},{s:'xtx'},{s:'abxm'},{s:'ad30'},{s:'adre'},{s:'xp6'},{s:'ado6'},{s:'n7h'},{s:'ad0x'},{s:'aeqm'},{s:'uhy',t:46390000},{s:'ad4x'},{s:'aet1'},{s:'aeuq'},{m:'fs18_13972_vp',s:'fs18_13972_5_1603418748'},{s:'v6j'},{s:'xqr'}];
+var ftRuleMatch_5062051="0";
+var ftTimestamp_5062051="1605028063";
+var ftGeoC2_5062051="us";
+var ftGeoState_5062051="ma";
+var ftGeoCity_5062051="lee";
+var ftISP_5062051="charter communications";
+var ftSpeed_5062051="cable";
+var ftDMA_5062051="532";
+var ftLong_5062051="-73.23";
+var ftLat_5062051="42.3";
+var ftPostal_5062051="01238";
+var ftTimeZone_5062051="-500";
+var ftMobileCarrier_5062051="";
+var ftImp5062051 = {};
+ftImp5062051.privacy = "x";
+ftImp5062051.guidAge = "381";
+ftImp5062051.impID = "3D710AC8-C94B-680F-5591-67A4C6620993";
+ftImp5062051.duid = "FT:431651BA23D68F";
+
+ftImp5062051.ft_tpplid = "";
+ftImp5062051.ft_c = {};
+ftImp5062051.gdpr = "0";
+ftImp5062051.gdpr_consent = "";
+ftImp5062051.gdpr_pd = "";
+ftImp5062051.oob_consent = "0";
+ftImp5062051.gdprStoredConsent = "";
+ftImp5062051.us_privacy = "";
+
+document.write('<scr'+'ipt src="https://cdn.flashtalking.com/xre/506/5062051/2892399/js/j-5062051-2892399.js" id="ftscript_m5062051" name="ftscript_m5062051"></scr'+'ipt>');

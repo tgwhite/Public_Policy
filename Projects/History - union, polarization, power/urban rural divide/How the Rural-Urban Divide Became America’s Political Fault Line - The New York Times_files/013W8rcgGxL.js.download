@@ -1,0 +1,1 @@
+define("DynamicEntry",[nut,"EventUtils","StyleUtils"],function(a,b,c){return function(a){b.trigger("dra-dynamic-entry-setup-finished",!0)}});

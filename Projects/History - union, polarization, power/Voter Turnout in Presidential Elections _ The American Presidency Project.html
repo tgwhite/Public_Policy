@@ -1,0 +1,1336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<!-- saved from url=(0087)https://www.presidency.ucsb.edu/statistics/data/voter-turnout-in-presidential-elections -->
+<html lang="en" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ og: http://ogp.me/ns# rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#" class="js"><head profile="http://www.w3.org/1999/xhtml/vocab"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/dee899de70"></script><script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/nr-1184.min.js.download"></script><script async="" src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/analytics.js.download"></script><script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={licenseKey:"dee899de70",applicationID:"80106271"};window.NREUM||(NREUM={}),__nr_require=function(e,t,n){function r(n){if(!t[n]){var i=t[n]={exports:{}};e[n][0].call(i.exports,function(t){var i=e[n][1][t];return r(i||t)},i,i.exports)}return t[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var i=0;i<n.length;i++)r(n[i]);return r}({1:[function(e,t,n){function r(){}function i(e,t,n){return function(){return o(e,[u.now()].concat(c(arguments)),t?null:this,n),t?void 0:this}}var o=e("handle"),a=e(6),c=e(7),f=e("ee").get("tracer"),u=e("loader"),s=NREUM;"undefined"==typeof window.newrelic&&(newrelic=s);var d=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],p="api-",l=p+"ixn-";a(d,function(e,t){s[t]=i(p+t,!0,"api")}),s.addPageAction=i(p+"addPageAction",!0),s.setCurrentRouteName=i(p+"routeName",!0),t.exports=newrelic,s.interaction=function(){return(new r).get()};var m=r.prototype={createTracer:function(e,t){var n={},r=this,i="function"==typeof t;return o(l+"tracer",[u.now(),e,n],r),function(){if(f.emit((i?"":"no-")+"fn-start",[u.now(),r,i],n),i)try{return t.apply(this,arguments)}catch(e){throw f.emit("fn-err",[arguments,this,e],n),e}finally{f.emit("fn-end",[u.now()],n)}}}};a("actionText,setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(e,t){m[t]=i(l+t)}),newrelic.noticeError=function(e,t){"string"==typeof e&&(e=new Error(e)),o("err",[e,u.now(),!1,t])}},{}],2:[function(e,t,n){function r(){return c.exists&&performance.now?Math.round(performance.now()):(o=Math.max((new Date).getTime(),o))-a}function i(){return o}var o=(new Date).getTime(),a=o,c=e(8);t.exports=r,t.exports.offset=a,t.exports.getLastTimestamp=i},{}],3:[function(e,t,n){function r(e,t){var n=e.getEntries();n.forEach(function(e){"first-paint"===e.name?d("timing",["fp",Math.floor(e.startTime)]):"first-contentful-paint"===e.name&&d("timing",["fcp",Math.floor(e.startTime)])})}function i(e,t){var n=e.getEntries();n.length>0&&d("lcp",[n[n.length-1]])}function o(e){e.getEntries().forEach(function(e){e.hadRecentInput||d("cls",[e])})}function a(e){if(e instanceof m&&!g){var t=Math.round(e.timeStamp),n={type:e.type};t<=p.now()?n.fid=p.now()-t:t>p.offset&&t<=Date.now()?(t-=p.offset,n.fid=p.now()-t):t=p.now(),g=!0,d("timing",["fi",t,n])}}function c(e){d("pageHide",[p.now(),e])}if(!("init"in NREUM&&"page_view_timing"in NREUM.init&&"enabled"in NREUM.init.page_view_timing&&NREUM.init.page_view_timing.enabled===!1)){var f,u,s,d=e("handle"),p=e("loader"),l=e(5),m=NREUM.o.EV;if("PerformanceObserver"in window&&"function"==typeof window.PerformanceObserver){f=new PerformanceObserver(r);try{f.observe({entryTypes:["paint"]})}catch(v){}u=new PerformanceObserver(i);try{u.observe({entryTypes:["largest-contentful-paint"]})}catch(v){}s=new PerformanceObserver(o);try{s.observe({type:"layout-shift",buffered:!0})}catch(v){}}if("addEventListener"in document){var g=!1,y=["click","keydown","mousedown","pointerdown","touchstart"];y.forEach(function(e){document.addEventListener(e,a,!1)})}l(c)}},{}],4:[function(e,t,n){function r(e,t){if(!i)return!1;if(e!==i)return!1;if(!t)return!0;if(!o)return!1;for(var n=o.split("."),r=t.split("."),a=0;a<r.length;a++)if(r[a]!==n[a])return!1;return!0}var i=null,o=null,a=/Version\/(\S+)\s+Safari/;if(navigator.userAgent){var c=navigator.userAgent,f=c.match(a);f&&c.indexOf("Chrome")===-1&&c.indexOf("Chromium")===-1&&(i="Safari",o=f[1])}t.exports={agent:i,version:o,match:r}},{}],5:[function(e,t,n){function r(e){function t(){e(a&&document[a]?document[a]:document[i]?"hidden":"visible")}"addEventListener"in document&&o&&document.addEventListener(o,t,!1)}t.exports=r;var i,o,a;"undefined"!=typeof document.hidden?(i="hidden",o="visibilitychange",a="visibilityState"):"undefined"!=typeof document.msHidden?(i="msHidden",o="msvisibilitychange"):"undefined"!=typeof document.webkitHidden&&(i="webkitHidden",o="webkitvisibilitychange",a="webkitVisibilityState")},{}],6:[function(e,t,n){function r(e,t){var n=[],r="",o=0;for(r in e)i.call(e,r)&&(n[o]=t(r,e[r]),o+=1);return n}var i=Object.prototype.hasOwnProperty;t.exports=r},{}],7:[function(e,t,n){function r(e,t,n){t||(t=0),"undefined"==typeof n&&(n=e?e.length:0);for(var r=-1,i=n-t||0,o=Array(i<0?0:i);++r<i;)o[r]=e[t+r];return o}t.exports=r},{}],8:[function(e,t,n){t.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],ee:[function(e,t,n){function r(){}function i(e){function t(e){return e&&e instanceof r?e:e?f(e,c,o):o()}function n(n,r,i,o){if(!p.aborted||o){e&&e(n,r,i);for(var a=t(i),c=v(n),f=c.length,u=0;u<f;u++)c[u].apply(a,r);var d=s[w[n]];return d&&d.push([b,n,r,a]),a}}function l(e,t){h[e]=v(e).concat(t)}function m(e,t){var n=h[e];if(n)for(var r=0;r<n.length;r++)n[r]===t&&n.splice(r,1)}function v(e){return h[e]||[]}function g(e){return d[e]=d[e]||i(n)}function y(e,t){u(e,function(e,n){t=t||"feature",w[n]=t,t in s||(s[t]=[])})}var h={},w={},b={on:l,addEventListener:l,removeEventListener:m,emit:n,get:g,listeners:v,context:t,buffer:y,abort:a,aborted:!1};return b}function o(){return new r}function a(){(s.api||s.feature)&&(p.aborted=!0,s=p.backlog={})}var c="nr@context",f=e("gos"),u=e(6),s={},d={},p=t.exports=i();p.backlog=s},{}],gos:[function(e,t,n){function r(e,t,n){if(i.call(e,t))return e[t];var r=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,t,{value:r,writable:!0,enumerable:!1}),r}catch(o){}return e[t]=r,r}var i=Object.prototype.hasOwnProperty;t.exports=r},{}],handle:[function(e,t,n){function r(e,t,n,r){i.buffer([e],r),i.emit(e,t,n)}var i=e("ee").get("handle");t.exports=r,r.ee=i},{}],id:[function(e,t,n){function r(e){var t=typeof e;return!e||"object"!==t&&"function"!==t?-1:e===window?0:a(e,o,function(){return i++})}var i=1,o="nr@id",a=e("gos");t.exports=r},{}],loader:[function(e,t,n){function r(){if(!E++){var e=b.info=NREUM.info,t=p.getElementsByTagName("script")[0];if(setTimeout(u.abort,3e4),!(e&&e.licenseKey&&e.applicationID&&t))return u.abort();f(h,function(t,n){e[t]||(e[t]=n)});var n=a();c("mark",["onload",n+b.offset],null,"api"),c("timing",["load",n]);var r=p.createElement("script");r.src="https://"+e.agent,t.parentNode.insertBefore(r,t)}}function i(){"complete"===p.readyState&&o()}function o(){c("mark",["domContent",a()+b.offset],null,"api")}var a=e(2),c=e("handle"),f=e(6),u=e("ee"),s=e(4),d=window,p=d.document,l="addEventListener",m="attachEvent",v=d.XMLHttpRequest,g=v&&v.prototype;NREUM.o={ST:setTimeout,SI:d.setImmediate,CT:clearTimeout,XHR:v,REQ:d.Request,EV:d.Event,PR:d.Promise,MO:d.MutationObserver};var y=""+location,h={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1184.min.js"},w=v&&g&&g[l]&&!/CriOS/.test(navigator.userAgent),b=t.exports={offset:a.getLastTimestamp(),now:a,origin:y,features:{},xhrWrappable:w,userAgent:s};e(1),e(3),p[l]?(p[l]("DOMContentLoaded",o,!1),d[l]("load",r,!1)):(p[m]("onreadystatechange",i),d[m]("onload",r)),c("mark",["firstbyte",a.getLastTimestamp()],null,"api");var E=0},{}],"wrap-function":[function(e,t,n){function r(e){return!(e&&e instanceof Function&&e.apply&&!e[a])}var i=e("ee"),o=e(7),a="nr@original",c=Object.prototype.hasOwnProperty,f=!1;t.exports=function(e,t){function n(e,t,n,i){function nrWrapper(){var r,a,c,f;try{a=this,r=o(arguments),c="function"==typeof n?n(r,a):n||{}}catch(u){p([u,"",[r,a,i],c])}s(t+"start",[r,a,i],c);try{return f=e.apply(a,r)}catch(d){throw s(t+"err",[r,a,d],c),d}finally{s(t+"end",[r,a,f],c)}}return r(e)?e:(t||(t=""),nrWrapper[a]=e,d(e,nrWrapper),nrWrapper)}function u(e,t,i,o){i||(i="");var a,c,f,u="-"===i.charAt(0);for(f=0;f<t.length;f++)c=t[f],a=e[c],r(a)||(e[c]=n(a,u?c+i:i,o,c))}function s(n,r,i){if(!f||t){var o=f;f=!0;try{e.emit(n,r,i,t)}catch(a){p([a,n,r,i])}f=o}}function d(e,t){if(Object.defineProperty&&Object.keys)try{var n=Object.keys(e);return n.forEach(function(n){Object.defineProperty(t,n,{get:function(){return e[n]},set:function(t){return e[n]=t,t}})}),t}catch(r){p([r])}for(var i in e)c.call(e,i)&&(t[i]=e[i]);return t}function p(t){try{e.emit("internal-error",t)}catch(n){}}return e||(e=i),n.inPlace=u,n.flag=a,n}},{}]},{},["loader"]);</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+<meta name="Generator" content="Drupal 7 (http://drupal.org)">
+<link rel="canonical" href="https://www.presidency.ucsb.edu/statistics/data/voter-turnout-in-presidential-elections">
+<link rel="shortlink" href="https://www.presidency.ucsb.edu/node/323879">
+<link rel="shortcut icon" href="https://www.presidency.ucsb.edu/sites/default/files/favicon-app_0.png" type="image/png">
+  <title>Voter Turnout in Presidential Elections | The American Presidency Project</title>
+  <link href="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/css" rel="stylesheet" type="text/css">
+  <link href="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/bootstrap-glyphicons.css" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/css_lQaZfjVpwP_oGNqdtWCSpJT1EMqXdMiU84ekLLxQnc4.css" media="all">
+<link type="text/css" rel="stylesheet" href="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/css_uuQd0L7qawhKpY0MHO8pVG2W6LSQqS5w9XHZMk3vO2U.css" media="all">
+<link type="text/css" rel="stylesheet" href="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/css_Cq1R3m_ERXC2ynYnp57HZ-O7ehprd9pvLTuV32DY_ow.css" media="all">
+<link type="text/css" rel="stylesheet" href="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/css_rSQFFfhgRJzGFfW0daS6ZK63sOQRV3kJbjkJYD6QIk4.css" media="all">
+<link type="text/css" rel="stylesheet" href="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/css_ql0wEOOJdJXWxadhFC5o4MjHEB3zcyz6D0gv2L5lGpQ.css" media="all">
+<link type="text/css" rel="stylesheet" href="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/css_DW59q6nX-P3-D4cA08_V2iLlMJIaFdPFYT8X6nSFpV8.css" media="print">
+  <!-- HTML5 element support for IE6-8 -->
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/jquery-1.11.2.min.js.download"></script>
+<script>window.jQuery || document.write("<script src='/sites/default/modules/contrib/jquery_update/replace/jquery/1.11/jquery.min.js'>\x3C/script>")</script>
+<script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/js_38VWQ3jjQx0wRFj7gkntZr077GgJoGn5nv3v05IeLLo.js.download"></script>
+<script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/jquery-ui.min.js.download"></script>
+<script>window.jQuery.ui || document.write("<script src='/sites/default/modules/contrib/jquery_update/replace/ui/ui/minified/jquery-ui.min.js'>\x3C/script>")</script>
+<script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/js_Tik8PIaz_eQ5I4FMzmjkWoPEs9jKBgTSauo1jgsNa6g.js.download"></script>
+<script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/js_rsGiM5M1ffe6EhN-RnhM5f3pDyJ8ZAPFJNKpfjtepLk.js.download"></script>
+<script>(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","https://www.google-analytics.com/analytics.js","ga");ga("create", "UA-86410002-1", {"cookieDomain":"auto","allowLinker":true});ga("require", "linker");ga("linker:autoLink", ["dev-wwwpresidencyucsbedu.pantheonsite.io","www.presidency.ucsb.edu"]);ga("set", "anonymizeIp", true);ga("send", "pageview");</script>
+<script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/js_gvpxcPEErmaiJn8qGSGx2O87lReivTR09hs10gIG3Yg.js.download"></script>
+<script>jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"app","theme_token":"p1IAgY8Y2c8X3At8mUeRT2J1ZSGYYDLfXsINZ9mvCAA","js":{"sites\/default\/libraries\/jquery-ui-multiselect-widget\/src\/jquery.multiselect.js":1,"sites\/default\/libraries\/jquery-ui-multiselect-widget\/src\/jquery.multiselect.filter.js":1,"sites\/default\/modules\/contrib\/jquery_ui_multiselect_widget\/jquery_ui_multiselect_widget.js":1,"modules\/statistics\/statistics.js":1,"sites\/default\/themes\/bootstrap\/js\/bootstrap.js":1,"\/\/ajax.aspnetcdn.com\/ajax\/jQuery\/jquery-1.11.2.min.js":1,"0":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"\/\/ajax.aspnetcdn.com\/ajax\/jquery.ui\/1.11.4\/jquery-ui.min.js":1,"1":1,"sites\/default\/modules\/contrib\/extlink\/extlink.js":1,"sites\/default\/modules\/contrib\/google_analytics\/googleanalytics.js":1,"2":1,"sites\/default\/themes\/app\/bootstrap\/js\/affix.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/alert.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/button.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/carousel.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/collapse.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/dropdown.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/modal.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/tooltip.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/popover.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/scrollspy.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/tab.js":1,"sites\/default\/themes\/app\/bootstrap\/js\/transition.js":1,"sites\/default\/themes\/app\/scripts\/scripts.js":1},"css":{"modules\/system\/system.base.css":1,"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"misc\/ui\/jquery.ui.accordion.css":1,"sites\/default\/modules\/contrib\/date\/date_api\/date.css":1,"sites\/default\/modules\/contrib\/date\/date_popup\/themes\/datepicker.1.7.css":1,"sites\/default\/modules\/contrib\/date\/date_repeat_field\/date_repeat_field.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"sites\/default\/modules\/contrib\/extlink\/extlink.css":1,"sites\/default\/modules\/contrib\/views\/css\/views.css":1,"sites\/default\/modules\/contrib\/ctools\/css\/ctools.css":1,"sites\/default\/libraries\/jquery-ui-multiselect-widget\/jquery.multiselect.css":1,"sites\/default\/libraries\/jquery-ui-multiselect-widget\/jquery.multiselect.filter.css":1,"sites\/default\/modules\/contrib\/jquery_ui_multiselect_widget\/jquery_ui_multiselect_widget.css":1,"sites\/default\/themes\/app\/css\/style.css":1,"sites\/default\/themes\/app\/css\/oog.css":1,"sites\/default\/themes\/app\/css\/print.css":1}},"jquery_ui_multiselect_widget":{"module_path":"sites\/default\/modules\/contrib\/jquery_ui_multiselect_widget","multiple":1,"filter":1,"subselector":"#edit-category2","selectedlist":"4","autoOpen":0,"header":1,"height":"auto","classes":"app-uberselect","filter_auto_reset":1,"filter_width":"auto","jquery_ui_multiselect_widget_path_match_exclude":"admin\/*\r\nmedia\/*\r\nfile\/*\r\nsystem\/ajax"},"extlink":{"extTarget":"_blank","extClass":0,"extLabel":"(link is external)","extImgClass":0,"extIconPlacement":"append","extSubdomains":1,"extExclude":"","extInclude":"","extCssExclude":"","extCssExplicit":"","extAlert":0,"extAlertText":"This link will take you to an external web site.","mailtoClass":0,"mailtoLabel":"(link sends e-mail)"},"googleanalytics":{"trackOutbound":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip","trackDomainMode":2,"trackCrossDomains":["dev-wwwpresidencyucsbedu.pantheonsite.io","www.presidency.ucsb.edu"]},"statistics":{"data":{"nid":"323879"},"url":"\/modules\/statistics\/statistics.php"},"bootstrap":{"anchorsFix":1,"anchorsSmoothScrolling":1,"formHasError":1,"popoverEnabled":0,"popoverOptions":{"animation":1,"html":0,"placement":"right","selector":"","trigger":"click","triggerAutoclose":1,"title":"","content":"","delay":0,"container":"body"},"tooltipEnabled":1,"tooltipOptions":{"animation":1,"html":0,"placement":"auto left","selector":"","trigger":"hover focus","delay":0,"container":"body"}}});</script>
+</head>
+<body class="html not-front not-logged-in one-sidebar sidebar-first page-node page-node- page-node-323879 node-type-prez-election-archive">
+  <div id="skip-link">
+    <a href="https://www.presidency.ucsb.edu/statistics/data/voter-turnout-in-presidential-elections#main-content" class="element-invisible element-focusable">Skip to main content</a>
+  </div>
+    <div class="wrapper"> <!-- Wrapper for Sticky Footer -->
+
+      <div class="branding-region">
+      <div class="container">
+                  <div class="region region-branding">
+    <section id="block-block-1" class="block block-block site-title-block clearfix">
+
+      
+  <div class="site-title"><a href="https://www.presidency.ucsb.edu/">The American Presidency Project</a></div>
+
+</section>
+<section id="block-block-2" class="block block-block top-link-buttons clearfix">
+
+      
+  <p><a class="btn btn-default" href="https://www.presidency.ucsb.edu/about">About</a><a class="btn btn-default" href="https://www.presidency.ucsb.edu/advanced-search"><span class="glyphicon glyphicon-search"></span>&nbsp;Search</a></p>
+<p id="ucScript"><a href="https://www.ucsb.edu/" target="_blank"><img alt="ucsb wordmark black" src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/uc_santa_barbara_wordmark_black_rgb.svg" style="width: 175px; height: 13px;"></a></p>
+
+</section>
+  </div>
+      </div>
+    </div>
+  
+  <div id="navbar" role="banner" class="navbar navbar-default"><!-- Only way to remove "container" class -->
+    <div class="container">
+      <div class="navbar-header">
+
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+
+              <div class="navbar-collapse collapse">
+          <nav role="navigation">
+                          <ul class="menu nav navbar-nav"><li class="first expanded dropdown"><a href="https://www.presidency.ucsb.edu/documents" class="dropdown-toggle">Documents <span class="caret"></span></a><ul class="dropdown-menu"><li class="first leaf"><a href="https://www.presidency.ucsb.edu/documents/presidential-documents-archive-guidebook">Guidebook</a></li>
+<li class="last leaf"><a href="https://www.presidency.ucsb.edu/documents/category-attributes">Category Attributes</a></li>
+</ul></li>
+<li class="expanded active-trail active dropdown"><a href="https://www.presidency.ucsb.edu/statistics" class="active-trail dropdown-toggle">Statistics <span class="caret"></span></a><ul class="dropdown-menu"><li class="first expanded active-trail active"><a href="https://www.presidency.ucsb.edu/statistics/data" class="active-trail">Data Archive</a></li>
+<li class="last leaf"><a href="https://www.presidency.ucsb.edu/statistics/elections">Elections</a></li>
+</ul></li>
+<li class="leaf"><a href="https://www.presidency.ucsb.edu/media" title="">Media Archive</a></li>
+<li class="leaf"><a href="https://www.presidency.ucsb.edu/presidents" title="">Presidents</a></li>
+<li class="leaf"><a href="https://www.presidency.ucsb.edu/analyses" title="">Analyses</a></li>
+<li class="last leaf"><a href="https://giving.ucsb.edu/Funds/Give?id=185" title="">GIVE</a></li>
+</ul>                                              </nav>
+        </div>
+          </div>
+  </div>
+
+  <div role="banner" id="page-header" class="site-header">
+      </div>
+
+  <div class="main-container container">
+    <div class="row">
+
+          <aside class="col-sm-3 no-print" role="complementary">
+            <div class="region region-sidebar-first well">
+    <section id="block-menu-block-4" class="block block-menu-block clearfix">
+
+        <h2 class="block-title">Statistics</h2>
+    
+  <div class="menu-block-wrapper menu-block-4 menu-name-main-menu parent-mlid-0 menu-level-2">
+  <ul class="menu nav"><li class="first expanded active-trail menu-mlid-9641 active"><a href="https://www.presidency.ucsb.edu/statistics/data" class="active-trail">Data Archive</a></li>
+<li class="last leaf menu-mlid-9642"><a href="https://www.presidency.ucsb.edu/statistics/elections">Elections</a></li>
+</ul></div>
+
+</section>
+  </div>
+        </aside>  <!-- /#sidebar-first -->
+      
+      <section class="col-sm-9">
+                        <a id="main-content"></a>
+                
+                          
+                          <div class="region region-content">
+    <section id="block-system-main" class="block block-system clearfix">
+
+      
+  
+
+<div about="/statistics/data/voter-turnout-in-presidential-elections" typeof="sioc:Item foaf:Document" class="node node-prez-election-archive view-mode-full ">
+    <div class="row">
+    <div class="col-sm-12 ">
+      
+  <div class="field-title">
+    <h1>Voter Turnout in Presidential Elections</h1>  </div>
+
+  <div class="field-resuable-byline">
+    1828 - 2016  </div>
+
+  <div class="field-body">
+    <p><em><strong>&nbsp;Please see Notes below.</strong></em></p>
+<table height="1326" style="border-collapse: collapse; border: medium none;" width="578">
+<colgroup><col style="width:48pt" width="64"><col style="width:68pt" width="91"><col style="width:71pt" width="94"><col style="width:65pt" width="87"><col style="width:73pt" width="98"><col style="width:58pt" width="78"><col style="width:48pt" width="64"></colgroup>
+<tbody>
+<tr height="77" style="height:57.6pt">
+<td class="xl66" height="77" style="border:medium none; height:57.6pt; width:48pt; text-align:center; vertical-align:middle; white-space:normal; padding-top:1px; padding-right:1px; padding-left:1px" width="64">
+<p>&nbsp;</p>
+<p><span style="font-size:11pt"><span style="font-weight:700"><span style="color:black"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">Year</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border:medium none; width:68pt; text-align:center; vertical-align:middle; white-space:normal; padding-top:1px; padding-right:1px; padding-left:1px" width="91"><span style="font-size:11pt"><span style="font-weight:700"><span style="color:black"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">Turnout</span></span></span></span></span></span></td>
+<td class="xl66" style="border:medium none; width:71pt; text-align:center; vertical-align:middle; white-space:normal; padding-top:1px; padding-right:1px; padding-left:1px" width="94"><span style="font-size:11pt"><span style="font-weight:700"><span style="color:black"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">Voting Age Population (VAP)</span></span></span></span></span></span></td>
+<td class="xl66" style="border:medium none; width:65pt; text-align:center; vertical-align:middle; white-space:normal; padding-top:1px; padding-right:1px; padding-left:1px" width="87"><span style="font-size:11pt"><span style="font-weight:700"><span style="color:black"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">Voting Eligible Population (VEP)</span></span></span></span></span></span></td>
+<td class="xl66" style="border:medium none; width:73pt; text-align:center; vertical-align:middle; white-space:normal; padding-top:1px; padding-right:1px; padding-left:1px" width="98"><span style="font-size:11pt"><span style="font-weight:700"><span style="color:black"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">Registered Voters</span></span></span></span></span></span></td>
+<td class="xl66" style="border:medium none; width:58pt; text-align:center; vertical-align:middle; white-space:normal; padding-top:1px; padding-right:1px; padding-left:1px" width="78"><span style="font-size:11pt"><span style="font-weight:700"><span style="color:black"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">Turnout as % VAP&nbsp;</span></span></span></span></span></span></td>
+<td class="xl66" style="border:medium none; width:48pt; text-align:center; vertical-align:middle; white-space:normal; padding-top:1px; padding-right:1px; padding-left:1px" width="64"><span style="font-size:11pt"><span style="font-weight:700"><span style="color:black"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">Turnout as % VEP</span></span></span></span></span></span></td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1828</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">57.6%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1832</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">55.4%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1836</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">57.8%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1840</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">80.2%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1844</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">78.9%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1848</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">72.7%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1852</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">69.6%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1856</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">78.9%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1860</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">81.2%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1864</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">73.8%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1868</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">78.1%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1872</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">71.3%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1876</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">81.8%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1880</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">79.4%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1884</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">77.5%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1888</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">79.3%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1892</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">74.7%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1896</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">79.3%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1900</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">73.2%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1904</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">65.2%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1908</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">65.4%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1912</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">58.8%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1916</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">61.6%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1920</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">49.2%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1924</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">48.9%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="19" style="height:14.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1928</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">56.9%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1932</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">39,816,522</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">75,768,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">52.6%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1936</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">45,646,817</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">80,174,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">56.9%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1940</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">49,815,312</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">84,728,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">58.8%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="31" style="height:23.4pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1944</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">48,025,684</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">85,654,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">56.1%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1948</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">48,833,680</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">95,573,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">51.1%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1952</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">61,551,919</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">99,929,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">61.6%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1956</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">62,027,040</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">104,515,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl64" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl64" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p>&nbsp;</p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">59.3%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1960</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">68,836,385</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">109,672,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl65" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">63,854,789</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">62.8%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1964</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">70,097,935</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">114,090,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl65" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">73,715,818</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">61.4%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1968</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">73,026,831</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">120,285,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl65" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">81,658,180</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">60.7%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="21" style="height:15.6pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1972</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">77,625,152</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">140,777,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl65" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">97,283,541</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">55.1%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1976</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">81,603,346</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">152,308,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl65" style="border: medium none; width: 65pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="87">
+<p>&nbsp;</p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">105,024,916</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">53.6%</span></span></span></span></span></span></p>
+</td>
+<td style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl64" style="border: medium none; height: 16px; width: 48pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px;" width="64">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1980</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">86,496,851</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">163,945,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">159,635,102</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">113,036,958</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">52.8%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">54.2%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1984</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">92,654,861</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">173,995,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">167,701,904</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">124,184,647</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">53.3%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">55.2%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1988</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">91,586,725</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">181,956,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">173,579,281</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">126,381,202</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">50.3%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">52.8%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1992</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">104,600,366</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">189,493,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">179,655,523</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">133,821,178</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">55.2%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">58.2%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">1996</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">96,389,818</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">196,789,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">186,347,044</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">146,211,960</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">49.0%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">51.7%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">2000</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">105,594,024</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">209,130,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">194,331,436</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">156,421,311</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">50.5%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">54.3%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">2004</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">122,349,480</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">219,508,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">203,483,455</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">174,800,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">55.7%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">60.1%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">2008</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">131,406,895</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">229,989,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">213,313,508</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">146,310,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">57.1%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">61.6%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">2012</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">129,139,997</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">240,177,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl66" style="border: medium none; height: 16px; width: 65pt; text-align: center; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom;" width="87">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">222,474,111</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">153,160,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">53.8%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">58.0%</span></span></span></span></span></span></p>
+</td>
+</tr>
+<tr height="22" style="height:16.2pt">
+<td class="xl68" style="border: medium none; height: 16px; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">2016</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 68pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="91">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">136,787,187</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 71pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="94">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">249,422,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl72" style="border: medium none; text-align: center; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:10pt"><span style="color:black"><span style="font-family:Arial,sans-serif"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none">230,931,921</span></span></span></span></span></span></p>
+</td>
+<td class="xl67" style="border: medium none; width: 73pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="98">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">157,596,000</span></span></span></span></span></span></p>
+</td>
+<td class="xl71" style="border: medium none; width: 58pt; text-align: center; vertical-align: middle; white-space: normal; padding-top: 1px; padding-right: 1px; padding-left: 1px; height: 16px;" width="78">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">54.8%</span></span></span></span></span></span></p>
+</td>
+<td align="right" class="xl70" style="border: medium none; padding-top: 1px; padding-right: 1px; padding-left: 1px; vertical-align: bottom; white-space: nowrap; height: 16px;">
+<p><span style="font-size:11pt"><span style="color:black"><span style="font-weight:400"><span style="font-style:normal"><span style="text-decoration:none"><span style="font-family:Calibri,sans-serif">59.2%</span></span></span></span></span></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+  </div>
+  <h3 class="field-label">
+    Notes  </h3>
+
+  <div class="field-prez-election-notes">
+    <p style="margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">“Turnout” refers to efforts to measure the extent of popular participation in elections.&nbsp; Turnout is measured as a ratio.&nbsp; The numerator is the number of votes cast.&nbsp; Various measures may be used as the denominator:&nbsp; (1) <i>The Voting Age Population</i>—broadly speaking it is the population above the legal voting age;&nbsp; (2) <i>Voting Eligible Population</i>—all citizens who are not excluded from voting because of some legal impediment;&nbsp; (3) <i>Registered voters</i>. &nbsp;Reported measures of each of these has varied somewhat over time as estimates have been revised and refined. </span></span></p>
+<p style="margin:0in">&nbsp;</p>
+<p style="margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">Three propositions underlie most research on turnout.&nbsp; </span></span></p>
+<ul>
+<li style="margin:0in 0in 0in 0.5in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif"><b>First</b>: turnout may be a way of assessing the health of a popular democracy.&nbsp; Well-functioning democracies are more inclusive and will have higher turnout.&nbsp; </span></span></li>
+<li style="margin:0in 0in 0in 0.5in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif"><b>Second</b>:&nbsp; Ease of registration should affect turnout.&nbsp; In comparing two jurisdictions over time with comparable demographic caracteristics (education, age, income, etc.), turnout should be higher in the one with less restrictive registration requirements. </span></span></li>
+<li style="margin:0in 0in 0in 0.5in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif"><b>Third</b>:&nbsp; Electoral competition should drive up turnout.&nbsp; Other things equal, when the stakes in the election seem greater, turnout should increase. </span></span></li>
+</ul>
+<p style="margin:0in">&nbsp;</p>
+<p style="margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif"><i>Voting Age Population</i> is typically calculated based on census data (“resident population [21 or 18] years and older”).&nbsp; But before 1920 the numbers used are always adjusted for the shifting definition of citizens with voting rights.&nbsp; So women are excluded prior to 1920.&nbsp; The classic attempt to define the voting age population for the 19<sup>th</sup> century is by Walter Dean Burnham, “The Turnout Problem” in <i>Elections American Style</i> ed., Reichley (Brookings:&nbsp; Washington D.C., 1987)&nbsp; Burnham published only the turnout ratio, not his actual estimate of the voting age population!</span></span></p>
+<p style="margin:0in">&nbsp;</p>
+<p style="margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif"><i>Voting Eligible Population</i> is an attempt to make an even more precise definition of the population of people who have a legal right to vote—potential voters.&nbsp; Making the estimates of noncitizens and disfranchized felons has been carried out mostly by Professor Michael McDonald and data are published in the <a href="http://www.electproject.org/" style="color:#0563c1; text-decoration:underline" target="_blank" rel="noopener noreferrer">U.S. Elections Project</a> website.&nbsp; </span></span></p>
+<p style="margin:0in">&nbsp;</p>
+<p style="margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif"><i>Registered voters</i> counts the total number of eligible people who have taken the additional step of actually registering to vote.&nbsp; The best estimates are produced by the Census Bureau’s <a href="https://www.census.gov/topics/public-sector/voting.html" style="color:#0563c1; text-decoration:underline" target="_blank" rel="noopener noreferrer">Current Population Survey</a>.&nbsp; Registration was not a universal requirement until “well into the twentieth century” (Ansolabhere and Konisky) and some states did not impose uniform registration requirements until the 1970s.&nbsp; So it is possible for the number of votes to exceed the number of registered voters. Scholars point out that census data may not be entirely accurate (see Bennett 1990).</span></span></p>
+<p><span style="font-size:11.0pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">Number of votes cast in presidential elections is published by the U.S. House of Representatives, Office of the Clerk, <i><a href="https://history.house.gov/Institution/Election-Statistics/Election-Statistics/" style="color:#0563c1; text-decoration:underline" target="_blank" rel="noopener noreferrer">Statistics of the Presidential and Congressional Election</a></i> for various years starting with 1920.</span></span></p>
+  </div>
+  <h3 class="field-label">
+    Source(s)  </h3>
+
+  <div class="field-prez-election-data-sources">
+    <p style="margin-left:.5in; margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">Ansolabehere, Stephen and David M. Konisky, “The Introduction of Voter Registration and Its Effect on Turnout,” <i>Political Analysis</i> Winter 2006, Vol. 14, No. 1, pp. 83-100.</span></span></p>
+<p style="margin-left:.5in; margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">Bennett, Stephen Earl, “The Uses and Abuses of Registration and Turnout Data,” <i>PS:&nbsp; Political Science and Politics</i> Vol 23, No. 2 (Jun., 1990):&nbsp; 166-171.</span></span></p>
+<p style="margin-left:.5in; margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">Burnham, Walter Dean, “The Turnout Problem,” <i>Elections American Style</i> ed. A. james Reichley (Brookings:&nbsp; Washington DC 1987)</span></span></p>
+<p style="margin-left:.5in; margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">Census Bureau’s <a href="https://www.census.gov/topics/public-sector/voting.html" style="color:#0563c1; text-decoration:underline" target="_blank" rel="noopener noreferrer">Current Population Survey</a>.</span></span></p>
+<p style="margin-left:.5in; margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">McDonald, Michael P., and Samuel L. Popkin, “The Myth of the Vanishing Voter,” <i>American Political Science Review</i> 95 (2001):&nbsp; 963-974.&nbsp; </span></span></p>
+<p style="margin-left:.5in; margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif"><i>Proquest Historical Statistics of the United States</i> 2020, Table 441</span></span></p>
+<p style="margin-left:.5in; margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">US House of Representatives, Office of the Clerk, <i><a href="https://history.house.gov/Institution/Election-Statistics/Election-Statistics/" style="color:#0563c1; text-decoration:underline" target="_blank" rel="noopener noreferrer">Statistics of the Presidential and Congressional Election</a></i></span></span></p>
+<p style="margin-left:.5in; margin:0in"><span style="font-size:11pt"><span style="font-family:&quot;Calibri&quot;,sans-serif"><a href="http://www.electproject.org/" style="color:#0563c1; text-decoration:underline" target="_blank" rel="noopener noreferrer">U.S. Elections Project</a></span></span></p>
+<p style="margin-left:.5in; margin:0in">&nbsp;</p>
+  </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Needed to activate display suite support on forms -->
+
+</section>
+  </div>
+<!-- Content -->
+      </section>
+
+      
+    </div>
+  </div>
+  
+  
+</div>
+<footer class="site-footer no-print">
+  <div class="container">
+      <div class="region region-footer">
+    <section id="block-block-4" class="block block-block attribution clearfix">
+
+      
+  <p><span>The American Presidency Project</span><br>John Woolley and Gerhard Peters<br><strong><a href="https://www.presidency.ucsb.edu/contact">Contact</a></strong></p>
+
+</section>
+<section id="block-block-6" class="block block-block foot ucsb clearfix">
+
+      
+  <p style="text-align: center;display:inline-block;"><a class="twitter" href="https://twitter.com/presidency_proj" target="_blank" rel="noopener noreferrer">Twitter</a> <a class="facebook" href="https://www.facebook.com/pg/american.presidency.project/" target="_blank" rel="noopener noreferrer">Facebook</a></p>
+
+</section>
+<section id="block-block-5" class="block block-block copyright clearfix">
+
+      
+  <p>Copyright © The American Presidency Project<br><a href="http://www.ucsb.edu/terms-of-use" target="_blank">Terms of Service</a> | <a href="http://www.policy.ucsb.edu/privacy-notification/" target="_blank">Privacy</a> | <a href="https://www.presidency.ucsb.edu/accessibility">Accessibility</a></p><p><img alt="uc santa barbara logo" src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/uc-santa-barbara-wordmark-white1x.svg" style="width: 197px; min-width: 150px; height: 14px;object-fit:cover;"></p>
+</section>
+  </div>
+  </div>
+  </footer>
+  <script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/js_NKBfN5q_T2fdeVG6tE3pdNU7glYkyzgPuDTc4K3Ne1w.js.download"></script>
+<script src="./Voter Turnout in Presidential Elections _ The American Presidency Project_files/js_MRdvkC2u4oGsp5wVxBG1pGV5NrCPW3mssHxIn6G9tGE.js.download"></script>
+<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"dee899de70","applicationID":"80106271","transactionName":"bl1XYxNYWkVYVxFdWVcXYEUIFhtfV1AATBhJUEU=","queueTime":0,"applicationTime":10,"atts":"QhpUFVtCSUs=","errorBeacon":"bam.nr-data.net","agent":""}</script>
+
+</body></html>

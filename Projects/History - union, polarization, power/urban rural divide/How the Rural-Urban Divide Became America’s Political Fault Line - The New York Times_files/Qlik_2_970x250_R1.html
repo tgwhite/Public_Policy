@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<!-- saved from url=(0086)https://db-web-assets.s3.amazonaws.com/Qlik/031420/Set2/970x250/Qlik_2_970x250_R1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="authoring-tool" content="Adobe_Animate_CC">
+<title>Qlik_2_970x250_R1</title>
+<script src="./gsap.min.js.download"></script>
+<style>
+  #animation_container {
+	position:absolute;
+	margin:auto;
+	left:0;right:0;
+	top:0;bottom:0;
+  }
+</style>
+<script src="./createjs.min.js.download"></script>
+<!-- DemandBase Ad Component [Version for Adobe Animate 2017] -->
+<!-- Last updated: April. 18th, 2019 -->
+<script>
+/**
+ * The code that follows sees us re-implementing CreateJS' Text class to add additional functionality
+ * - Caulder Bradford, May 2016
+**/
+/*
+* Text
+* Visit http://createjs.com/ for documentation, updates and examples.
+*
+* Copyright (c) 2010 gskinner.com, inc.
+*
+* Permission is hereby granted, free of charge, to any person
+* obtaining a copy of this software and associated documentation
+* files (the "Software"), to deal in the Software without
+* restriction, including without limitation the rights to use,
+* copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following
+* conditions:
+*
+* The above copyright notice and this permission notice shall be
+* included in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+*/
+/**
+ * @module EaselJS
+ */
+// namespace:
+this.createjs = this.createjs||{};
+(function() {
+	"use strict";
+// constructor:
+	/**
+	 * Display one or more lines of dynamic text (not user editable) in the display list. Line wrapping support (using the
+	 * lineWidth) is very basic, wrapping on spaces and tabs only. Note that as an alternative to Text, you can position HTML
+	 * text above or below the canvas relative to items in the display list using the {{#crossLink "DisplayObject/localToGlobal"}}{{/crossLink}}
+	 * method, or using {{#crossLink "DOMElement"}}{{/crossLink}}.
+	 *
+	 * <b>Please note that Text does not support HTML text, and can only display one font style at a time.</b> To use
+	 * multiple font styles, you will need to create multiple text instances, and position them manually.
+	 *
+	 * <h4>Example</h4>
+	 *
+	 *      var text = new createjs.Text("Hello World", "20px Arial", "#ff7700");
+	 *      text.x = 100;
+	 *      text.textBaseline = "alphabetic";
+	 *
+	 * CreateJS Text supports web fonts (the same rules as Canvas). The font must be loaded and supported by the browser
+	 * before it can be displayed.
+	 *
+	 * <strong>Note:</strong> Text can be expensive to generate, so cache instances where possible. Be aware that not all
+	 * browsers will render Text exactly the same.
+	 * @class Text
+	 * @extends DisplayObject
+	 * @constructor
+	 * @param {String} [text] The text to display.
+	 * @param {String} [font] The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold
+	 * 36px Arial").
+	 * @param {String} [color] The color to draw the text in. Any valid value for the CSS color attribute is acceptable (ex.
+	 * "#F00", "red", or "#FF0000").
+	 **/
+	function Text(text, font, color) {
+		this.DisplayObject_constructor();
+	// public properties:
+		/**
+		 * The text to display.
+		 * @property text
+		 * @type String
+		 **/
+		this.text = text;
+		/**
+		 * The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold 36px Arial").
+		 * @property font
+		 * @type String
+		 **/
+		this.font = font;
+		/**
+		 * The color to draw the text in. Any valid value for the CSS color attribute is acceptable (ex. "#F00"). Default is "#000".
+		 * It will also accept valid canvas fillStyle values.
+		 * @property color
+		 * @type String
+		 **/
+		this.color = color;
+		/**
+		 * We use subStyles to draw different colored and emphasized text in a single textfield - Caulder Bradford
+		 **/
+		this.subStyles = [];
+		/**
+		 * The horizontal text alignment. Any of "start", "end", "left", "right", and "center". For detailed
+		 * information view the
+		 * <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#text-styles">
+		 * whatwg spec</a>. Default is "left".
+		 * @property textAlign
+		 * @type String
+		 **/
+		this.textAlign = "left";
+		/**
+		 * The vertical alignment point on the font. Any of "top", "hanging", "middle", "alphabetic", "ideographic", or
+		 * "bottom". For detailed information view the <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#text-styles">
+		 * whatwg spec</a>. Default is "top".
+		 * @property textBaseline
+		 * @type String
+		*/
+		this.textBaseline = "top";
+		/**
+		 * The maximum width to draw the text. If maxWidth is specified (not null), the text will be condensed or
+		 * shrunk to make it fit in this width. For detailed information view the
+		 * <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#text-styles">
+		 * whatwg spec</a>.
+		 * @property maxWidth
+		 * @type Number
+		*/
+		this.maxWidth = null;
+		/**
+		 * If greater than 0, the text will be drawn as a stroke (outline) of the specified width.
+		 * @property outline
+		 * @type Number
+		 **/
+		this.outline = 0;
+		/**
+		 * Indicates the line height (vertical distance between baselines) for multi-line text. If null or 0,
+		 * the value of getMeasuredLineHeight is used.
+		 * @property lineHeight
+		 * @type Number
+		 **/
+		this.lineHeight = 0;
+		/**
+		 * Indicates the maximum width for a line of text before it is wrapped to multiple lines. If null,
+		 * the text will not be wrapped.
+		 * @property lineWidth
+		 * @type Number
+		 **/
+		this.lineWidth = null;
+		/**
+		 * These handlers are called whenever text is rendered. Helpful to get metrics and such, reliably.
+		 * Use 'onDraw' if you want to execute repeatedly, or alternately use 'onDrawOnce' for a one-time execution.
+		 **/
+		this.onDraw = null;
+		this.onDrawOnce = null;
+	}
+	var p = createjs.extend(Text, createjs.DisplayObject);
+	// TODO: deprecated
+	// p.initialize = function() {}; // searchable for devs wondering where it is. REMOVED. See docs for details.
+// static properties:
+	/**
+	 * @property _workingContext
+	 * @type CanvasRenderingContext2D
+	 * @private
+	 **/
+	var canvas = (createjs.createCanvas?createjs.createCanvas():document.createElement("canvas"));
+	if (canvas.getContext) { Text._workingContext = canvas.getContext("2d"); canvas.width = canvas.height = 1; }
+// constants:
+	/**
+	 * Lookup table for the ratio to offset bounds x calculations based on the textAlign property.
+	 * @property H_OFFSETS
+	 * @type Object
+	 * @protected
+	 * @static
+	 **/
+	Text.H_OFFSETS = {start: 0, left: 0, center: -0.5, end: -1, right: -1};
+	/**
+	 * Lookup table for the ratio to offset bounds y calculations based on the textBaseline property.
+	 * @property H_OFFSETS
+	 * @type Object
+	 * @protected
+	 * @static
+	 **/
+	Text.V_OFFSETS = {top: 0, hanging: -0.01, middle: -0.4, alphabetic: -0.8, ideographic: -0.85, bottom: -1};
+// public methods:
+	/**
+	 * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
+	 * This does not account for whether it would be visible within the boundaries of the stage.
+	 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+	 * @method isVisible
+	 * @return {Boolean} Whether the display object would be visible if drawn to a canvas
+	 **/
+	p.isVisible = function() {
+		var hasContent = this.cacheCanvas || (this.text != null && this.text !== "");
+		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+	};
+	/**
+	 * Draws the Text into the specified context ignoring its visible, alpha, shadow, and transform.
+	 * Returns true if the draw was handled (useful for overriding functionality).
+	 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+	 * @method draw
+	 * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
+	 * @param {Boolean} ignoreCache Indicates whether the draw operation should ignore any current cache.
+	 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
+	 * into itself).
+	 **/
+	p.draw = function(ctx, ignoreCache) {
+		if (this.DisplayObject_draw(ctx, ignoreCache)) { return true; }
+		var col = this.color || "#000";
+		if (this.outline) { ctx.strokeStyle = col; ctx.lineWidth = this.outline*1; }
+		else { ctx.fillStyle = col; }
+		this._drawText(this._prepContext(ctx));
+		if(this.onDraw)
+			this.onDraw(this);
+		if(this.onDrawOnce){
+			this.onDrawOnce(this);
+			this.onDrawOnce = null;
+		}
+		return true;
+	};
+	/**
+	 * Returns the measured, untransformed width of the text without wrapping. Use getBounds for a more robust value.
+	 * @method getMeasuredWidth
+	 * @return {Number} The measured, untransformed width of the text.
+	 **/
+	p.getMeasuredWidth = function() {
+		return this._getMeasuredWidth(this.text);
+	};
+	/**
+	 * Returns an approximate line height of the text, ignoring the lineHeight property. This is based on the measured
+	 * width of a "M" character multiplied by 1.2, which provides an approximate line height for most fonts.
+	 * @method getMeasuredLineHeight
+	 * @return {Number} an approximate line height of the text, ignoring the lineHeight property. This is
+	 * based on the measured width of a "M" character multiplied by 1.2, which approximates em for most fonts.
+	 **/
+	p.getMeasuredLineHeight = function() {
+		return this._getMeasuredWidth("M")*1.2;
+	};
+	/**
+	 * Returns the approximate height of multi-line text by multiplying the number of lines against either the
+	 * <code>lineHeight</code> (if specified) or {{#crossLink "Text/getMeasuredLineHeight"}}{{/crossLink}}. Note that
+	 * this operation requires the text flowing logic to run, which has an associated CPU cost.
+	 * @method getMeasuredHeight
+	 * @return {Number} The approximate height of the untransformed multi-line text.
+	 **/
+	p.getMeasuredHeight = function() {
+		return this._drawText(null,{}).height;
+	};
+	/**
+	 * Docced in superclass.
+	 */
+	p.getBounds = function() {
+		var rect = this.DisplayObject_getBounds();
+		if (rect) { return rect; }
+		if (this.text == null || this.text === "") { return null; }
+		var o = this._drawText(null, {});
+		var w = (this.maxWidth && this.maxWidth < o.width) ? this.maxWidth : o.width;
+		var x = w * Text.H_OFFSETS[this.textAlign||"left"];
+		var lineHeight = this.lineHeight||this.getMeasuredLineHeight();
+		var y = lineHeight * Text.V_OFFSETS[this.textBaseline||"top"];
+		return this._rectangle.setValues(x, y, w, o.height);
+	};
+	/**
+	 * Returns an object with width, height, and lines properties. The width and height are the visual width and height
+	 * of the drawn text. The lines property contains an array of strings, one for
+	 * each line of text that will be drawn, accounting for line breaks and wrapping. These strings have trailing
+	 * whitespace removed.
+	 * @method getMetrics
+	 * @return {Object} An object with width, height, and lines properties.
+	 **/
+	p.getMetrics = function() {
+		var o = {lines:[]};
+		o.lineHeight = this.lineHeight || this.getMeasuredLineHeight();
+		o.vOffset = o.lineHeight * Text.V_OFFSETS[this.textBaseline||"top"];
+		return this._drawText(null, o, o.lines);
+	};
+	/**
+	 * Returns a clone of the Text instance.
+	 * @method clone
+	 * @return {Text} a clone of the Text instance.
+	 **/
+	p.clone = function() {
+		return this._cloneProps(new Text(this.text, this.font, this.color));
+	};
+	/**
+	 * Returns a string representation of this object.
+	 * @method toString
+	 * @return {String} a string representation of the instance.
+	 **/
+	p.toString = function() {
+		return "[Text (text="+  (this.text.length > 20 ? this.text.substr(0, 17)+"..." : this.text) +")]";
+	};
+	/**
+	 * Sets styles for multiple sections of the text (in the same textfield)
+	 * (we have added this functionality as it was not available
+	 * in the original implementation of CreateJS - Caulder Bradford)
+	 **/
+	p.fontStrWithEmphasis = function(emphasis) {
+		var output = this.font;
+		if(emphasis != null){
+			var emphasisTypes = ["bold", "italic", "bold italic"];
+			//strip out any existing styles
+			for(var i=0,n=emphasisTypes.length; i<n; i++){
+				var type = emphasisTypes[i];
+				var l = type.length;
+				if(output.substr(0, l) == type){
+					output = output.substring(l);
+					break;
+				}
+			}
+			output = emphasis + " " + output;
+		}
+		return output;
+	}
+	p.addSubStyle = function(startIndex, count, color, emphasis) {
+		var newSubStyle = {};
+		newSubStyle.start = startIndex;
+		newSubStyle.count = count;
+		newSubStyle.color = color;
+		newSubStyle.font = this.fontStrWithEmphasis(emphasis);
+		this.subStyles.push(newSubStyle);
+	}
+// private methods:
+	/**
+	 * @method _cloneProps
+	 * @param {Text} o
+	 * @protected
+	 * @return {Text} o
+	 **/
+	p._cloneProps = function(o) {
+		this.DisplayObject__cloneProps(o);
+		o.textAlign = this.textAlign;
+		o.textBaseline = this.textBaseline;
+		o.maxWidth = this.maxWidth;
+		o.outline = this.outline;
+		o.lineHeight = this.lineHeight;
+		o.lineWidth = this.lineWidth;
+		return o;
+	};
+	/**
+	 * @method _getWorkingContext
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @return {CanvasRenderingContext2D}
+	 * @protected
+	 **/
+	p._prepContext = function(ctx) {
+		ctx.font = this.font||"10px sans-serif";
+		ctx.textAlign = this.textAlign||"left";
+		ctx.textBaseline = this.textBaseline||"top";
+		return ctx;
+	};
+	/**
+	 * Draws multiline text.
+	 * @method _drawText
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {Object} o
+	 * @param {Array} lines
+	 * @return {Object}
+	 * @protected
+	 **/
+	p._drawText = function(ctx, o, lines) {
+		var paint = !!ctx;
+		if (!paint) {
+			ctx = Text._workingContext;
+			ctx.save();
+			this._prepContext(ctx);
+		}
+		var lineHeight = this.lineHeight||this.getMeasuredLineHeight();
+		this.charsDrawn = 0;
+		this.linesDrawn = 0;
+		var maxW = 0, count = 0;
+		var hardLines = String(this.text).split(/(?:\r\n|\r|\n)/);
+		for (var i=0, l=hardLines.length; i<l; i++) {
+			var str = hardLines[i];
+			var w = null;
+			if (this.lineWidth != null && (w = ctx.measureText(str).width) > this.lineWidth) {
+				// text wrapping:
+				var words = str.split(/(\s)/);
+				str = words[0];
+				w = ctx.measureText(str).width;
+				for (var j=1, jl=words.length; j<jl; j+=2) {
+					// Line needs to wrap:
+					var wordW = ctx.measureText(words[j] + words[j+1]).width;
+					if (w + wordW > this.lineWidth) {
+						if (paint) { this._drawTextLine(ctx, str, count*lineHeight); }
+						if (lines) { lines.push(str); }
+						if (w > maxW) { maxW = w; }
+						str = words[j+1];
+						w = ctx.measureText(str).width;
+						count++;
+					} else {
+						str += words[j] + words[j+1];
+						w += wordW;
+					}
+				}
+			}
+			if (paint) { this._drawTextLine(ctx, str, count*lineHeight); }
+			if (lines) { lines.push(str); }
+			if (o && w == null) { w = ctx.measureText(str).width; }
+			if (w > maxW) { maxW = w; }
+			count++;
+		}
+		if (o) {
+			o.width = maxW;
+			o.height = count*lineHeight;
+		}
+		if (!paint) { ctx.restore(); }
+		return o;
+	};
+	/**
+	 * @method _drawTextLine
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {String} text
+	 * @param {Number} y
+	 * @protected
+	 **/
+	/**
+	 * We have re-implemented this method to draw lines in dynamic segments to account for
+	 * multiple colors and types of emphasis (bold, italic, etc.) - Caulder Bradford
+	 **/
+	p._drawTextLine = function(ctx, text, y) {
+		//split text up into separate draw commands as needed for different colors and styles
+		var defaultColor = this.color || "#000";
+		var defaultFont = this.font;
+		var align = this.textAlign;
+		var sliceIndices = [];
+		var subColors = [];
+		var subFonts = [];
+		for(var i=0,n=this.subStyles.length; i<n; i++){
+			var start = this.subStyles[i].start;
+			var end = start + this.subStyles[i].count;
+			var segStart = start - this.charsDrawn - this.linesDrawn;
+			var segEnd = end - this.charsDrawn - this.linesDrawn;
+			if(segStart < text.length && segEnd >= 0){
+				if(segStart > 0){
+					sliceIndices.push(segStart);
+					if(subColors.length == 0){
+						subColors.push(defaultColor);
+						subFonts.push(defaultFont);
+					}
+				}
+				subColors.push(this.subStyles[i].color);
+				subFonts.push(this.subStyles[i].font);
+			}
+			if(segEnd <= text.length && segEnd >= 0){
+				sliceIndices.push(segEnd);
+				subColors.push(defaultColor);
+				subFonts.push(defaultFont);
+			}
+		}
+		var segmentedText = text;
+		for(var i=0,n=sliceIndices.length; i<n; i++){
+			var index = sliceIndices[i] + i;
+			segmentedText = segmentedText.slice(0, index) + "|" + segmentedText.slice(index);
+		}
+		var segments = segmentedText.split('|');
+		//set x coord depending on alignment
+		var x;
+		if(align == "right"){
+			var dWidth = 0;
+			for(var i=1,n=segments.length; i<n; i++)
+				dWidth += ctx.measureText(segments[i]).width;
+			x = -dWidth;
+		}else if(align == "center"){
+			var dWidth = 0;
+			for(var i=1,n=segments.length; i<n; i++)
+				dWidth += ctx.measureText(segments[i]).width;
+			dWidth *= 0.5;
+			x = -dWidth;
+		}else{
+			x = 0;
+		}
+		//draw each segment
+		for(var i=0,n=segments.length; i<n; i++){
+			var segment = segments[i];
+			if(subColors[i] != null)
+				ctx.fillStyle = subColors[i];
+			if(subFonts[i] != null)
+				ctx.font = subFonts[i];
+			// Chrome 17 will fail to draw the text if the last param is included but null, so we feed it a large value instead:
+			if (this.outline) { ctx.strokeText(segment, x, y, this.maxWidth||0xFFFF); }
+			else { ctx.fillText(segment, x, y, this.maxWidth||0xFFFF); }
+			if(i+1 < n){
+				if(align == "right"){
+					x += ctx.measureText(segments[i+1]).width;
+				}else if(align == "center"){
+					x += (ctx.measureText(segments[i]).width + ctx.measureText(segments[i+1]).width) * 0.5;
+				}else{
+					x += ctx.measureText(segments[i]).width;
+				}
+			}
+		}
+		this.charsDrawn += text.length;
+		this.linesDrawn++;
+	};
+	/**
+	 * @method _getMeasuredWidth
+	 * @param {String} text
+	 * @protected
+	 **/
+	p._getMeasuredWidth = function(text) {
+		var ctx = Text._workingContext;
+		ctx.save();
+		var w = this._prepContext(ctx).measureText(text).width;
+		ctx.restore();
+		return w;
+	};
+	createjs.Text = createjs.promote(Text, "DisplayObject");
+}());
+function GetUrlValue(VarSearch){
+	var SearchString = window.location.search.substring(1);
+	var VariableArray = SearchString.split('&');
+	for(var i = 0; i < VariableArray.length; i++){
+	   var KeyValuePair = VariableArray[i].split('=');
+	   if(KeyValuePair[0] == VarSearch){
+		   return KeyValuePair[1];
+	   }
+	}
+}
+var clickTag = GetUrlValue('clickTag');
+var forcedIp = GetUrlValue('forcedIp'); 
+var query = "&query=";
+if (forcedIp!= null){
+var query = query + forcedIp; 
+}
+</script>
+<script src="./jquery.min.js.download"></script>
+<script>
+	const AD_API_URL = "https://api.demandbase.com/api/v2/ip.json?src=creative-personalization&key=";
+	const AD_API_KEY = "0d423c415a8b1e4c24fcab52165dc33e"+query;
+	const VARIATIONS_FILE = "variations.xml";
+	const API_MARKUP_TOKEN = '$';
+	const VARIATIONS_MARKUP_TOKEN = '#';
+	const FALLBACK_TEXT_TOKEN = '|';
+	const STYLE_TOKEN = ':';
+	const COLOR_MARKUP_TOKEN = '#';
+	const CONSTANT_TEXT_TOKEN = '&';
+	var globalInfo = null;
+	var variationsXML = null;
+	var useDefaultData = false;
+	var wrapPadding = 50;
+	var a = new Object();
+	a.valueFromPath = function(path) {
+		if(globalInfo == null)
+			return null;
+		var level = globalInfo;
+		var key = path;
+		var levelEnd;
+		var done = false;
+		while(!done){
+			levelEnd = key.indexOf(".");
+			if(levelEnd == -1){
+				done = true;
+			}
+			var nextLevel = key.substring(0, levelEnd);
+			key = key.substr(levelEnd+1, key.length-(levelEnd+1));
+			if(level.hasOwnProperty(nextLevel)){
+				level = level[nextLevel];
+			}
+		}
+		if(level.hasOwnProperty(key)){
+			return level[key];
+		}
+		return null;
+	};
+	a.findTextfieldInElement = function(element) {
+		//see if this element is a Text object
+		if(element instanceof createjs.Text){
+			return element;
+		}
+		//if not, recursively query children to see if any of them are
+		if(element.children){
+			for(var i=0,n=element.children.length; i<n; i++){
+				var child = element.children[i];
+				return a.findTextfieldInElement(child);
+			}
+		}
+		return null;
+	};
+	a.setWrapPadding = function(padding) {
+		wrapPadding = padding;
+	};
+	a.wrapText = function(textfield) {
+		var devicePixelRatio = window.devicePixelRatio;
+		var c = document.getElementById("canvas");
+		var ctx = c.getContext("2d");
+		ctx.font = textfield.fontString;
+		var txt = textfield.text;
+		var wrapPaddingTotal = ((wrapPadding*2) * devicePixelRatio);
+		var tfWidth = Math.max(c.width - wrapPaddingTotal, 0);
+		//hyphenate and line-break words that are too long
+		var words = txt.split(" ");
+		for(var i=0,n=words.length; i<n; i++){
+			var word = words[i];
+			var subWords = word.split("\n-");
+			for(var ii=0,nn=subWords.length; ii<nn; ii++){
+				var subWord = subWords[ii];
+				var txtWidth = (ctx.measureText(subWord).width) * devicePixelRatio;
+				if(txtWidth > tfWidth){
+					var mStr = subWord;
+					while(txtWidth > tfWidth){
+						mStr = mStr.substring(0, mStr.length-1);
+						txtWidth = (ctx.measureText(mStr).width) * devicePixelRatio;
+					}
+					var mStrL = mStr.length;
+					subWords[ii] = subWord.substring(0, mStrL) + "\n-" + subWord.substring(mStrL);
+				}
+			}
+			words[i] = subWords.join("-");
+		}
+		textfield.text = words.join(" ");
+		//update subStyles' indices if needed
+		var hyphenIndex;
+		var fromIndex;
+		while((hyphenIndex = textfield.text.indexOf("\n-", fromIndex)) != -1){
+			for(var i=0,n=textfield.subStyles.length; i<n; i++){
+				const styleStart = textfield.subStyles[i].start;
+				const styleCount = textfield.subStyles[i].count;
+				if(hyphenIndex >= styleStart && hyphenIndex <= (styleStart+styleCount)){
+					textfield.subStyles[i].count += 2;
+				}else if(hyphenIndex < styleStart){
+					textfield.subStyles[i].start += 2;
+				}
+			}
+			fromIndex = hyphenIndex+2;
+		}
+	};
+	a.checkForAdBlock = function(adBlockActiveHandler) {
+		var request = new XMLHttpRequest();
+		request.onreadystatechange = function() {
+			if(request.readyState == XMLHttpRequest.DONE){
+				if(request.status !== 404){
+					console.log("AdBlock active!");
+					adBlockActiveHandler();
+				}
+			}
+		}
+		request.open("GET", "/498100ffe815d700cd838d1/ads/showad.js", true);
+		request.send();
+	};
+	a.setup = function(root) {
+		if(root)
+			root.stop();
+		//API data
+		var apiURL = AD_API_URL + AD_API_KEY;
+		$.ajax({
+			url: apiURL,
+			type: "GET",
+			success: function(data) {
+				try{
+					//console.log(data);
+					globalInfo = data;
+				}catch(e){
+					console.log(e);
+				}finally{
+					root.play();
+				}
+			},
+			error: function(data) {
+				console.log("Could not retrieve data from DemandBase API");
+				console.log(data);
+				if(root)
+					root.play();
+			}
+		});
+	};
+	a.styleFormatText = function(markUpKey) {
+		//check a markUp string key for style markUp
+		var returnObj = {};
+		var styleStartIndex;
+		while((styleStartIndex = markUpKey.indexOf(STYLE_TOKEN+COLOR_MARKUP_TOKEN)) != -1 || (styleStartIndex = markUpKey.indexOf(STYLE_TOKEN+'"')) != -1){
+			var styleStrLength = 0;
+			if(markUpKey.charAt(styleStartIndex+1) == '"'){
+				var styleEndIndex = styleStartIndex + markUpKey.substring(styleStartIndex, markUpKey.length).lastIndexOf('"');
+				var emphasisStr = markUpKey.substring(styleStartIndex+2, styleEndIndex);
+				styleStrLength = (styleEndIndex+1) - styleStartIndex;
+				returnObj.emphasisValue = emphasisStr;
+			}else{
+				var colorStr = markUpKey.substr(styleStartIndex+1, 7);
+				if(colorStr.charAt(0) != COLOR_MARKUP_TOKEN){
+					console.log("Error: incorrectly formatted color value. ('#' symbol required)");
+					continue;
+				}else{
+					returnObj.colorValue = colorStr;
+					styleStrLength = 8;
+				}
+			}
+			markUpKey = markUpKey.substr(0, styleStartIndex) + markUpKey.substring(styleStartIndex+styleStrLength, markUpKey.length);
+			returnObj.processedKey = markUpKey;
+		}
+		return returnObj;
+	};
+	a.processMarkupString = function(input, type, startIndex, textfield) {
+		var output = input;
+		var markUpStartStr = output.substring(startIndex, output.length);
+		var closureIndex = markUpStartStr.indexOf("}");
+		while(markUpStartStr.charAt(closureIndex+1) == "}")
+			closureIndex++;
+		if(closureIndex == -1){
+			console.log("Error: incorrectly formatted mark-up text! (No closing brace)");
+			return output;
+		}
+		var markUpStr = markUpStartStr.substring(0, closureIndex+1);
+		var markUpKey = markUpStr.substring(2, markUpStr.length-1);
+		//strip any HTML from markUp
+		var regex = /(<([^>]+)>)/ig;
+		markUpKey = markUpKey.replace(regex , "");
+		//custom style formatting
+		var styleObj = this.styleFormatText(markUpKey);
+		if(styleObj.processedKey != null){
+			markUpKey = styleObj.processedKey;
+		}
+		//allow a 'constant' string of text which will always be appended to BOTH the dynamic value and the fallback value, and the same formatting will apply
+		var constantValue = "";
+		var constantStartIndex = markUpKey.indexOf(CONSTANT_TEXT_TOKEN);
+		if(constantStartIndex != -1){
+			constantValue = markUpKey.substring(constantStartIndex+1, markUpKey.length);
+		}
+		//allow a default user-specified value to fall back on, if the dynamic property can't be found
+		var fallbackValue = "";
+		var fallbackStartIndex = markUpKey.indexOf(FALLBACK_TEXT_TOKEN);
+		if(fallbackStartIndex != -1){
+			var constantIndex = markUpKey.indexOf(CONSTANT_TEXT_TOKEN);
+			var fallbackEndIndex = (constantIndex > -1) ? constantIndex : markUpKey.length;
+			fallbackValue = markUpKey.substring(fallbackStartIndex+1, fallbackEndIndex);
+			if(fallbackValue.charAt(0) == API_MARKUP_TOKEN){
+				fallbackValue = this.processMarkupString(fallbackValue, API_MARKUP_TOKEN, 0, textfield);
+			}
+			markUpKey = markUpKey.substring(0, fallbackStartIndex);
+		}
+		//detect case
+		var upperCase = markUpKey == markUpKey.toUpperCase();
+		markUpKey = markUpKey.toLowerCase();
+		//get value for text from API, or alternately from variation XML depending on the markUp string type
+		var replaceValue;
+		if(type == API_MARKUP_TOKEN){
+			replaceValue = this.valueFromPath(markUpKey);
+		}else if(type == VARIATIONS_MARKUP_TOKEN){
+			var variationId = this.valueFromPath(markUpKey);
+			replaceValue = (variationId != null) ? $(variationsXML).find('Variation[id="'+ variationId.toLowerCase() +'"]').find('Message').text() : null;
+		}
+		//if we got a value from the API then use it and assign it's correct case, otherwise use the fallback value
+		if(replaceValue != null){
+			if(upperCase){
+				replaceValue = replaceValue.toUpperCase();
+			}
+		}else{
+			replaceValue = fallbackValue;
+		}
+		//append constant text string
+		replaceValue = replaceValue + constantValue;
+		//apply custom style formatting
+		if(styleObj.colorValue || styleObj.emphasisValue){
+			textfield.addSubStyle(startIndex, replaceValue.length, styleObj.colorValue, styleObj.emphasisValue);
+		}
+		return output.replace(markUpStr, replaceValue);
+	};
+	a.setWrapPadding = function(padding) {
+		wrapPadding = padding;
+	};
+	a.parseAndFormatText = function(textfield) {
+		var isHTMLElement = typeof (textfield).innerHTML == "string";
+		var output = (isHTMLElement) ? textfield.innerHTML : textfield.text;
+		var markUpIndex;
+		//API data
+		while((markUpIndex = output.indexOf(API_MARKUP_TOKEN+"{")) > -1){
+			output = this.processMarkupString(output, API_MARKUP_TOKEN, markUpIndex, textfield);
+		}
+		//custom message data
+		while((markUpIndex = output.indexOf(VARIATIONS_MARKUP_TOKEN+"{")) > -1){
+			output = this.processMarkupString(output, VARIATIONS_MARKUP_TOKEN, markUpIndex, textfield);
+		}
+		textfield.text = output;
+		//long-word wrap with hyphenation
+		a.wrapText(textfield);
+	};
+	a.autoPositionElements = function() {
+		var elements = arguments;
+		var summedOffsetY = 0;
+		for(var i=0,n=elements.length; i<n; i++){
+			var element = elements[i];
+			var textfield = a.findTextfieldInElement(element);
+			element.y += summedOffsetY;
+			if(textfield){
+				summedOffsetY += Math.max(textfield.linesDrawn-1, 0) * textfield.lineHeight;
+			}
+		}
+	};
+	var DBAC = a;
+</script>
+<!-- end DemandBase Ad Component -->
+<script>
+function LoadGFonts(families, comp) {
+	var lib=comp.getLibrary();
+	var googleObject = {type: "Google", loadedFonts: 0, totalFonts: families.length, callOnLoad: lib.gfontAvailable};
+	for(var i =0; i < families.length; i++)
+		isFontAvailable(gFontsFamilies[i], googleObject);
+}
+function isFontAvailable(font, obj) {
+	var timeOut = 5000;
+	var delay = 200;
+	var interval = 0;
+	var timeElapsed = 0;
+	function checkFont() {
+		var node = document.createElement("span");
+		node.innerHTML = "giItT1WQy@!-/#";
+		node.style.position      = "absolute";
+		node.style.left          = "-1000px";
+		node.style.top           = "-1000px";
+		node.style.fontSize      = "300px";
+		node.style.fontFamily    = "sans-serif";
+		node.style.fontVariant   = "normal";
+		node.style.fontStyle     = "normal";
+		node.style.fontWeight    = "normal";
+		node.style.letterSpacing = "0";
+		document.body.appendChild(node);
+		var width = node.offsetWidth;
+		node.style.fontFamily = font+","+node.style.fontFamily;
+		var returnVal = false;
+		if((node && node.offsetWidth != width) || timeElapsed >=timeOut) {
+			obj.loadedFonts++;
+			if(interval)
+				clearInterval(interval);
+			obj.callOnLoad(font, obj.totalFonts);
+			returnVal = true;
+		}
+		if(node) {
+			node.parentNode.removeChild(node);
+			node = null;
+		}
+		timeElapsed += delay;
+		return returnVal;
+	}
+	if(!checkFont()) {
+		interval = setInterval(checkFont, delay);
+	}
+}
+</script>
+<script>
+	var gFontsFamilies = ["Source Sans Pro"];
+</script>
+<link rel="stylesheet" type="text/css" href="./css(1)">
+<link rel="stylesheet" type="text/css" href="./css(2)">
+<script src="./Qlik_2_970x250_R1.js.download"></script>
+<script>
+var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+function init() {
+	canvas = document.getElementById("canvas");
+	anim_container = document.getElementById("animation_container");
+	dom_overlay_container = document.getElementById("dom_overlay_container");
+	var comp=AdobeAn.getComposition("F9F60348626A46208C98959A11804790");
+	var lib=comp.getLibrary();
+	try {
+		if(!(typeof gFontsFamilies === 'undefined' || gFontsFamilies === null))
+			LoadGFonts(gFontsFamilies, comp);
+		if(!(typeof totalTypekitFonts === 'undefined' || totalTypekitFonts === null)) {
+			var typekitObject = {type: 'Typekit', loadedFonts: 0, totalFonts: totalTypekitFonts, callOnLoad: lib.tfontAvailable};
+			Typekit.load({
+			async: true,
+			'fontactive': function(family) {
+				isFontAvailable(family, typekitObject);
+				}
+			});
+		}
+	} catch(e) {};
+	var loader = new createjs.LoadQueue(false);
+	loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
+	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+	var lib=comp.getLibrary();
+	loader.loadManifest(lib.properties.manifest);
+}
+function handleFileLoad(evt, comp) {
+	var images=comp.getImages();
+	if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }
+}
+function handleComplete(evt,comp) {
+	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
+	var lib=comp.getLibrary();
+	var ss=comp.getSpriteSheet();
+	var queue = evt.target;
+	var ssMetadata = lib.ssMetadata;
+	for(i=0; i<ssMetadata.length; i++) {
+		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+	}
+	exportRoot = new lib.Qlik_2_970x250_R1();
+	stage = new lib.Stage(canvas);
+	stage.enableMouseOver();
+	//Registers the "tick" event listener.
+	fnStartAnimation = function() {
+		stage.addChild(exportRoot);
+		createjs.Ticker.framerate = lib.properties.fps;
+		createjs.Ticker.addEventListener("tick", stage);
+	}
+	//Code to support hidpi screens and responsive scaling.
+	AdobeAn.makeResponsive(false,'both',false,1,[canvas,anim_container,dom_overlay_container]);
+	//component setup
+	DBAC.setup(exportRoot);
+	//clickThru
+	function clickFunc(){
+		window.open(clickTag, "_blank");
+	}
+	exportRoot.addEventListener("click", clickFunc);
+	AdobeAn.compositionLoaded(lib.properties.id);
+	fnStartAnimation();
+
+  document.fonts.ready.then(function(font_face_set) {
+        fnStartAnimation();        
+    });
+
+}
+</script>
+<!-- write your code here -->
+</head>
+<body onload="init();" style="margin:0px;">
+	<div id="animation_container" style="background-color:rgba(255, 255, 255, 1.00); width:970px; height:250px">
+		<canvas id="canvas" width="970" height="250" style="position: absolute; display: block; background-color: rgb(255, 255, 255); width: 970px; height: 250px;"></canvas>
+		<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; width:970px; height:250px; position: absolute; left: 0px; top: 0px; display: block;">
+		</div>
+	</div>
+
+
+<div id="preloadjs-container" style="visibility: hidden; position: absolute; height: 10px; width: 10px; overflow: hidden; transform: translate(-10px, -10px);"></div></body></html>

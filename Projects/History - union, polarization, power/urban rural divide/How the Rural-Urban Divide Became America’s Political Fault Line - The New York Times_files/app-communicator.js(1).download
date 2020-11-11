@@ -1,0 +1,71 @@
+/**
+ * Create a communicator that tells embedding apps when the interactive resizes
+ *
+ * <p><b>Require Path:</b> shared/interactive/views/app-communicator</p>
+ *
+ * @module Shared
+ * @submodule Shared.Interactive
+ * @class AppCommunicator
+ * @constructor
+ * @extends foundation/views/base-view
+**/
+define([
+    'jquery/nyt',
+    'underscore/nyt',
+    'foundation/views/base-view'
+], function ($, _, BaseView) {
+    'use strict';
+
+    var EmbeddedView = BaseView.extend({
+
+        triggeredResize: false,
+        autoTriggerDelay: 1500,
+
+        /**
+         * Initializes the app communicator
+         *
+         * @method constructor
+        **/
+        initialize: function () {
+            _.bindAll(this, 'autoTriggerResize');
+            // in case people forget to trigger, do it automatically
+            setTimeout(this.autoTriggerResize, this.autoTriggerDelay);
+        },
+
+        /**
+         * Tells the embedding window that the content window needs to be resized
+         *
+         * @public
+         * @method triggerResize
+        **/
+        triggerResize: function () {
+            this.triggeredResize = true;
+
+            // trigger 'resizedcontent' event for mobile web
+            if (window.parent && window.parent.$) {
+                window.parent.$('body').trigger('resizedcontent', [window]);
+            }
+
+            // triger 'resized content' event for NYT apps for embedded interactives
+            // this event will break pages that are not embedded in the apps, so check that we're on an embedded page
+            if (this.pageManager.getUrlParam('nytapp') && $('.page-interactive-embedded').length > 0) {
+                window.location = 'nytinteractive://resizedcontent?height=' + this.pageManager.$html.outerHeight();
+            }
+        },
+
+        /**
+         * Automatically trigger resize after N seconds if it hasn't been done manually
+         *
+         * @private
+         * @method autoTriggerResize
+        **/
+        autoTriggerResize: function () {
+            if (!this.triggeredResize) {
+                this.triggerResize();
+            }
+        }
+    });
+
+    return EmbeddedView;
+
+});

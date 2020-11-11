@@ -1,0 +1,492 @@
+(function (cjs, an) {
+
+var p; // shortcut to reference prototypes
+var lib={};var ss={};var img={};
+lib.webFontTxtInst = {}; 
+var loadedTypekitCount = 0;
+var loadedGoogleCount = 0;
+var gFontsUpdateCacheList = [];
+var tFontsUpdateCacheList = [];
+lib.ssMetadata = [
+		{name:"Qlik_2_970x250_R1_atlas_", frames: [[0,0,1940,500]]}
+];
+
+
+
+lib.updateListCache = function (cacheList) {		
+	for(var i = 0; i < cacheList.length; i++) {		
+		if(cacheList[i].cacheCanvas)		
+			cacheList[i].updateCache();		
+	}		
+};		
+
+lib.addElementsToCache = function (textInst, cacheList) {		
+	var cur = textInst;		
+	while(cur != null && cur != exportRoot) {		
+		if(cacheList.indexOf(cur) != -1)		
+			break;		
+		cur = cur.parent;		
+	}		
+	if(cur != exportRoot) {		
+		var cur2 = textInst;		
+		var index = cacheList.indexOf(cur);		
+		while(cur2 != null && cur2 != cur) {		
+			cacheList.splice(index, 0, cur2);		
+			cur2 = cur2.parent;		
+			index++;		
+		}		
+	}		
+	else {		
+		cur = textInst;		
+		while(cur != null && cur != exportRoot) {		
+			cacheList.push(cur);		
+			cur = cur.parent;		
+		}		
+	}		
+};		
+
+lib.gfontAvailable = function(family, totalGoogleCount) {		
+	lib.properties.webfonts[family] = true;		
+	var txtInst = lib.webFontTxtInst && lib.webFontTxtInst[family] || [];		
+	for(var f = 0; f < txtInst.length; ++f)		
+		lib.addElementsToCache(txtInst[f], gFontsUpdateCacheList);		
+
+	loadedGoogleCount++;		
+	if(loadedGoogleCount == totalGoogleCount) {		
+		lib.updateListCache(gFontsUpdateCacheList);		
+	}		
+};		
+
+lib.tfontAvailable = function(family, totalTypekitCount) {		
+	lib.properties.webfonts[family] = true;		
+	var txtInst = lib.webFontTxtInst && lib.webFontTxtInst[family] || [];		
+	for(var f = 0; f < txtInst.length; ++f)		
+		lib.addElementsToCache(txtInst[f], tFontsUpdateCacheList);		
+
+	loadedTypekitCount++;		
+	if(loadedTypekitCount == totalTypekitCount) {		
+		lib.updateListCache(tFontsUpdateCacheList);		
+	}		
+};
+// symbols:
+
+
+
+(lib.QLK2008_2020GartnerMQ_Display_Banner_970x250_1 = function() {
+	this.initialize(ss["Qlik_2_970x250_R1_atlas_"]);
+	this.gotoAndStop(0);
+}).prototype = p = new cjs.Sprite();
+// helper functions:
+
+function mc_symbol_clone() {
+	var clone = this._cloneProps(new this.constructor(this.mode, this.startPosition, this.loop));
+	clone.gotoAndStop(this.currentFrame);
+	clone.paused = this.paused;
+	clone.framerate = this.framerate;
+	return clone;
+}
+
+function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
+	var prototype = cjs.extend(symbol, cjs.MovieClip);
+	prototype.clone = mc_symbol_clone;
+	prototype.nominalBounds = nominalBounds;
+	prototype.frameBounds = frameBounds;
+	return prototype;
+	}
+
+
+(lib.Txt1 = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// Layer_1
+	this.text = new cjs.Text("Choose a 10-time Gartner Magic Quadrant Leader.", "normal 300 41px 'Source Sans Pro'", "#FFFFFF");
+	this.text.lineHeight = 45;
+	this.text.lineWidth = 436;
+	this.text.parent = this;
+	this.text.setTransform(-219.05,54.55);
+	if(!lib.properties.webfonts['Source Sans Pro']) {
+		lib.webFontTxtInst['Source Sans Pro'] = lib.webFontTxtInst['Source Sans Pro'] || [];
+		lib.webFontTxtInst['Source Sans Pro'].push(this.text);
+	}
+
+	this.timeline.addTween(cjs.Tween.get(this.text).wait(1));
+
+	this._renderFirstFrame();
+
+}).prototype = getMCSymbolPrototype(lib.Txt1, new cjs.Rectangle(-221,52.6,440,102.4), null);
+
+
+(lib.invisoButton = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// Layer_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#00FFFF").s().p("EhLxATiMAAAgnDMCXjAAAMAAAAnDg");
+	this.shape.setTransform(335.5,-175);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape).wait(3).to({x:335},0).wait(1));
+
+	this._renderFirstFrame();
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-150,-300,970.5,250);
+
+
+(lib.dText = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// dText
+	this.dynamicText = new cjs.Text("Choosing an analytics solution?", "normal 700 22px 'Source Sans Pro'", "#FFFFFF");
+	this.dynamicText.name = "dynamicText";
+	this.dynamicText.lineHeight = 27;
+	this.dynamicText.lineWidth = 314;
+	this.dynamicText.parent = this;
+	this.dynamicText.setTransform(-646.75,-304.5);
+	if(!lib.properties.webfonts['Source Sans Pro']) {
+		lib.webFontTxtInst['Source Sans Pro'] = lib.webFontTxtInst['Source Sans Pro'] || [];
+		lib.webFontTxtInst['Source Sans Pro'].push(this.dynamicText);
+	}
+
+	this.timeline.addTween(cjs.Tween.get(this.dynamicText).wait(1));
+
+	this._renderFirstFrame();
+
+}).prototype = getMCSymbolPrototype(lib.dText, new cjs.Rectangle(-648.7,-306.5,318.30000000000007,33.19999999999999), null);
+
+
+(lib.cta = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// Layer_2
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#FFFFFF").s().p("AgPAfIAAg1IgOAAIAAgMIAPgBIACgcIANAAIAAAcIAaAAIAAANIgaAAIAAA1QAAATAPAAQAEAAAHgCIADAMQgLAEgHAAQgbAAAAghg");
+	this.shape.setTransform(126.85,-31.95);
+
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f("#FFFFFF").s().p("AgaAyIAAhgIAOAAIABARIABAAQAKgUAQAAQAGAAAFACIgDAPQgGgCgEAAQgOAAgJAWIAAA+g");
+	this.shape_1.setTransform(120.775,-30.825);
+
+	this.shape_2 = new cjs.Shape();
+	this.shape_2.graphics.f("#FFFFFF").s().p("AgeAmQgOgOAAgYQAAgXAOgOQANgNARAAQATAAANANQANAOAAAXQAAAYgNAOQgNANgTAAQgRAAgNgNgAgTgaQgIALAAAPQAAARAIAKQAHALAMAAQANAAAIgLQAHgKAAgRQAAgPgHgLQgIgLgNAAQgMAAgHALg");
+	this.shape_2.setTransform(111.05,-30.7);
+
+	this.shape_3 = new cjs.Shape();
+	this.shape_3.graphics.f("#FFFFFF").s().p("AgpBGIAAiJIANAAIACALIAAAAQAQgNAOAAQASAAAKANQAKANAAAXQAAAXgMAPQgMAOgRAAQgMAAgOgMIAAARIAAAhgAgZgqIAAAyQAMAKALAAQAMAAAIgKQAHgKAAgSQAAgkgZAAQgLAAgOAOg");
+	this.shape_3.setTransform(100.45,-28.775);
+
+	this.shape_4 = new cjs.Shape();
+	this.shape_4.graphics.f("#FFFFFF").s().p("AgaAmQgOgOAAgYQAAgWANgPQANgNARAAQASAAAKAMQAKAMAAAWIAAAIIhBAAQABAPAJAKQAJAIANABQAMAAAMgIIAGALQgQAKgQAAQgUAAgMgNgAAbgGQAAgPgGgIQgHgIgLAAQgKAAgHAIQgJAIgBAPIAzAAIAAAAg");
+	this.shape_4.setTransform(89.675,-30.7);
+
+	this.shape_5 = new cjs.Shape();
+	this.shape_5.graphics.f("#FFFFFF").s().p("AAaBCIgeg4IgYAAIAAA4IgRAAIAAiDIAqAAQAsAAABAlQgBAdgdAHIAhA6gAgcgDIAWAAQAfABAAgaQAAgXgfAAIgWAAg");
+	this.shape_5.setTransform(79.45,-32.4);
+
+	this.shape_6 = new cjs.Shape();
+	this.shape_6.graphics.f("#FFFFFF").s().p("AgaAmQgOgOAAgYQAAgWANgPQANgNARAAQASAAAKAMQAKAMAAAWIAAAIIhBAAQABAPAJAKQAJAIANABQAMAAAMgIIAGALQgQAKgQAAQgUAAgMgNgAAbgGQAAgPgGgIQgHgIgLAAQgKAAgHAIQgJAIgBAPIAzAAIAAAAg");
+	this.shape_6.setTransform(64.275,-30.7);
+
+	this.shape_7 = new cjs.Shape();
+	this.shape_7.graphics.f("#FFFFFF").s().p("AAXBHIAAg7QAAgZgTAAQgGAAgGAEQgFADgIAHIAABGIgRAAIAAiNIARAAIAAAnIgBAUQARgQAOAAQAeAAAAAlIAAA9g");
+	this.shape_7.setTransform(53.925,-32.975);
+
+	this.shape_8 = new cjs.Shape();
+	this.shape_8.graphics.f("#FFFFFF").s().p("AgPAfIAAg1IgOAAIAAgMIAPgBIACgcIANAAIAAAcIAaAAIAAANIgaAAIAAA1QAAATAPAAQAEAAAHgCIADAMQgLAEgHAAQgbAAAAghg");
+	this.shape_8.setTransform(45.15,-31.95);
+
+	this.shape_9 = new cjs.Shape();
+	this.shape_9.graphics.f("#FFFFFF").s().p("AgPAfIAAg1IgOAAIAAgMIAPgBIACgcIANAAIAAAcIAaAAIAAANIgaAAIAAA1QAAATAPAAQAEAAAHgCIADAMQgLAEgHAAQgbAAAAghg");
+	this.shape_9.setTransform(34.4,-31.95);
+
+	this.shape_10 = new cjs.Shape();
+	this.shape_10.graphics.f("#FFFFFF").s().p("AgaAmQgOgOAAgYQAAgWANgPQANgNARAAQASAAAKAMQAKAMAAAWIAAAIIhBAAQABAPAJAKQAJAIANABQAMAAAMgIIAGALQgQAKgQAAQgUAAgMgNgAAbgGQAAgPgGgIQgHgIgLAAQgKAAgHAIQgJAIgBAPIAzAAIAAAAg");
+	this.shape_10.setTransform(26.025,-30.7);
+
+	this.shape_11 = new cjs.Shape();
+	this.shape_11.graphics.f("#FFFFFF").s().p("AggAyQgRgTAAgfQAAgeARgTQARgSAaAAQAVAAAQAQIgJALQgMgMgQAAQgTAAgMAOQgMAOAAAYQAAAZAMAOQALAOAUAAQAPAAAJgHIAAgiIgcAAIAAgOIArAAIAAA2QgQAQgZAAQgZAAgQgSg");
+	this.shape_11.setTransform(14.775,-32.4);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape_11},{t:this.shape_10},{t:this.shape_9},{t:this.shape_8},{t:this.shape_7},{t:this.shape_6},{t:this.shape_5},{t:this.shape_4},{t:this.shape_3},{t:this.shape_2},{t:this.shape_1},{t:this.shape}]}).wait(1));
+
+	// Layer_1
+	this.shape_12 = new cjs.Shape();
+	this.shape_12.graphics.f("#009845").s().p("AuYD4IAAnvIcxAAIAAHvg");
+	this.shape_12.setTransform(71.225,-31.075);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape_12).wait(1));
+
+	this._renderFirstFrame();
+
+}).prototype = getMCSymbolPrototype(lib.cta, new cjs.Rectangle(-20.8,-55.9,184.10000000000002,49.699999999999996), null);
+
+
+// stage content:
+(lib.Qlik_2_970x250_R1 = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// timeline functions:
+	this.frame_0 = function() {
+		/*
+			var browser = navigator.userAgent.toLowerCase();
+				if( /firefox/.test( browser )){
+					console.log('firefox');
+				}else if( /chrome/.test( browser)){
+					console.log('chrome');
+				}else if( /safari/.test( browser)){
+					console.log('safari');
+				}else if( /msie/.test( browser)){
+					console.log('microsoft internet explorer');
+				}
+		*/
+		
+		
+		var tl = new TimelineMax({repeat:0, repeatDelay:1});
+		
+		tl.from(this.dText, {duration:.5, alpha:.0, ease:"power0.out"},1);
+		tl.from(this.Txt1, {duration:.5, alpha:.0, ease:"power0.out"}, "+=1");
+		tl.from(this.cta, {duration:.5, alpha:.0, ease:"power0.out"}, "+=1");
+	}
+	this.frame_20 = function() {
+		DBAC.setWrapPadding(40);
+		DBAC.parseAndFormatText(this.dText.dynamicText);
+		
+		/*
+		//t is the variable that stores the dynamic text
+		var t = this.dText.dynamicText;
+		// textMC is the name of the movieclip that contains the text that directly follow the personalized text. 
+		var lineHeight = 0
+		// numLines stores the number of lines contained in the personalized text
+		var numLines = 0;
+		
+		getMetrics = function(textBox) {
+				var o = {lines:[]};
+				o.lineHeight = textBox.getMeasuredLineHeight();
+				o.vOffset = o.lineHeight * textBox.textBaseline;
+				textBox._drawText(null, o, o.lines);
+				numLines=o.lines.length;
+				lineHeight=o.lineHeight
+				console.log("I am the number of lines " + o.lines.length);
+				
+			switch (numLines) {
+		    default:
+				console.log("I'm in default");
+		        break;
+		    case 2:
+				//If a ratio doesn't work, you can hardcode a number using trial and error, such as textMC.y+=20;
+		        exportRoot.cta.y+=20;
+				console.log("I'm in case2");
+		        break; 
+			
+			case 3:
+				//If a ratio doesn't work, you can hardcode a number using trial and error, such as textMC.y+=20;
+				exportRoot.cta.y+=20
+		        break; 
+		
+			}
+		};
+		getMetrics(t);
+		*/
+		
+		//Code to resize text based on the length of the company name
+		/*
+		var tLength = this.dText.dynamicText.text.length;
+		var t = this.dText.dynamicText;
+		
+		console.log(tLength);
+		
+		if(tLength >20){
+		t.font =  "16px Artifakt Legend Medium"
+		t.lineHeight = 18;
+		}
+		*/
+	}
+	this.frame_23 = function() {
+		this.stop();
+		
+		/* Mouse Over Event
+		Mousing over the symbol instance executes a function in which you can add your own custom code.
+		
+		Instructions:
+		1. Add your custom code on a new line after the line that says "// Start your custom code" below.
+		The code will execute when the symbol instance is moused over.
+		frequency is the number of the times event should be triggered.
+		
+		
+		var cta = this.cta;
+		var frequency = 3;
+		stage.enableMouseOver(frequency);
+		this.hotSpot.addEventListener("mouseover", fl_MouseOverHandler);
+		
+		function fl_MouseOverHandler()
+		{
+			cta.play();
+		}
+		
+		this.hotSpot.addEventListener("mouseout", fl_MouseOutHandler);
+		
+		function fl_MouseOutHandler()
+		{
+			cta.play();
+			console.log("MouseOut");
+		}
+		*/
+	}
+
+	// actions tween:
+	this.timeline.addTween(cjs.Tween.get(this).call(this.frame_0).wait(20).call(this.frame_20).wait(3).call(this.frame_23).wait(1));
+
+	// invisoButton
+	this.hotSpot = new lib.invisoButton();
+	this.hotSpot.name = "hotSpot";
+	this.hotSpot.setTransform(150,300);
+	this.hotSpot.alpha = 0;
+	new cjs.ButtonHelper(this.hotSpot, 0, 1, 2, false, new lib.invisoButton(), 3);
+
+	this.timeline.addTween(cjs.Tween.get(this.hotSpot).wait(24));
+
+	// border
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f().s("#000000").ss(1,1,1).p("EhLxgThMCXjAAAMAAAAnDMiXjAAAg");
+	this.shape.setTransform(485,125);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape).wait(24));
+
+	// Txt1
+	this.Txt1 = new lib.Txt1();
+	this.Txt1.name = "Txt1";
+	this.Txt1.setTransform(320.05,73.55,1,1,0,0,0,66,67.9);
+
+	this.timeline.addTween(cjs.Tween.get(this.Txt1).wait(24));
+
+	// dText
+	this.dText = new lib.dText();
+	this.dText.name = "dText";
+	this.dText.setTransform(681.25,331.4);
+
+	this.timeline.addTween(cjs.Tween.get(this.dText).wait(24));
+
+	// cta
+	this.cta = new lib.cta();
+	this.cta.name = "cta";
+	this.cta.setTransform(121.55,252.2,1,1,0,0,0,64.5,18.2);
+
+	this.timeline.addTween(cjs.Tween.get(this.cta).wait(24));
+
+	// bg
+	this.instance = new lib.QLK2008_2020GartnerMQ_Display_Banner_970x250_1();
+	this.instance.setTransform(0,0,0.5,0.5);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).wait(24));
+
+	this._renderFirstFrame();
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(484,124,487,127);
+// library properties:
+lib.properties = {
+	id: 'F9F60348626A46208C98959A11804790',
+	width: 970,
+	height: 250,
+	fps: 24,
+	color: "#FFFFFF",
+	opacity: 1.00,
+	webfonts: {},
+	manifest: [
+		{src:"images/Qlik_2_970x250_R1_atlas_.png?1584711353827", id:"Qlik_2_970x250_R1_atlas_"}
+	],
+	preloads: []
+};
+
+
+
+// bootstrap callback support:
+
+(lib.Stage = function(canvas) {
+	createjs.Stage.call(this, canvas);
+}).prototype = p = new createjs.StageGL();
+
+p.setAutoPlay = function(autoPlay) {
+	this.tickEnabled = autoPlay;
+}
+p.play = function() { this.tickEnabled = true; this.getChildAt(0).gotoAndPlay(this.getTimelinePosition()) }
+p.stop = function(ms) { if(ms) this.seek(ms); this.tickEnabled = false; }
+p.seek = function(ms) { this.tickEnabled = true; this.getChildAt(0).gotoAndStop(lib.properties.fps * ms / 1000); }
+p.getDuration = function() { return this.getChildAt(0).totalFrames / lib.properties.fps * 1000; }
+
+p.getTimelinePosition = function() { return this.getChildAt(0).currentFrame / lib.properties.fps * 1000; }
+
+an.bootcompsLoaded = an.bootcompsLoaded || [];
+if(!an.bootstrapListeners) {
+	an.bootstrapListeners=[];
+}
+
+an.bootstrapCallback=function(fnCallback) {
+	an.bootstrapListeners.push(fnCallback);
+	if(an.bootcompsLoaded.length > 0) {
+		for(var i=0; i<an.bootcompsLoaded.length; ++i) {
+			fnCallback(an.bootcompsLoaded[i]);
+		}
+	}
+};
+
+an.compositions = an.compositions || {};
+an.compositions['F9F60348626A46208C98959A11804790'] = {
+	getStage: function() { return exportRoot.stage; },
+	getLibrary: function() { return lib; },
+	getSpriteSheet: function() { return ss; },
+	getImages: function() { return img; }
+};
+
+an.compositionLoaded = function(id) {
+	an.bootcompsLoaded.push(id);
+	for(var j=0; j<an.bootstrapListeners.length; j++) {
+		an.bootstrapListeners[j](id);
+	}
+}
+
+an.getComposition = function(id) {
+	return an.compositions[id];
+}
+
+
+an.makeResponsive = function(isResp, respDim, isScale, scaleType, domContainers) {		
+	var lastW, lastH, lastS=1;		
+	window.addEventListener('resize', resizeCanvas);		
+	resizeCanvas();		
+	function resizeCanvas() {			
+		var w = lib.properties.width, h = lib.properties.height;			
+		var iw = window.innerWidth, ih=window.innerHeight;			
+		var pRatio = window.devicePixelRatio || 1, xRatio=iw/w, yRatio=ih/h, sRatio=1;			
+		if(isResp) {                
+			if((respDim=='width'&&lastW==iw) || (respDim=='height'&&lastH==ih)) {                    
+				sRatio = lastS;                
+			}				
+			else if(!isScale) {					
+				if(iw<w || ih<h)						
+					sRatio = Math.min(xRatio, yRatio);				
+			}				
+			else if(scaleType==1) {					
+				sRatio = Math.min(xRatio, yRatio);				
+			}				
+			else if(scaleType==2) {					
+				sRatio = Math.max(xRatio, yRatio);				
+			}			
+		}			
+		domContainers[0].width = w * pRatio * sRatio;			
+		domContainers[0].height = h * pRatio * sRatio;			
+		domContainers.forEach(function(container) {				
+			container.style.width = w * sRatio + 'px';				
+			container.style.height = h * sRatio + 'px';			
+		});			
+		stage.scaleX = pRatio*sRatio;			
+		stage.scaleY = pRatio*sRatio;			
+		lastW = iw; lastH = ih; lastS = sRatio;            
+		stage.tickOnUpdate = false;            
+		stage.update();            
+		stage.tickOnUpdate = true;		
+	}
+}
+
+
+})(createjs = createjs||{}, AdobeAn = AdobeAn||{});
+var createjs, AdobeAn;

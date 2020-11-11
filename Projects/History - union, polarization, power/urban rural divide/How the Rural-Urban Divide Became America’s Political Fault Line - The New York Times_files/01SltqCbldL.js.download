@@ -1,0 +1,2 @@
+define("DisplayWatcher",[document,nut,"StyleUtils","EventUtils"],function(e,f,b,c){var a=e.getElementById("dra-html");return{run:function(){c.waitForAllCustomEvents({events:["dra-callback-complete","dra-images-loaded","dra-cookies-checked","dra-dynamic-entry-setup-finished"],timeout:3E4,callback:function(d){d?showFallback(Error("dra-creative-timeout : "+d.pendingEvents.join(","))):(a.className=b.removeClass("rendering",a.className),a.className=b.addClass("rendered",a.className),c.trigger("dra-creative-rendered",
+!0,{renderTime:Date.now()}))}})}}});

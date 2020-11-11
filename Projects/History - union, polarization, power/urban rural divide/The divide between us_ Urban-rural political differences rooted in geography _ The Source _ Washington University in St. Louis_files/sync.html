@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!-- saved from url=(0227)https://pippio.com/api/sync?pid=1391&ref=&it=1&iv=c1ugv0ddrd7q5e&it=4&iv=e457449a236ca0ee76b5fafe5375b524&it=4&iv=f7b831bc6bd1020d0d91b0db3a73f44b35da982b&it=4&iv=e535ccc2db02f0e6f5d10a213fe4155f09c77ae147bee7ede4c883b1c6b7629f -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><meta name="referrer" content="no-referrer"><script>
+		var f = function () {
+	function loadChains(chains, limit, onChainDone) {
+    function newImageLoader(url) {
+        return function () {
+            var e = new Image();
+            addListeners(e);
+            e.src = url;
+        };
+    }
+
+    function newScriptLoader(url) {
+        return function () {
+            var e = document.createElement('script');
+            e.type = 'text/javascript';
+            e.async = true;
+            addListeners(e);
+            e.src = url;
+            document.head.appendChild(e);
+        };
+    }
+
+    function newIframeLoader(url) {
+        return function () {
+            var e = document.createElement('iframe');
+            e.style.display = 'none';
+            e.width = 1;
+            e.height = 1;
+            addListeners(e);
+            e.src = url;
+            document.body.appendChild(e);
+        };
+    }
+
+    function addListeners(e) {
+        addLoadErrorListeners(e, loadNext);
+        if (typeof onChainDone === 'function') {
+            addLoadErrorListeners(e, onChainDone);
+        }
+    }
+
+    function addLoadErrorListeners(e, listener) {
+        if (typeof e.addEventListener === 'function') {
+            e.addEventListener('load', listener, false);
+            e.addEventListener('error', listener, false);
+        } else if (typeof e.attachEvent === 'function') {
+            e.attachEvent('onload', listener);
+            e.attachEvent('onerror', listener);
+        }
+    }
+
+    function loadNext() {
+        var next = loaders.shift();
+        if (typeof next === "function") {
+            setTimeout(next);
+        }
+    }
+
+    var loaders = chains.reduce(function (acc, value) {
+        var mode = value[0];
+        var url = value[1];
+
+        switch (mode) {
+            case 'image':
+                acc.push(newImageLoader(url));
+                break;
+            case 'script':
+                acc.push(newScriptLoader(url));
+                break;
+            case 'iframe':
+                acc.push(newIframeLoader(url));
+                break;
+        }
+        return acc;
+    }, []);
+
+    for (var i = 0; i < limit; i++) {
+        loadNext();
+    }
+}
+
+	var chains = [];
+	chains.push(['image', 'https://ei.rlcdn.com/448046.gif?n\x3D1\x26partner_site_id\x3D1017\x26cparams\x3Dplacement%3D1391\x26m\x3De457449a236ca0ee76b5fafe5375b524\x26s\x3Df7b831bc6bd1020d0d91b0db3a73f44b35da982b\x26s256\x3De535ccc2db02f0e6f5d10a213fe4155f09c77ae147bee7ede4c883b1c6b7629f']);
+	chains.push(['image', 'https://aa.agkn.com/adscores/s.pixel?sid\x3D9102279158\x26lsid\x3D1017\x26em\x3De457449a236ca0ee76b5fafe5375b524\x26lsid\x3D1017\x26em\x3Df7b831bc6bd1020d0d91b0db3a73f44b35da982b']);
+	chains.push(['image', 'https://tr.snapchat.com/cs/r?u_hem\x3De535ccc2db02f0e6f5d10a213fe4155f09c77ae147bee7ede4c883b1c6b7629f\x26u_hems\x3D%5B%7B%22u_hem%22%3A%22e535ccc2db02f0e6f5d10a213fe4155f09c77ae147bee7ede4c883b1c6b7629f%22%2C%22pub_id%22%3A%221017%22%7D%5D\x26qs\x3D1']);
+	chains.push(['image', 'https://tr.snapchat.com/cs/r?u_hem\x3De535ccc2db02f0e6f5d10a213fe4155f09c77ae147bee7ede4c883b1c6b7629f\x26u_hems\x3D%5B%7B%22u_hem%22%3A%22e535ccc2db02f0e6f5d10a213fe4155f09c77ae147bee7ede4c883b1c6b7629f%22%2C%22pub_id%22%3A%221017%22%7D%5D']);
+	chains.push(['image', 'https://idx.listrakbi.com/1/xv3sl1/pixel.gif?v\x3D1\x26md5\x3De457449a236ca0ee76b5fafe5375b524\x26md5\x3D485dd80fd82ae8d9d45e9d2901935c72\x26sha1\x3Df7b831bc6bd1020d0d91b0db3a73f44b35da982b\x26sha256\x3De535ccc2db02f0e6f5d10a213fe4155f09c77ae147bee7ede4c883b1c6b7629f']);
+	chains.push(['image', 'https://tag.apxlv.com/tag/partner/222?pixel_mode\x3Dpixel']);
+	chains.push(['image', 'https://p.adsymptotic.com/d/px?_pid\x3D13553\x26_psign\x3D9e62e5c043ecadc9479a0ccac401dd7d']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D1\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D2\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D3\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D4\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D5\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D6\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D7\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D8\x26cparams\x3Dplacement%3D1391']);
+
+	loadChains(chains, 10, (typeof onDone === "function") ? onDone : null);
+		};
+
+		if (document.body) { f(); } else { document.addEventListener('DOMContentLoaded', f); }
+	</script>
+</head><body></body></html>

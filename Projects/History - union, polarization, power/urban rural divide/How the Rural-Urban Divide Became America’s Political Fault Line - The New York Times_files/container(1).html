@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)https://tpc.googlesyndication.com/safeframe/1-0-37/html/container.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>SafeFrame Container</title>
+    <script>
+(function(){var n=this||self;var w={};var y=function(a){y[" "](a);return a};y[" "]=function(){};var B=null,G=function(a){var b=a.length,c=3*b/4;c%3?c=Math.floor(c):-1!="=.".indexOf(a[b-1])&&(c=-1!="=.".indexOf(a[b-2])?c-2:c-1);var d=new Uint8Array(c),f=0;C(a,function(g){d[f++]=g});return d.subarray(0,f)},C=function(a,b){function c(q){for(;d<a.length;){var e=a.charAt(d++),k=B[e];if(null!=k)return k;if(!/^[\s\xa0]*$/.test(e))throw Error("Unknown base64 encoding at char: "+e);}return q}H();for(var d=0;;){var f=c(-1),g=c(0),h=c(64),p=c(64);if(64===p&&-1===f)break;b(f<<2|g>>4);64!=h&&(b(g<<4&240|h>>2),64!=p&&b(h<<6&192|p))}},H=function(){if(!B){B={};for(var a="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".split(""),b=["+/=","+/","-_=","-_.","-_"],c=0;5>c;c++)for(var d=a.concat(b[c].split("")),f=0;f<d.length;f++){var g=d[f];void 0===B[g]&&(B[g]=f)}}};var I=function(a,b){if(a)for(var c in a)Object.prototype.hasOwnProperty.call(a,c)&&b.call(void 0,a[c],c,a)};var J=function(a,b){var c=void 0===c?{}:c;this.error=a;this.context=b.context;this.msg=b.message||"";this.id=b.id||"jserror";this.meta=c};var K=/^https?:\/\/(\w|-)+\.cdn\.ampproject\.(net|org)(\?|\/|$)/,L=function(a,b){this.a=a;this.b=b},M=function(a,b){this.url=a;this.g=!!b;this.depth=null};var N=function(a){n.google_image_requests||(n.google_image_requests=[]);var b=n.document.createElement("img");b.src=a;n.google_image_requests.push(b)};var O=function(){this.c="&";this.f=!1;this.b={};this.i=0;this.a=[]},Q=function(a,b){var c={};c[a]=b;return[c]},S=function(a,b,c,d,f){var g=[];I(a,function(h,p){(h=R(h,b,c,d,f))&&g.push(p+"="+h)});return g.join(b)},R=function(a,b,c,d,f){if(null==a)return"";b=b||"&";c=c||",$";"string"==typeof c&&(c=c.split(""));if(a instanceof Array){if(d=d||0,d<c.length){for(var g=[],h=0;h<a.length;h++)g.push(R(a[h],b,c,d+1,f));return g.join(c[d])}}else if("object"==typeof a)return f=f||0,2>f?encodeURIComponent(S(a,b,c,d,f+1)):"...";return encodeURIComponent(String(a))},T=function(a,b,c,d){a.a.push(b);a.b[b]=Q(c,d)},V=function(a){var b="https://pagead2.googlesyndication.com/pagead/gen_204?id=jserror&",c=U(a)-27;if(0>c)return"";a.a.sort(function(k,m){return k-m});for(var d=null,f="",g=0;g<a.a.length;g++)for(var h=a.a[g],p=a.b[h],q=0;q<p.length;q++){if(!c){d=null==d?h:d;break}var e=S(p[q],a.c,",$");if(e){e=f+e;if(c>=e.length){c-=e.length;b+=e;f=a.c;break}a.f&&(f=c,e[f-1]==a.c&&--f,b+=e.substr(0,f),f=a.c,c=0);d=null==d?h:d}}a="";null!=d&&(a=f+"trn="+d);return b+a+""},U=function(a){var b=1,c;for(c in a.b)b=c.length>b?c.length:b;return 3997-b-a.c.length-1};var W=function(a){if(.01>Math.random())try{if(a instanceof O)var b=a;else b=new O,I(a,function(d,f){var g=b,h=g.i++;d=Q(f,d);g.a.push(h);g.b[h]=d});var c=V(b);c&&N(c)}catch(d){}};var X=function(a){var b=a.toString();a.name&&-1==b.indexOf(a.name)&&(b+=": "+a.name);a.message&&-1==b.indexOf(a.message)&&(b+=": "+a.message);if(a.stack){a=a.stack;var c=b;try{-1==a.indexOf(c)&&(a=c+"\n"+a);for(var d;a!=d;)d=a,a=a.replace(/((https?:\/..*\/)[^\/:]*:\d+(?:.|\n)*)\2/,"$1");b=a.replace(/\n */g,"\n")}catch(f){b=c}}return b};var Y=function(a){if(!a)return a;var b=a.toLowerCase();return-1<b.indexOf("<!doctype")||-1<b.indexOf("<html")?a:"<html><head></head><body>"+a+"</body></html>"},Z=function(a){var b=/<startguard>(.*)<endguard>/g.exec(a);return b&&b[1]?b[1]:a};var aa=new function(){this.a=w===w&&"https://ff.doubleclick.net"||""};var ba=/^([^;]+);(\d+);([\s\S]*)$/,ca=function(){var a=window.name,b=ba.exec(a);if(null===b)throw Error("Cannot parse serialized data. "+a.substring(0,50));a=+b[2];var c=b[3];if(a>c.length)throw Error("Parsed content size doesn't match. "+a+":"+c.length);return{j:b[1],content:c.substr(0,a),h:c.substr(a)}};var da=/(<head(\s+[^>]*)?>)/i;(function(a){if(window.name){var b=function(e){try{var k=new O;k.f=!0;T(k,1,"context",507);e.error&&e.meta&&e.id||(e=new J(e,{message:X(e)}));e.msg&&T(k,2,"msg",e.msg.substring(0,512));var m=[e.meta||{}];k.a.push(3);k.b[3]=m;e=n;m=[];var D=null;do{var l=e;try{var z;if(z=!!l&&null!=l.location.href)b:{try{y(l.foo);z=!0;break b}catch(A){}z=!1}var P=z}catch(A){P=!1}if(P){var t=l.location.href;D=l.document&&l.document.referrer||null}else t=D,D=null;m.push(new M(t||""));try{e=l.parent}catch(A){e=null}}while(e&&l!=e);t=0;for(var u=m.length-1;t<=u;++t)m[t].depth=u-t;l=n;if(l.location&&l.location.ancestorOrigins&&l.location.ancestorOrigins.length==m.length-1)for(u=1;u<m.length;++u){var v=m[u];v.url||(v.url=l.location.ancestorOrigins[u-1]||"",v.g=!0)}var E=new M(n.location.href,!1);l=null;var F=m.length-1;for(v=F;0<=v;--v){var r=m[v];!l&&K.test(r.url)&&(l=r);if(r.url&&!r.g){E=r;break}}r=null;var ea=m.length&&m[F].url;0!=E.depth&&ea&&(r=m[F]);var x=new L(E,r);x.b&&T(k,4,"top",x.b.url||"");T(k,5,"url",x.a.url||"");W(k)}catch(A){try{W({context:"ecmserr",rctx:507,msg:X(A),url:x&&x.a.url})}catch(fa){}}};try{var c=ca(),d=JSON.parse(c.h),f=function(e){d.goog_safeframe_hlt&&(n.goog_safeframe_hlt=d.goog_safeframe_hlt);d._context&&(n.AMP_CONTEXT_DATA=d._context);n.sf_={v:c.j,cfg:d};var k=window.document;k.open("text/html","replace");k.write(e);k.close();n.sf_&&(window.name="")},g=void 0===d.encryptionMode?null:d.encryptionMode,h=d.secureFetchFrame,p=d.uid;if(h){var q=new MessageChannel;q.port1.onmessage=function(e){e=Y(e.data).replace(da,'$1<script>window.addEventListener("load", function() {window.parent.postMessage("sf-load:'+(p+'", "*");});\x3c/script>'));a(e,g,f,b);q.port1.close()};window.parent.frames[h].postMessage("sf-ready:"+p,aa.a,[q.port2])}else window.name="",a(c.content,g,f,b)}catch(e){b(e)}}})(function(a,b,c){2===b&&(a=Y((new TextDecoder).decode(G(Z(a)))));c(a)});}).call(this);
+    </script><meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"><script>var jscVersion = 'r20201104';</script><script>var google_casm=[];</script><script></script><style>body{ 
+  margin: 0;
+  font-family: 'Source Sans Pro',sans-serif;
+  background: #F6F6F6;
+  max-width: 210px;
+  max-height: 106px;
+
+}
+
+.driverwrap{
+  display:flex;
+  margin-top: 11px;
+  padding-bottom: 20px;
+}
+
+.impression-tracker {
+  display: none;
+}
+
+.leftbox {
+  margin-left: 6px;
+  margin-right: 5px;
+}
+
+.driverwrap a { 
+ text-decoration: none;
+ }
+
+.kicker {
+  color: #000000;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 13px;
+  letter-spacing: 7.5%;
+}
+
+.kicker span { 
+  color: #000000;
+}
+
+.headline { 
+  color: #121212;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+
+ 
+.image {
+	display:block;
+  	margin-left: 9px;
+ 
+}
+  
+  .link img {
+  	max-height:75px;
+    max-width: 75px;
+  }
+
+@media all and (max-width:131px){
+  
+  
+   .image{
+    display: none;
+  }
+  
+  body {
+   width:130px;
+   max-height:118px;
+   padding-bottom:20px;
+  }
+  
+  .headline { 
+    line-height: 18px;
+ }
+
+  
+}
+
+
+/*
+.logo:after {
+  padding-top: 2%;
+  position:relative;/* If you want text inside of it */
+  /*content:'';
+  display: block; 
+}
+
+/*
+
+
+
+</style></head><body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"><div class="GoogleActiveViewInnerContainer" style="left:0px;top:0px;width:100%;height:100%;position:fixed;pointer-events:none;z-index:-9999;"></div><script src="./ext.js.download"></script><script>window.dicnf = {};</script><script data-jc="42" data-jc-version="r20201104">(function(){/*  Copyright The Closure Library Authors. SPDX-License-Identifier: Apache-2.0 */ 'use strict';window.viewReq=[];const c=a=>{fetch(a,{keepalive:!0,credentials:"include",redirect:"follow",method:"get",mode:"no-cors"}).catch(()=>{{const b=new Image;b.src=a.replace("&amp;","&");viewReq.push(b)}})};window.vu=a=>{if(window.fetch)c(a);else{{const b=new Image;b.src=a.replace("&amp;","&");viewReq.push(b)}}};}).call(this);</script><script>vu("https://securepubads.g.doubleclick.net/pcs/view?xai\x3dAKAOjssHIF_zIAk-KCdHaz_UlExkaaEx0B1_dfVWV3sJcFSYOl4FVGhHgh95y6ZcfkFbcilMe9pBK1mk7_MbeFBh8GU-m9U5oPzFMRd-sgR6Lu2yojH8Zf3cMOR6849V_Lx-vh5It17vt4r5ZujD5YvXaMuQGSDDNjQ9BcSPKyeoFCv702I9bqWyrOXtlT3aJYha1Uq9hR0u5y7QZWthvX8U1VaflU53wlv4XNZPL5kpKEQ5Ext-1ulXMGR8eKWtjkL3C7k1\x26sai\x3dAMfl-YRDxFBK4s7zy0xt06kSkb9N2WJcT42-7Dq9XdAbOeMkWnLtXcd8v9OmBfRrs4D-7yqn_FcYwcUw_3-tpm9aDSuLaSa3O0YAOJOQwEszGwnX4aAKIXYiLFDstMJxKCFvkp3hXw\x26sig\x3dCg0ArKJSzIF1t5WDXSWiEAE\x26urlfix\x3d1\x26adurl\x3d")</script><link href="./css" rel="stylesheet" type="text/css"><div class="GoogleActiveViewElement" data-google-av-cxn="https://pagead2.googlesyndication.com/pcs/activeview?xai=AKAOjsvCF9Iv8BnXRJ79m-_6G-atSD_sFve1-iRwuAdZIiWPkhg5ELG1fVoGwZuJVeZvqoOWcAMhdFHlhyX4RN9fq9ccfWOeHfQY5vkE0p3vL0A&amp;sig=Cg0ArKJSzDyzBZl_D-_zEAE" data-google-av-adk="3615546545" data-google-av-metadata="la=0&amp;xdi=0&amp;" data-google-av-override="-1" data-google-av-dm="2" data-google-av-immediate="" data-google-av-aid="0" data-google-av-naid="1" data-google-av-slift="" data-google-av-cpmav="" data-google-av-btr="https://securepubads.g.doubleclick.net/pcs/view?xai=AKAOjss4-GcONhHdGbkH67i_RDePfPbeMBOg09Q7ge1jjiR94XJ5j7gKJ4IzwSZymvng91GEg0J45kPHuFbODL-DAiM31_ZG617rLm2lYp0s0uEY9f3ZXbff-TvlA0_LbBmEnPxopkeRryFHC4Zc90Yd_SZU-IcNWrSnejAaiBNpyfrOV4hhNy_cQI7h84i4HTOWT1E7u37YXDNz-ydl3v0o03j-xoG_bWKGpFOHLqbfbvRmuXhl-CZG4eGEbR8B21RBTmnFpYI&amp;sai=AMfl-YS9m0R6d7tcUi11BCJ6kalfaiZ0jmdY0TbnPzqkOnr_LXXBC6zl4_3PZvrK_cqT5mNc4iP8yYtJ_Jama619uJMENV0ymRryLXjeN6Brti3fePvFOXhWh0pRbmeyS_sxrBUiYQ&amp;sig=Cg0ArKJSzGvcpX6L4m69EAE&amp;urlfix=1&amp;adurl=" data-google-av-itpl="7" data-google-av-rs="4" data-google-av-flags="[&quot;xz&quot;]"><!--Fluid More In Paid Post-->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div class="driverwrap">
+  
+  
+     <div class="image">
+      <a onclick="eventTracker.generalEventTrack(&#39;clickURL&#39;, &#39;logo&#39;, &#39;https://adclick.g.doubleclick.net/pcs/click?xai=AKAOjsvIJIU8gHbdQP1BNSCUAmXSQMPNXwBjLWLuxooGImHr_m_gO4TUQlpQ_XJ6PuxIV2YTomKz_jn8ciVySZtkCFef2PpuqE_9TDNvBaBooWdEsi5vadGfaeeiEAq74P3BQ6y9TyHJ_uH0P9IhFqy1WfxV2FdUJV0F3T9-Z_WwOMzFlAWrYG1yxivpx_5qGIu9A6XIeUB7wUVuyqOLNVgMhWvQNBVV9pz4j5KnFp_lu24ubS3Ogn2O02ZfKpM&amp;sai=AMfl-YS3u1jKtwqbrW85iDBbzW_M5s1jzV9O0AVWOAgY98Oyehpysa_3oqkntG4SVQBNz3GjNCil7M42fiVJHayj360IXii29SEdrT-kbTPDoJziQWjVsNrSC3ovsEjlN7MWYiyI9w&amp;sig=Cg0ArKJSzJcp50w2ZfrGEAE&amp;urlfix=1&amp;adurl=https://www.nytimes.com/paidpost/zenith/airi-hatakeyamas-journey-of-rhythm-and-artistry.html?cpv_ap_id=50088079&amp;utm_campaign=ed&amp;tbs_nyt=2020-Nov-nytnative_ed&#39;)" class="link" href="https://adclick.g.doubleclick.net/pcs/click?xai=AKAOjsvIJIU8gHbdQP1BNSCUAmXSQMPNXwBjLWLuxooGImHr_m_gO4TUQlpQ_XJ6PuxIV2YTomKz_jn8ciVySZtkCFef2PpuqE_9TDNvBaBooWdEsi5vadGfaeeiEAq74P3BQ6y9TyHJ_uH0P9IhFqy1WfxV2FdUJV0F3T9-Z_WwOMzFlAWrYG1yxivpx_5qGIu9A6XIeUB7wUVuyqOLNVgMhWvQNBVV9pz4j5KnFp_lu24ubS3Ogn2O02ZfKpM&amp;sai=AMfl-YS3u1jKtwqbrW85iDBbzW_M5s1jzV9O0AVWOAgY98Oyehpysa_3oqkntG4SVQBNz3GjNCil7M42fiVJHayj360IXii29SEdrT-kbTPDoJziQWjVsNrSC3ovsEjlN7MWYiyI9w&amp;sig=Cg0ArKJSzJcp50w2ZfrGEAE&amp;urlfix=1&amp;adurl=https://www.nytimes.com/paidpost/zenith/airi-hatakeyamas-journey-of-rhythm-and-artistry.html%3Fcpv_ap_id%3D50088079%26utm_campaign%3Ded%26tbs_nyt%3D2020-Nov-nytnative_ed" target="_blank"><img src="./17956220774961402475"></a>
+      </div>
+     
+<div class="leftbox">
+    <a class="text" href="https://adclick.g.doubleclick.net/pcs/click?xai=AKAOjsvIJIU8gHbdQP1BNSCUAmXSQMPNXwBjLWLuxooGImHr_m_gO4TUQlpQ_XJ6PuxIV2YTomKz_jn8ciVySZtkCFef2PpuqE_9TDNvBaBooWdEsi5vadGfaeeiEAq74P3BQ6y9TyHJ_uH0P9IhFqy1WfxV2FdUJV0F3T9-Z_WwOMzFlAWrYG1yxivpx_5qGIu9A6XIeUB7wUVuyqOLNVgMhWvQNBVV9pz4j5KnFp_lu24ubS3Ogn2O02ZfKpM&amp;sai=AMfl-YS3u1jKtwqbrW85iDBbzW_M5s1jzV9O0AVWOAgY98Oyehpysa_3oqkntG4SVQBNz3GjNCil7M42fiVJHayj360IXii29SEdrT-kbTPDoJziQWjVsNrSC3ovsEjlN7MWYiyI9w&amp;sig=Cg0ArKJSzJcp50w2ZfrGEAE&amp;urlfix=1&amp;adurl=https://www.nytimes.com/paidpost/zenith/airi-hatakeyamas-journey-of-rhythm-and-artistry.html%3Fcpv_ap_id%3D50088079%26utm_campaign%3Ded%26tbs_nyt%3D2020-Nov-nytnative_ed" target="_blank">
+ 
+	  <div class="kicker">
+		<span>PAID POST:</span> Zenith
+	  </div>
+
+       </a><a href="https://adclick.g.doubleclick.net/pcs/click?xai=AKAOjsvIJIU8gHbdQP1BNSCUAmXSQMPNXwBjLWLuxooGImHr_m_gO4TUQlpQ_XJ6PuxIV2YTomKz_jn8ciVySZtkCFef2PpuqE_9TDNvBaBooWdEsi5vadGfaeeiEAq74P3BQ6y9TyHJ_uH0P9IhFqy1WfxV2FdUJV0F3T9-Z_WwOMzFlAWrYG1yxivpx_5qGIu9A6XIeUB7wUVuyqOLNVgMhWvQNBVV9pz4j5KnFp_lu24ubS3Ogn2O02ZfKpM&amp;sai=AMfl-YS3u1jKtwqbrW85iDBbzW_M5s1jzV9O0AVWOAgY98Oyehpysa_3oqkntG4SVQBNz3GjNCil7M42fiVJHayj360IXii29SEdrT-kbTPDoJziQWjVsNrSC3ovsEjlN7MWYiyI9w&amp;sig=Cg0ArKJSzJcp50w2ZfrGEAE&amp;urlfix=1&amp;adurl=https://www.nytimes.com/paidpost/zenith/airi-hatakeyamas-journey-of-rhythm-and-artistry.html%3Fcpv_ap_id%3D50088079%26utm_campaign%3Ded%26tbs_nyt%3D2020-Nov-nytnative_ed" target="_blank">
+	    <div class="headline">
+		Watch a Former Rhythmic Gymnast’s Path From Sports to TV
+	    </div>		
+	  </a>
+	</div>
+           
+
+</div>
+
+</div>
+
+<div id="impression-pixel" class="impression-tracker">
+  <img src="https://tpc.googlesyndication.com/safeframe/1-0-37/html/container.html" width="1" height="1" border="0">
+</div>
+
+<div id="impression-pixel" class="impression-tracker">
+  <img src="https://tpc.googlesyndication.com/safeframe/1-0-37/html/container.html" width="1" height="1" border="0">
+</div>
+
+
+<script type="text/javascript">
+ "use strict";
+
+// Native Tracking Code --------------------------------------------- //
+
+var eventTracker = function () {
+var ETLink = "https://et.nytimes.com/?subject=dfp-ad-events&dfp_creativeid=138328990372&dfp_lineitemid=5524632233&dfp_orderid=2770131787&dfp_viewport=large&pageviewid=ChNT-CXd8k1RZc1cqkxeDAGd&dfp_pos=pp_edpick&dfp_prop=nyt";
+
+var slideCSSClass = "slide";
+var slideNavType = "slideURL";
+var slideClickType = "clickURL";
+
+//Slide navigation control
+var slidesNum = document.getElementsByClassName(slideCSSClass).length;
+var currentSlide = 1;
+
+/*
+* function to call the Nytimes ET pixel link for the slide templte
+* @param curr - current slide
+* @param type - event type 
+*/
+var ETSlideCall = function ETSlideCall(type, curr) {
+var next = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+
+var trackingLink = ETLink + "&dfp_event_type=" + type + "&dfp_event_location=slide-" + curr;
+if (next != "") {
+trackingLink += "_" + "slide-" + next;
+}
+document.createElement('img').src = trackingLink;
+};
+//Public functions
+return {
+/*
+*Next slide function - Updates the current slide and call the ET function
+*/
+nextSlideET: function nextSlideET() {
+var prevSlide = currentSlide;
+if (currentSlide >= slidesNum) {
+currentSlide = 1;
+} else {
+currentSlide++;
+}
+ETSlideCall(slideNavType, prevSlide, currentSlide);
+},
+
+/*
+* Previous slide function - Updates the current slide and call the ET function
+*/
+prevSlideET: function prevSlideET() {
+var prevSlide = currentSlide;
+if (currentSlide <= 1) {
+currentSlide = slidesNum;
+} else {
+currentSlide--;
+}
+ETSlideCall(slideNavType, prevSlide, currentSlide);
+},
+
+/*
+* Click slide function - Redirects to target url
+* @param tag - HTML anchor tag the called this func. 
+* @param next - sums up to the current slide number 
+* usage: <a href="link-to-the-ad-redirect" onclick="eventTracker.slideClickET(this)">
+*/
+slideClickET: function slideClickET(tag) {
+var next = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+// console.log("this", tag);
+event.preventDefault();
+var slideTrack = currentSlide;
+if (next) {
+slideTrack = currentSlide == slidesNum ? 1 : currentSlide + 1;
+}
+ETSlideCall(slideClickType, slideTrack);
+var url = tag.href;
+window.open(url, '_blank');
+},
+
+/*
+* General event tracker call
+* @param eventType - event type to be tracked
+* @param eventLocation - event location to be tracked
+* @param redirectLink - Link to ad page to be called after eventtracker
+*/
+
+generalEventTrack: function generalEventTrack(eventType, eventLocation) {
+var redirectLink = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+
+event.preventDefault();
+var trackingLink = ETLink + "&dfp_event_type=" + eventType + "&dfp_event_location=" + eventLocation;
+document.createElement('img').src = trackingLink;
+if (redirectLink != "") {
+window.open(redirectLink, '_blank');
+}
+},
+
+setETLink: function setETLink(link) {
+ETLink = link;
+},
+
+setSlideCSSClass: function setSlideCSSClass(cssClass) {
+slideCSSClass = cssClass;
+slidesNum = document.getElementsByClassName(slideCSSClass).length;
+},
+setSlideClicktype: function setSlideClicktype(type) {
+slideClickType = type;
+},
+
+setSlideNavType: function setSlideNavType(type) {
+slideNavType = type;
+}
+};
+}();
+
+  </script>
+<script src="./osd_listener.js.download"></script><script type="text/javascript">osdlfm(-1,'','BEMPo7cSqX7XYPIuohwfS36bwAQAAAAAQATgByAEJwAIC4AIA4AQBoAYfiAcB0ggECAAQAg','',3615546545,true,'la\x3d0\x26xdi\x3d0\x26',3,'','https://pagead2.googlesyndication.com/pcs/activeview?xai\x3dAKAOjsvCF9Iv8BnXRJ79m-_6G-atSD_sFve1-iRwuAdZIiWPkhg5ELG1fVoGwZuJVeZvqoOWcAMhdFHlhyX4RN9fq9ccfWOeHfQY5vkE0p3vL0A\x26sig\x3dCg0ArKJSzDyzBZl_D-_zEAE','');</script><div style="bottom:0;right:0;width:100px;height:100px;background:initial !important;position:absolute !important;max-width:100% !important;max-height:100% !important;pointer-events:none !important;image-rendering:pixelated !important;z-index:2147483647;background-image:url(&#39;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAWBAMAAACrl3iAAAAABlBMVEUAAAD+AciWmZzWAAAAAnRSTlMAApidrBQAAAB/SURBVBjTbZABDoAwCAPLD/r/1zrbFTARlUno4AD4t7L5b0VU9ngS7Kis0omO3gyl85uo86VOS921uWrf3qkfkliUzY3oYf6oJFPpe1KKQsSFmppCMEvowyAp8i0SrgbDfQf1nDPleoi1QV+Omw1m4cRXfSf+bNAQuTEkvcnjH6BtBjGrlj8/AAAAAElFTkSuQmCC&#39;) !important;"></div>
+  
+  
+  
+
+</body></html>

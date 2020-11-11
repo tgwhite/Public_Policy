@@ -14,10 +14,11 @@ library(quantmod)
 library(fredr)
 library(scales)
 library(quantreg)
+setwd('~\\Public_Policy\\Projects\\Taxes vs. Deficits\\data')
+
 
 #### Load OECD revenue, expense, and deficit data ####
-all_oecd_downloads = list.files('data', pattern = 'DP_LIVE', full.names = T) %>% 
-  unique() %>%
+all_oecd_downloads =   c("oecd_net_lending.csv"   ,         "oecd_revenue.csv"   ,             "oecd_spending.csv" ) %>%
   map(read_csv) %>% 
   bind_rows() 
 
@@ -57,7 +58,7 @@ USA_revenue_expense_deficits_diffs = USA_revenue_expense_deficits[, {
   )
 
 # load in existing wide US data
-load('data/US_political_economic_data.rdata')
+load('US_political_economic_data.rdata')
 
 
 # combine OECD data and wide US data (keep only political variables and growth)
@@ -102,6 +103,7 @@ desc_df = tibble(
   desc = names(descriptions),
   full_description = descriptions
 )
+View(long_rev_expense_components)
 
 # pull out only revenues and expense components
 long_rev_expense_components = 
@@ -149,6 +151,10 @@ president_starts_stops = group_by(US_wide_selection, President, president_party)
   )
 
 
+ggplot(summarized_by_year, aes(year, total_difference, fill = defense_vs_non_defense)) +
+  geom_bar(stat = 'identity')
+filter(summarized_by_year, year == 2019)
+
 # plot everything
 ggplot(summarized_by_year, aes(year, total_difference)) +
   geom_rect(data = president_starts_stops, aes(xmin = start_year, xmax = end_year, 
@@ -174,8 +180,7 @@ ggplot(summarized_by_year, aes(year, total_difference)) +
     caption = 'Chart: Taylor G. White\nData: OECD, FRED, WDI'
   ) +
   scale_colour_manual(guide = F, values = c('DEM'='#00aef3', 'REP' = '#d8171e')) +
-  scale_x_continuous(breaks = seq(1977, 2018, by = 4)) +
-  
+  scale_x_continuous(breaks = seq(1977, max(summarized_by_year$year), by = 4)) +
   geom_text(data = president_starts_stops, 
             aes(y = 4.5, x = midpoint, label = pres_last_name, colour = president_party), hjust = 0.5, size = 4.5) +
   # geom_segment(data = president_starts_stops, aes(y = 4, yend = 4, x = start_year, xend = end_year)) +

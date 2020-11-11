@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!-- saved from url=(0075)https://dco-assets.everestads.net/ics-campaign//5031/t/7939/1/z300x600.html -->
+<html lang="en" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <script src="./AMOLibrary.js.download" charset="utf-8"></script>
+    <style media="screen">
+      body { margin: 0; padding: 0; }
+      iframe { border: none; }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+      function loadData() {
+        var replaceMacro = function(text, data) {
+          var macros = text.match(/\!\{(.*?)\}/g);
+          if(macros) {
+            macros.forEach(function(macro){
+              var macroText = macro.split('!{').join('').split('}').join('');
+              for(var key in data) { if(key == macroText) { macroText = data[key]; } }
+              text = text.split(macro).join(macroText);
+            });
+          }
+          return text;
+        }
+        var contentD = [
+          {
+            "name": "Microsoft",
+            "product_url": "https://azure.microsoft.com/",
+          }
+        ];
+
+        if(contentD && contentD.length) { contentD.forEach(function(data) { amo.registerContent(data); }); }
+        amo.registerVariation("layout", "AzureBlack");
+        amo.registerVariation("headlineText", "['<#ffffff>Start building apps|today with 25+ free|services and a|$200 credit','23px',38,150,'35','350', 'left']");
+        amo.registerVariation("ctaText", "Try Azure free");
+        // amo.registerVariation("ctaArrowVisibleFlag", "!{passthroughfield2}");
+        amo.registerVariation("impressionTracker", "../../../1x1.png?impressionTracker=" + Math.random());
+        amo.registerVariation("clickTracker", "../../../1x1.png?clickTracker=" + Math.random());
+        amo.registerVariation("clickURL", "!{product_url}");
+        var content = [], cam = {};
+        var cam = {
+          layout: amo.variation['layout'],
+          headlineText: amo.variation['headlineText'],
+          cta: amo.variation['ctaText'],
+          // ctaArrowVisibleFlag: amo.variation['ctaArrowVisibleFlag'],
+          impressionTracker: amo.variation['impressionTracker'],
+          clickTracker: amo.variation['clickTracker'],
+          url: amo.variation['clickURL']
+        };
+        if(amo.content && amo.content.length) {
+          amo.content.forEach(function(data) {
+            content.push({
+              feedData: data,
+              layout: cam.layout,
+              headlineText: cam.headlineText,
+              ctaText: cam.cta,
+              // ctaArrowVisibleFlag: cam.ctaArrowVisibleFlag.toString().toLowerCase() == 'false' ? false : true,
+              ctaArrowVisibleFlag: true,
+              impressionTracker: cam.impressionTracker,
+              clickTracker: cam.clickTracker,
+              url: cam.url
+            });
+          });
+          if(content && content.length) {
+            content.map(function(data){
+              for(var key in data) { data[key] = typeof data[key] == 'string' ? replaceMacro(data[key], data.feedData) : data[key]; }
+            });
+          }
+        }
+        window.adData = content[0], window.adClickUrl = adData.url;
+        var headlineText = adData.headlineText && adData.headlineText.toLowerCase() != 'na' ? adData.headlineText : ' ';
+        headlineText=headlineText.replace('-_-','—');
+        var ctaText = adData.ctaText && adData.ctaText.toLowerCase() != 'na' ? adData.ctaText : '';
+        var impressionTracker = adData.impressionTracker && adData.impressionTracker.toLowerCase() != 'na' ? adData.impressionTracker : '';
+        var clickTracker = adData.clickTracker && adData.clickTracker.toLowerCase() != 'na' ? adData.clickTracker : '';
+        if(impressionTracker) {
+          var isn = 'data' in amo && 'isn' in amo.data ? amo.data.isn : '';
+          if(isn.length) { impressionTracker = impressionTracker.split('(t_td_isn)').join(isn); }
+          for(var i = 1; i<=5; i++) {
+              var trackingCode = 'data' in amo && 'data' in amo.data && 'atsParams' in amo.data.data && ('x2_tracking_code_'+i) in amo.data.data.atsParams ? amo.data.data.atsParams['x2_tracking_code_'+i] : '';
+              if(trackingCode.length){ impressionTracker = impressionTracker.split('$(t_qp_TC_'+i+')').join(trackingCode); }
+          }
+        }
+        var adUrl = '';
+        switch(adData.layout){
+          case 'AzureBlack' : adURL = 'AzureBlack/G2_Black_BG_300x600.htm';break;
+          case 'AzureWhite' : adURL = 'AzureWhite/G2_White_BG_300x600.htm';break;
+        }
+        var iframe = document.createElement('iframe');
+        iframe.src = adURL;
+        iframe.width = '300';
+        iframe.height = '600';
+        document.body.appendChild(iframe);
+        var bannerData = {
+          headlineText: headlineText,
+          ctaText: ctaText,
+          CTAarrowVisible: [adData.ctaArrowVisibleFlag, 0, 0],
+          impressionTracker: impressionTracker,
+          clickTracker: clickTracker,
+        };
+        window.getBannerData = function(){ var obj = {}; for(var i in bannerData) { obj[i] = bannerData[i]; } return obj; }
+      }
+      loadData();
+    </script><iframe src="./G2_White_BG_300x600.html" width="300" height="600"></iframe>
+  
+
+</body></html>

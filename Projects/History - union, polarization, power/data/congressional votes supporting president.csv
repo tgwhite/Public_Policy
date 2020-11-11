@@ -1,0 +1,385 @@
+President,Year,Chamber,Party,PctVotes
+Eisenhower,1954,Senate,All Democrats,45
+Eisenhower,1955,Senate,All Democrats,65
+Eisenhower,1956,Senate,All Democrats,44
+Eisenhower,1957,Senate,All Democrats,60
+Eisenhower,1958,Senate,All Democrats,51
+Eisenhower,1959,Senate,All Democrats,44
+Eisenhower,1960,Senate,All Democrats,52
+Eisenhower,1954,Senate,Southern Democrats,n.a.
+Eisenhower,1955,Senate,Southern Democrats,n.a.
+Eisenhower,1956,Senate,Southern Democrats,n.a.
+Eisenhower,1957,Senate,Southern Democrats,n.a.
+Eisenhower,1958,Senate,Southern Democrats,n.a.
+Eisenhower,1959,Senate,Southern Democrats,n.a.
+Eisenhower,1960,Senate,Southern Democrats,n.a.
+Eisenhower,1954,Senate,Republicans,82
+Eisenhower,1955,Senate,Republicans,85
+Eisenhower,1956,Senate,Republicans,80
+Eisenhower,1957,Senate,Republicans,80
+Eisenhower,1958,Senate,Republicans,77
+Eisenhower,1959,Senate,Republicans,80
+Eisenhower,1960,Senate,Republicans,76
+Eisenhower,1954,House,All Democrats,54
+Eisenhower,1955,House,All Democrats,58
+Eisenhower,1956,House,All Democrats,58
+Eisenhower,1957,House,All Democrats,54
+Eisenhower,1958,House,All Democrats,63
+Eisenhower,1959,House,All Democrats,44
+Eisenhower,1960,House,All Democrats,49
+Eisenhower,1954,House,Southern Democrats,n.a.
+Eisenhower,1955,House,Southern Democrats,n.a.
+Eisenhower,1956,House,Southern Democrats,n.a.
+Eisenhower,1957,House,Southern Democrats,n.a.
+Eisenhower,1958,House,Southern Democrats,n.a.
+Eisenhower,1959,House,Southern Democrats,n.a.
+Eisenhower,1960,House,Southern Democrats,n.a.
+Eisenhower,1954,House,Republicans,n.a.
+Eisenhower,1955,House,Republicans,67
+Eisenhower,1956,House,Republicans,79
+Eisenhower,1957,House,Republicans,60
+Eisenhower,1958,House,Republicans,65
+Eisenhower,1959,House,Republicans,76
+Eisenhower,1960,House,Republicans,63
+Kennedy,1961,Senate,All Democrats,73
+Kennedy,1962,Senate,All Democrats,76
+Kennedy,1963,Senate,All Democrats,77
+Kennedy,1961,Senate,Southern Democrats,n.a.
+Kennedy,1962,Senate,Southern Democrats,63
+Kennedy,1963,Senate,Southern Democrats,65
+Kennedy,1961,Senate,Republicans,42
+Kennedy,1962,Senate,Republicans,48
+Kennedy,1963,Senate,Republicans,52
+Kennedy,1961,House,All Democrats,81
+Kennedy,1962,House,All Democrats,83
+Kennedy,1963,House,All Democrats,84
+Kennedy,1961,House,Southern Democrats,n.a.
+Kennedy,1962,House,Southern Democrats,71
+Kennedy,1963,House,Southern Democrats,71
+Kennedy,1961,House,Republicans,41
+Kennedy,1962,House,Republicans,47
+Kennedy,1963,House,Republicans,36
+Johnson,1964,Senate,All Democrats,73
+Johnson,1965,Senate,All Democrats,75
+Johnson,1966,Senate,All Democrats,71
+Johnson,1967,Senate,All Democrats,73
+Johnson,1968,Senate,All Democrats,64
+Johnson,1964,Senate,Southern Democrats,63
+Johnson,1965,Senate,Southern Democrats,60
+Johnson,1966,Senate,Southern Democrats,59
+Johnson,1967,Senate,Southern Democrats,69
+Johnson,1968,Senate,Southern Democrats,50
+Johnson,1964,Senate,Republicans,52
+Johnson,1965,Senate,Republicans,55
+Johnson,1966,Senate,Republicans,53
+Johnson,1967,Senate,Republicans,63
+Johnson,1968,Senate,Republicans,57
+Johnson,1964,House,All Democrats,84
+Johnson,1965,House,All Democrats,83
+Johnson,1966,House,All Democrats,81
+Johnson,1967,House,All Democrats,80
+Johnson,1968,House,All Democrats,77
+Johnson,1964,House,Southern Democrats,70
+Johnson,1965,House,Southern Democrats,65
+Johnson,1966,House,Southern Democrats,64
+Johnson,1967,House,Southern Democrats,65
+Johnson,1968,House,Southern Democrats,63
+Johnson,1964,House,Republicans,42
+Johnson,1965,House,Republicans,46
+Johnson,1966,House,Republicans,45
+Johnson,1967,House,Republicans,51
+Johnson,1968,House,Republicans,59
+Nixon,1969,Senate,All Democrats,55
+Nixon,1970,Senate,All Democrats,56
+Nixon,1971,Senate,All Democrats,48
+Nixon,1972,Senate,All Democrats,52
+Nixon,1973,Senate,All Democrats,42
+Nixon,1974,Senate,All Democrats,44
+Nixon,1969,Senate,Southern Democrats,56
+Nixon,1970,Senate,Southern Democrats,62
+Nixon,1971,Senate,Southern Democrats,59
+Nixon,1972,Senate,Southern Democrats,71
+Nixon,1973,Senate,Southern Democrats,55
+Nixon,1974,Senate,Southern Democrats,60
+Nixon,1969,Senate,Republicans,74
+Nixon,1970,Senate,Republicans,74
+Nixon,1971,Senate,Republicans,76
+Nixon,1972,Senate,Republicans,77
+Nixon,1973,Senate,Republicans,70
+Nixon,1974,Senate,Republicans,65
+Nixon,1969,House,All Democrats,56
+Nixon,1970,House,All Democrats,64
+Nixon,1971,House,All Democrats,53
+Nixon,1972,House,All Democrats,56
+Nixon,1973,House,All Democrats,39
+Nixon,1974,House,All Democrats,52
+Nixon,1969,House,Southern Democrats,55
+Nixon,1970,House,Southern Democrats,64
+Nixon,1971,House,Southern Democrats,69
+Nixon,1972,House,Southern Democrats,59
+Nixon,1973,House,Southern Democrats,49
+Nixon,1974,House,Southern Democrats,64
+Nixon,1969,House,Republicans,65
+Nixon,1970,House,Republicans,79
+Nixon,1971,House,Republicans,79
+Nixon,1972,House,Republicans,74
+Nixon,1973,House,Republicans,67
+Nixon,1974,House,Republicans,71
+Ford,1974,Senate,All Democrats,45
+Ford,1975,Senate,All Democrats,53
+Ford,1976,Senate,All Democrats,47
+Ford,1974,Senate,Southern Democrats,55
+Ford,1975,Senate,Southern Democrats,67
+Ford,1976,Senate,Southern Democrats,61
+Ford,1974,Senate,Republicans,67
+Ford,1975,Senate,Republicans,76
+Ford,1976,Senate,Republicans,73
+Ford,1974,House,All Democrats,48
+Ford,1975,House,All Democrats,40
+Ford,1976,House,All Democrats,36
+Ford,1974,House,Southern Democrats,52
+Ford,1975,House,Southern Democrats,48
+Ford,1976,House,Southern Democrats,52
+Ford,1974,House,Republicans,59
+Ford,1975,House,Republicans,67
+Ford,1976,House,Republicans,70
+Carter,1977,Senate,All Democrats,77
+Carter,1978,Senate,All Democrats,74
+Carter,1979,Senate,All Democrats,75
+Carter,1980,Senate,All Democrats,71
+Carter,1977,Senate,Southern Democrats,71
+Carter,1978,Senate,Southern Democrats,61
+Carter,1979,Senate,Southern Democrats,66
+Carter,1980,Senate,Southern Democrats,69
+Carter,1977,Senate,Republicans,58
+Carter,1978,Senate,Republicans,47
+Carter,1979,Senate,Republicans,51
+Carter,1980,Senate,Republicans,50
+Carter,1977,House,All Democrats,69
+Carter,1978,House,All Democrats,67
+Carter,1979,House,All Democrats,70
+Carter,1980,House,All Democrats,71
+Carter,1977,House,Southern Democrats,58
+Carter,1978,House,Southern Democrats,54
+Carter,1979,House,Southern Democrats,58
+Carter,1980,House,Southern Democrats,63
+Carter,1977,House,Republicans,46
+Carter,1978,House,Republicans,40
+Carter,1979,House,Republicans,37
+Carter,1980,House,Republicans,44
+Reagan,1981,Senate,All Democrats,52
+Reagan,1982,Senate,All Democrats,46
+Reagan,1983,Senate,All Democrats,45
+Reagan,1984,Senate,All Democrats,45
+Reagan,1985,Senate,All Democrats,36
+Reagan,1986,Senate,All Democrats,39
+Reagan,1987,Senate,All Democrats,38
+Reagan,1988,Senate,All Democrats,51
+Reagan,1981,Senate,Southern Democrats,63
+Reagan,1982,Senate,Southern Democrats,57
+Reagan,1983,Senate,Southern Democrats,46
+Reagan,1984,Senate,Southern Democrats,58
+Reagan,1985,Senate,Southern Democrats,46
+Reagan,1986,Senate,Southern Democrats,56
+Reagan,1987,Senate,Southern Democrats,42
+Reagan,1988,Senate,Southern Democrats,58
+Reagan,1981,Senate,Republicans,84
+Reagan,1982,Senate,Republicans,77
+Reagan,1983,Senate,Republicans,77
+Reagan,1984,Senate,Republicans,81
+Reagan,1985,Senate,Republicans,80
+Reagan,1986,Senate,Republicans,90
+Reagan,1987,Senate,Republicans,67
+Reagan,1988,Senate,Republicans,73
+Reagan,1981,House,All Democrats,46
+Reagan,1982,House,All Democrats,43
+Reagan,1983,House,All Democrats,30
+Reagan,1984,House,All Democrats,37
+Reagan,1985,House,All Democrats,31
+Reagan,1986,House,All Democrats,26
+Reagan,1987,House,All Democrats,26
+Reagan,1988,House,All Democrats,27
+Reagan,1981,House,Southern Democrats,60
+Reagan,1982,House,Southern Democrats,55
+Reagan,1983,House,Southern Democrats,45
+Reagan,1984,House,Southern Democrats,47
+Reagan,1985,House,Southern Democrats,43
+Reagan,1986,House,Southern Democrats,37
+Reagan,1987,House,Southern Democrats,36
+Reagan,1988,House,Southern Democrats,34
+Reagan,1981,House,Republicans,72
+Reagan,1982,House,Republicans,70
+Reagan,1983,House,Republicans,74
+Reagan,1984,House,Republicans,64
+Reagan,1985,House,Republicans,69
+Reagan,1986,House,Republicans,69
+Reagan,1987,House,Republicans,64
+Reagan,1988,House,Republicans,61
+Bush,1989,Senate,All Democrats,56
+Bush,1990,Senate,All Democrats,39
+Bush,1991,Senate,All Democrats,42
+Bush,1992,Senate,All Democrats,33
+Bush,1989,Senate,Southern Democrats,66
+Bush,1990,Senate,Southern Democrats,49
+Bush,1991,Senate,Southern Democrats,53
+Bush,1992,Senate,Southern Democrats,41
+Bush,1989,Senate,Republicans,84
+Bush,1990,Senate,Republicans,72
+Bush,1991,Senate,Republicans,83
+Bush,1992,Senate,Republicans,75
+Bush,1989,House,All Democrats,38
+Bush,1990,House,All Democrats,26
+Bush,1991,House,All Democrats,35
+Bush,1992,House,All Democrats,27
+Bush,1989,House,Southern Democrats,49
+Bush,1990,House,Southern Democrats,35
+Bush,1991,House,Southern Democrats,43
+Bush,1992,House,Southern Democrats,38
+Bush,1989,House,Republicans,72
+Bush,1990,House,Republicans,65
+Bush,1991,House,Republicans,74
+Bush,1992,House,Republicans,75
+Clinton,1993,Senate,All Democrats,87
+Clinton,1994,Senate,All Democrats,88
+Clinton,1995,Senate,All Democrats,81
+Clinton,1996,Senate,All Democrats,83
+Clinton,1997,Senate,All Democrats,87
+Clinton,1998,Senate,All Democrats,86
+Clinton,1999,Senate,All Democrats,86
+Clinton,2000,Senate,All Democrats,92
+Clinton,1993,Senate,Southern Democrats,84
+Clinton,1994,Senate,Southern Democrats,88
+Clinton,1995,Senate,Southern Democrats,78
+Clinton,1996,Senate,Southern Democrats,75
+Clinton,1997,Senate,Southern Democrats,84
+Clinton,1998,Senate,Southern Democrats,84
+Clinton,1999,Senate,Southern Democrats,84
+Clinton,2000,Senate,Southern Democrats,88
+Clinton,1993,Senate,Republicans,30
+Clinton,1994,Senate,Republicans,44
+Clinton,1995,Senate,Republicans,29
+Clinton,1996,Senate,Republicans,37
+Clinton,1997,Senate,Republicans,61
+Clinton,1998,Senate,Republicans,42
+Clinton,1999,Senate,Republicans,35
+Clinton,2000,Senate,Republicans,47
+Clinton,1993,House,All Democrats,80
+Clinton,1994,House,All Democrats,78
+Clinton,1995,House,All Democrats,75
+Clinton,1996,House,All Democrats,74
+Clinton,1997,House,All Democrats,73
+Clinton,1998,House,All Democrats,78
+Clinton,1999,House,All Democrats,75
+Clinton,2000,House,All Democrats,76
+Clinton,1993,House,Southern Democrats,81
+Clinton,1994,House,Southern Democrats,68
+Clinton,1995,House,Southern Democrats,69
+Clinton,1996,House,Southern Democrats,70
+Clinton,1997,House,Southern Democrats,68
+Clinton,1998,House,Southern Democrats,72
+Clinton,1999,House,Southern Democrats,70
+Clinton,2000,House,Southern Democrats,68
+Clinton,1993,House,Republicans,39
+Clinton,1994,House,Republicans,49
+Clinton,1995,House,Republicans,22
+Clinton,1996,House,Republicans,38
+Clinton,1997,House,Republicans,31
+Clinton,1998,House,Republicans,27
+Clinton,1999,House,Republicans,24
+Clinton,2000,House,Republicans,28
+Bush,2001,Senate,All Democrats,67
+Bush,2002,Senate,All Democrats,73
+Bush,2003,Senate,All Democrats,52
+Bush,2004,Senate,All Democrats,63
+Bush,2005,Senate,All Democrats,41
+Bush,2006,Senate,All Democrats,55
+Bush,2007,Senate,All Democrats,40
+Bush,2008,Senate,All Democrats,36
+Bush,2001,Senate,Southern Democrats,71
+Bush,2002,Senate,Southern Democrats,81
+Bush,2003,Senate,Southern Democrats,60
+Bush,2004,Senate,Southern Democrats,70
+Bush,2005,Senate,Southern Democrats,54
+Bush,2006,Senate,Southern Democrats,n.a.
+Bush,2007,Senate,Southern Democrats,n.a.
+Bush,2008,Senate,Southern Democrats,n.a.
+Bush,2001,Senate,Republicans,96
+Bush,2002,Senate,Republicans,95
+Bush,2003,Senate,Republicans,96
+Bush,2004,Senate,Republicans,93
+Bush,2005,Senate,Republicans,86
+Bush,2006,Senate,Republicans,86
+Bush,2007,Senate,Republicans,81
+Bush,2008,Senate,Republicans,73
+Bush,2001,House,All Democrats,32
+Bush,2002,House,All Democrats,33
+Bush,2003,House,All Democrats,27
+Bush,2004,House,All Democrats,31
+Bush,2005,House,All Democrats,24
+Bush,2006,House,All Democrats,32
+Bush,2007,House,All Democrats,8
+Bush,2008,House,All Democrats,17
+Bush,2001,House,Southern Democrats,38
+Bush,2002,House,Southern Democrats,40
+Bush,2003,House,Southern Democrats,36
+Bush,2004,House,Southern Democrats,42
+Bush,2005,House,Southern Democrats,33
+Bush,2006,House,Southern Democrats,n.a.
+Bush,2007,House,Southern Democrats,n.a.
+Bush,2008,House,Southern Democrats,n.a.
+Bush,2001,House,Republicans,92
+Bush,2002,House,Republicans,85
+Bush,2003,House,Republicans,92
+Bush,2004,House,Republicans,83
+Bush,2005,House,Republicans,81
+Bush,2006,House,Republicans,88
+Bush,2007,House,Republicans,74
+Bush,2008,House,Republicans,65
+Obama,2009,Senate,All Democrats,96
+Obama,2010,Senate,All Democrats,97
+Obama,2011,Senate,All Democrats,94
+Obama,2012,Senate,All Democrats,95
+Obama,2013,Senate,All Democrats,98
+Obama,2014,Senate,All Democrats,98
+Obama,2015,Senate,All Democrats,88
+Obama,2016,Senate,All Democrats,86
+Obama,2009,Senate,Southern Democrats,n.a.
+Obama,2010,Senate,Southern Democrats,n.a.
+Obama,2011,Senate,Southern Democrats,n.a.
+Obama,2012,Senate,Southern Democrats,n.a.
+Obama,2013,Senate,Southern Democrats,n.a.
+Obama,2014,Senate,Southern Democrats,n.a.
+Obama,2015,Senate,Southern Democrats,n.a.
+Obama,2016,Senate,Southern Democrats,n.a.
+Obama,2009,Senate,Republicans,52
+Obama,2010,Senate,Republicans,44
+Obama,2011,Senate,Republicans,55
+Obama,2012,Senate,Republicans,50
+Obama,2013,Senate,Republicans,42
+Obama,2014,Senate,Republicans,58
+Obama,2015,Senate,Republicans,59
+Obama,2016,Senate,Republicans,48
+Obama,2009,House,All Democrats,91
+Obama,2010,House,All Democrats,88
+Obama,2011,House,All Democrats,82
+Obama,2012,House,All Democrats,81
+Obama,2013,House,All Democrats,81
+Obama,2014,House,All Democrats,84
+Obama,2015,House,All Democrats,87
+Obama,2016,House,All Democrats,92
+Obama,2009,House,Southern Democrats,n.a.
+Obama,2010,House,Southern Democrats,n.a.
+Obama,2011,House,Southern Democrats,n.a.
+Obama,2012,House,Southern Democrats,n.a.
+Obama,2013,House,Southern Democrats,n.a.
+Obama,2014,House,Southern Democrats,n.a.
+Obama,2015,House,Southern Democrats,n.a.
+Obama,2016,House,Southern Democrats,n.a.
+Obama,2009,House,Republicans,28
+Obama,2010,House,Republicans,31
+Obama,2011,House,Republicans,23
+Obama,2012,House,Republicans,19
+Obama,2013,House,Republicans,16
+Obama,2014,House,Republicans,12
+Obama,2015,House,Republicans,13
+Obama,2016,House,Republicans,8
