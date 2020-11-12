@@ -3,6 +3,7 @@ library(albersusa)
 library(jsonlite)
 library(viridisLite)
 library(scales)
+library(cowplot)
 
 cty_sf <- counties_sf("aeqd")
 us_sf <- usa_sf("laea")
@@ -46,7 +47,7 @@ View(election_results_by_state_county_fin)
 
 head(cty_sf)
 
-selected_states = c('Pennsylvania', 'Georgia', 'Michigan', 'Wisconsin', 'Minnesota', 'Texas', 'North Carolina', 'Arizona', 'Nevada')
+selected_states = c('Pennsylvania', 'Georgia', 'Michigan', 'Wisconsin', 'Minnesota', 'Florida', 'North Carolina', 'Arizona', 'Nevada')
 
 n_counties_by_state = group_by(cty_sf, state) %>% summarize(obs = n()) %>% ungroup()
 n_counties_by_state_2020_data = group_by(election_results_by_state_county_fin, state = state_name) %>% summarize(n_counties = n_distinct(county))
@@ -80,6 +81,18 @@ ggplot(pcts_by_county) +
   geom_sf(data = us_sf, fill = 'gray', size = 1) +
   geom_sf(aes(fill = change_bin)) +
   scale_fill_viridis_d()
+
+plot_list = map(selected_states, function(the_state){
+  ggplot(pcts_by_county %>% filter(state == the_state)) + 
+    # geom_sf(data = us_sf, fill = 'gray', size = 1) +
+    labs(title = the_state) +
+    theme_map() +
+    geom_sf(aes(fill = change_bin)) +
+    scale_fill_viridis_d()  
+})
+cowplot::plot_grid(plotlist = plot_list)
+?plot_grid
+
 
 
 
