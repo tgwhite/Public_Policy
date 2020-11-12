@@ -69,12 +69,18 @@ pcts_by_county = left_join(cty_sf, election_results_by_state_county_fin, by = c(
   ) %>%
   mutate(
     change_2020_2016 = biden_margin_pct - clinton_margin_pct,
+    change_bin = ifelse(change_2020_2016 >= 0.01, 'Biden 1%+', ifelse(change_2020_2016 <= -0.01, 'Trump 1%+', NA)),
+    change_bins = cut(change_2020_2016, breaks = seq(0, 0.03, by = 0.005), right = T, include.lowest = T, ordered_result = T),
     change_z = (change_2020_2016 - mean(change_2020_2016, na.rm = T)) / sd(change_2020_2016, na.rm = T)
   )
+table(pcts_by_county$change_bins)
+?cut
 
 ggplot(pcts_by_county) + 
-  geom_sf(aes(fill = change_2020_2016 > .005)) 
-summary(pcts_by_county$change_2020_2016)
+  geom_sf(data = us_sf, fill = 'gray', size = 1) +
+  geom_sf(aes(fill = change_bin)) +
+  scale_fill_viridis_d()
+
 
 
 ggplot(pcts_by_county %>% filter(state  %in% selected_states), aes(clinton_2016_pct, biden_pct)) +
