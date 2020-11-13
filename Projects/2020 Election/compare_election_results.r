@@ -91,6 +91,7 @@ historical_results_fin = historical_results_wide[, {
     year = year, 
     dem_rep_total = dem_rep_total,
     democrat = democrat,
+    last_dem = lag(democrat, 1),
     rep_pct = rep_pct, 
     dem_margin_pct = dem_margin_pct, 
     dem_pct = dem_pct, 
@@ -211,7 +212,7 @@ ggplot() +
   theme_minimal() +
   labs(
     x = '', y = '',
-    caption = 'Chart: Taylor G. White\nData: Politico / AP\nCounty data unavailable for Alaska',
+    caption = 'Chart: Taylor G. White\nData: Politico / AP, MIT Election Lab\nCounty data unavailable for Alaska',
     title = 'Change in U.S. Presidential Vote Margins from 2016-2020',
     subtitle = str_wrap("Counties are marked blue if Biden's vote margin improved over Clinton. Biden's margins improved in 59% of counties, with a median of 1% improvement per county.", 100)
   ) +
@@ -317,16 +318,46 @@ cowplot::plot_grid(plotlist = plot_list)
 ?plot_grid
 
 
-
-
-ggplot(pcts_by_county %>% filter(state  %in% selected_states), aes(clinton_2016_pct, biden_pct)) +
+historical_results_fin %>% head()
+head(historical_results_fin)
+filter(historical_results_fin, state == 'Nevada', year == 2020)
+ggplot(historical_results_fin %>% filter(state  %in% selected_states, year == 2020), aes(last_dem_pct , dem_pct, size = democrat - last_dem)) +
+  theme_bw() + 
+  labs(
+    x = 'Clinton 2016 Vote Share', y = 'Biden 2020 Vote Share',
+    caption = 'Chart: Taylor G. White\nData: Politico / AP, MIT Election Lab',
+    title = 'Comparing Democratic Presidential Vote Shares in Swing States',
+    subtitle = '2016 and 2020 Elections, by County. Counties with more Democratic votes in 2020 are shown in blue and those with fewer are shown in yellow.' %>% str_wrap(120)
+  ) + 
+  geom_vline(aes(xintercept = 0.5), colour = 'gray') +
+  geom_hline(aes(yintercept = 0.5), colour = 'gray') +
+  scale_size(range = c(0.25, 12), labels = comma, name = 'Vote Gain / Loss') +
   facet_wrap(~state, scales = 'free') + 
-  stat_smooth(method = 'lm', se = F) +
-  geom_point() +
+  scale_fill_manual(guide = F, values = c("orange", "steelblue")) +
+  # scale_color_viridis_d() +
+  geom_point(aes(fill = dem_pct > last_dem_pct), pch = 21, colour = 'black') +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    colour = 'firebrick', size = 0.5
+  ) +
   scale_y_continuous(labels = percent) +
-  scale_x_continuous(labels = percent)
+  scale_x_continuous(labels = percent) +
+# scale_y_continuous(labels = percent, limits = c(0, 1)) +
+  # scale_x_continuous(labels = percent, limits = c(0, 1)) +
+  theme(
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 16),
+    plot.title = element_text(size = 28),
+    plot.subtitle = element_text(size = 16, face = 'italic'),
+    plot.caption = element_text(size = 12, face = 'italic', hjust = 0),
+    strip.background = element_rect(fill = 'black'),
+    strip.text = element_text(face = 'bold', colour = 'white'),
+    legend.position = 'bottom', panel.grid = element_line(linetype = 'dashed')
+    ) 
+  
 
-
+ggsave('vote_share_comparison.png', height = 10, width = 14, units = 'in', dpi = 600)
 summary(pcts_by_county$change_2020_2016)
 sd(pcts_by_county$change_2020_2016, na.rm = T)
 
