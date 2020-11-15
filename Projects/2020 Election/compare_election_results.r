@@ -204,8 +204,8 @@ historical_results_2020_albers = left_join(cty_sf, historical_results_fin %>% fi
 
 View(historical_results_2020_albers)
 filter(historical_results_2020_albers, is.na(dem_rep_total ), state != 'Alaska')
-table(historical_results_2020_albers$margin_change_desc) / sum(table(historical_results_2020_albers$margin_change_desc))
-summary(historical_results_2020_albers$margin_change)
+pct_biden_improvement = sum(historical_results_2020_albers$margin_change_desc == 'Biden Improvement', na.rm = T) / sum(table(historical_results_2020_albers$margin_change_desc))
+median_change = median(historical_results_2020_albers$margin_change, na.rm = T)
 
 ggplot() + 
   # theme_map() +
@@ -214,7 +214,12 @@ ggplot() +
     x = '', y = '',
     caption = 'Chart: Taylor G. White\nData: Politico / AP, MIT Election Lab\nCounty data unavailable for Alaska',
     title = 'Change in U.S. Presidential Vote Margins from 2016-2020',
-    subtitle = str_wrap("Counties are marked blue if Biden's vote margin improved over Clinton. Biden's margins improved in 59% of counties, with a median of 1% improvement per county.", 100)
+    subtitle = str_wrap("Counties are marked blue if Biden's vote margin improved over Clinton. Biden's margins improved in %s of counties, with a median of %s improvement per county."
+                        %>%
+                          sprintf(
+                            percent(pct_biden_improvement, accuracy = 1),
+                            percent(median_change, accuracy = 1)
+                          ), 100)
   ) +
   theme(legend.position = 'bottom', 
         axis.text = element_blank(),
@@ -352,12 +357,12 @@ ggplot(historical_results_fin %>% filter(state  %in% selected_states, year == 20
     plot.subtitle = element_text(size = 16, face = 'italic'),
     plot.caption = element_text(size = 12, face = 'italic', hjust = 0),
     strip.background = element_rect(fill = 'black'),
-    strip.text = element_text(face = 'bold', colour = 'white'),
+    strip.text = element_text(face = 'bold', colour = 'white', size = 16),
     legend.position = 'bottom', panel.grid = element_line(linetype = 'dashed')
     ) 
   
 
-ggsave('vote_share_comparison.png', height = 10, width = 14, units = 'in', dpi = 600)
+ggsave('vote_share_comparison.png', height = 12, width = 14, units = 'in', dpi = 600)
 summary(pcts_by_county$change_2020_2016)
 sd(pcts_by_county$change_2020_2016, na.rm = T)
 
