@@ -1,0 +1,222 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0002_ds1_1790_state'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             1790
+Geographic level: State
+Dataset:          1790 Census: Population Data [US, States & Counties]
+   NHGIS code:    1790_cPop
+   NHGIS ID:      ds1
+ 
+Tables:
+ 
+1. Total Population
+   Universe:    Persons
+   Source code: NT1
+   NHGIS code:  AAA
+ 
+2. Urban Population in Cities of 25,000 and Over
+   Universe:    Urban Persons in Cities of 25,000 and Over
+   Source code: NT3
+   NHGIS code:  AAN
+ 
+3. White Population by Sex
+   Universe:    White Persons
+   Source code: NT5
+   NHGIS code:  AAP
+ 
+4. Race/Slave Status
+   Universe:    Persons
+   Source code: NT6
+   NHGIS code:  AAQ
+ 
+5. Total Number of Families
+   Universe:    Families
+   Source code: NT9
+   NHGIS code:  AAR
+ 
+6. Families by Slaveholding Status
+   Universe:    Families
+   Source code: NT13
+   NHGIS code:  AAD
+ 
+7. Percent of Families by Slaveholding Status by Race
+   Universe:    Families
+   Source code: NT17
+   NHGIS code:  AAH
+ 
+8. Total Number of Slaves
+   Universe:    Slaves
+   Source code: NT18
+   NHGIS code:  AAI
+ 
+9. Average Number of Slaves per Slaveholding Family
+   Universe:    Slaves
+   Source code: NT19
+   NHGIS code:  AAJ
+ 
+10. Slaveholding Families by Number of Slaves
+    Universe:    Slaveholding Families
+    Source code: NT20
+    NHGIS code:  AAL
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+    GISJOIN:     GIS Join Match Code
+    YEAR:        Data File Year
+    STATE:       State Name
+    STATEA:      State Code
+    COUNTYA:     County Code
+    AREANAME:    Area name
+ 
+Table 1:     Total Population
+Universe:    Persons
+Source code: NT1
+NHGIS code:  AAA
+    AAA001:      Total
+ 
+Table 2:     Urban Population in Cities of 25,000 and Over
+Universe:    Urban Persons in Cities of 25,000 and Over
+Source code: NT3
+NHGIS code:  AAN
+    AAN001:      Total
+ 
+Table 3:     White Population by Sex
+Universe:    White Persons
+Source code: NT5
+NHGIS code:  AAP
+    AAP001:      Male
+    AAP002:      Female
+ 
+Table 4:     Race/Slave Status
+Universe:    Persons
+Source code: NT6
+NHGIS code:  AAQ
+    AAQ001:      Non-White: Free
+    AAQ002:      Non-White: Slave
+    AAQ003:      White
+ 
+Table 5:     Total Number of Families
+Universe:    Families
+Source code: NT9
+NHGIS code:  AAR
+    AAR001:      Total
+ 
+Table 6:     Families by Slaveholding Status
+Universe:    Families
+Source code: NT13
+NHGIS code:  AAD
+    AAD001:      Slaveholding family
+    AAD002:      Non-slaveholding family
+ 
+Table 7:     Percent of Families by Slaveholding Status by Race
+Universe:    Families
+Source code: NT17
+NHGIS code:  AAH
+    AAH001:      Slaveholding family >> White
+    AAH002:      Slaveholding family >> Free Colored
+    AAH003:      Non-slaveholding family >> White
+    AAH004:      Non-slaveholding family >> Free Colored
+ 
+Table 8:     Total Number of Slaves
+Universe:    Slaves
+Source code: NT18
+NHGIS code:  AAI
+    AAI001:      Total
+ 
+Table 9:     Average Number of Slaves per Slaveholding Family
+Universe:    Slaves
+Source code: NT19
+NHGIS code:  AAJ
+    AAJ001:      Total
+ 
+Table 10:    Slaveholding Families by Number of Slaves
+Universe:    Slaveholding Families
+Source code: NT20
+NHGIS code:  AAL
+    AAL001:      Families holding 1 slave
+    AAL002:      Families holding 2 to 5 slaves
+    AAL003:      Families holding 5 to 9 slaves
+    AAL004:      Families holding 10 to 19 slaves
+    AAL005:      Families holding 20 to 49 slaves
+    AAL006:      Families holding 50 to 99 slaves
+    AAL007:      Families holding 100 to 199 slaves
+    AAL008:      Families holding 200 to 299 slaves
+    AAL009:      Families holding 300 slaves or over
+    AAL010:      Families holding an unknown number of slaves
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* REDISTRIBUTION: You will not redistribute the data without permission.
+
+  You may publish a subset of the data to meet journal requirements for accessing 
+  data related to a particular publication. Contact us for permission for any other 
+  redistribution; we will consider requests for free and commercial redistribution.
+
+* CITATION: You will cite NHGIS appropriately.
+
+    * Publications and research reports employing NHGIS data (either tabular or GIS) 
+      should include the following citation:
+
+        Steven Manson, Jonathan Schroeder, David Van Riper, Tracy Kugler, and Steven Ruggles. 
+        IPUMS National Historical Geographic Information System: Version 15.0 
+        [dataset]. Minneapolis, MN: IPUMS. 2020. 
+        http://doi.org/10.18128/D050.V15.0
+
+    * Publications and research reports employing school attendance areas data 
+      (either tabular or GIS) must cite it appropriately. The citation should 
+      include the following:
+
+        The College of William and Mary and the Minnesota Population Center.
+        School Attendance Boundary Information System (SABINS): Version 1.0.
+        Minneapolis, MN: University of Minnesota 2011.
+
+    * For policy briefs, online resources, or articles in the popular press, we 
+      recommend that you cite the use of NHGIS data as follows:
+
+        IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+    * If possible, citations involving school attendance areas should also include
+      the URL for the SABINS site:
+
+        http://www.sabinsdata.org/.
+
+These terms of use are a legally binding agreement. You can use the data only in 
+accordance with these terms, and any other use is a violation of the agreement. 
+Violations may result in revocation of the agreement and prohibition from using other 
+IPUMS data. If IPUMS or our partners are harmed from your violation, you are 
+responsible for all damages, including reasonable attorney's fees and expenses.
+        
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+
+Send electronic material to: nhgis@umn.edu
+
+Printed matter should be sent to:
+
+    IPUMS NHGIS
+    Institute for Social Research and Data Innovation
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455

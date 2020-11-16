@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)https://earlyamericanelections.org/data/ -->
+<html class="" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="alternate" type="application/atom+xml" href="https://earlyamericanelections.org/feed.xml" title="Mapping Early American Elections blog">
+  <title>Mapping Early American Elections</title>
+  <meta name="description" content="Early American Elections offers a window into the formative era of American politics by producing interactive maps and visualizations of Congressional and state legislative elections from 1787 to 1825.">
+  <link rel="shortcut icon" href="https://earlyamericanelections.org/theme-img/favicon.ico">
+  <link href="./Mapping Early American Elections_files/css" rel="stylesheet">
+  <link href="./Mapping Early American Elections_files/donate-style.css" rel="stylesheet">
+  <link rel="stylesheet" href="./Mapping Early American Elections_files/main.css">
+  <!-- Matomo -->
+  <script type="text / javascript" async="" defer="" src="./Mapping Early American Elections_files/matomo.js.download"></script><script type="text/javascript">
+    var _paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+      var u = "//stats.rrchnm.org/";
+      _paq.push(['setTrackerUrl', u + 'matomo.php']);
+      _paq.push(['setSiteId', '5']);
+      var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+      g.type = 'text / javascript'; g.async = true; g.defer = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+<meta class="foundation-mq"><style>.leaflet-label { display: none !important; } </style></head>
+
+<body data-whatinput="mouse"><div id="support-rrchnm-banner">Please help us sustain open access projects like this one.<a href="https://securemason.gmu.edu/s/1564/GID2/16/19-giving.aspx?sid=1564&amp;gid=2&amp;pgid=651&amp;cid=1709&amp;bledit=1&amp;sort=1&amp;dids=318.534.535.176.170&amp;appealcode=IHM02" class="donate-button"><img title="Donate to RRCHNM" src="./Mapping Early American Elections_files/donate-button-red.svg"></a></div>
+
+  <div class="row">
+
+    <div class="large-7 columns">
+      <!-- <img class="large-1 column logo" src="img/checkboxlogo.png" alt=""> -->
+      <h1><a href="https://earlyamericanelections.org/">Mapping Early American Elections</a></h1>
+    </div>
+
+    <div class="large-5 columns">
+      <ul class="menu align-right">
+        <li class="nav-link"><a href="https://earlyamericanelections.org/about/">About</a></li>
+        <li class="nav-link"><a href="https://earlyamericanelections.org/data/">Data</a></li>
+        <li class="nav-link"><a href="https://earlyamericanelections.org/blog/">Blog</a></li>
+        <li class="nav-link"><a href="https://earlyamericanelections.org/maps/">Maps</a></li>
+        <li class="nav-link"><a href="https://earlyamericanelections.org/essays/">Essays</a></li>
+      </ul>
+    </div>
+    <hr>
+  </div>
+
+
+<div class="row">
+    <div class="large-9 column">
+        <div class="featured">
+        <div class="large-12 column">
+            <div><h3 id="data">Data</h3>
+<p>The data that we have produced from this project is available in a GitHub repository. The GitHub repository’s README contains instructions on how to download the data. You may also want to read our tutorials on <a href="https://earlyamericanelections.org/blog/2019/04/30/r-tutorial.html">R</a> and in <a href="https://earlyamericanelections.org/blog/2019/04/30/qgis-tutorial.html">QGIS</a> in order to understand how the data is organized and can be used.</p>
+<ul>
+<li><a href="https://github.com/mapping-elections/elections-data">Mapping Elections data repository</a></li>
+</ul>
+<p>If you have questions about the data, you are welcome to <a href="https://github.com/mapping-elections/elections-data/issues">open an issue</a> on the repository or to <a href="mailto:lincoln@lincolnmullen.com">e-mail Lincoln Mullen</a>.</p>
+<h5 id="license">License</h5>
+<p>The data for <em>Mapping Early American Elections</em> is made available under the Open Data Commons Attribution License, <a href="https://opendatacommons.org/licenses/by/summary/">ODC-BY 1.0</a>.</p>
+<h5 id="new-nation-votes">New Nation Votes</h5>
+<p>The dataset for <em>Mapping Early American Elections</em> is derived from the <em><a href="http://elections.lib.tufts.edu/">New Nation Votes</a></em> project:</p>
+<ul>
+<li>Philip J. Lampi, et al., <em>A New Nation Votes: American Election Returns, 1787–1825</em>, American Antiquarian Society (2007): <a href="http://elections.lib.tufts.edu/" class="uri">http://elections.lib.tufts.edu</a>.</li>
+</ul>
+<p>We maintain a GitHub repository with a <a href="https://github.com/mapping-elections/nnv-xml#readme">mirror of the XML files</a> from the <em>NNV</em> dataset.</p>
+<p>The <em>NNV</em> dataset is <a href="http://elections.lib.tufts.edu/terms.html">licensed</a> under a <a href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons Zero</a> (CC0) dedication.</p>
+<h5 id="spatial-data">Spatial data</h5>
+<p>The data from <em>Mapping Early American Elections</em> is intended to be joined to several different spatial datasets. We will also release our own geocoded locations for cities and towns in the dataset.</p>
+<ul>
+<li>John H. Long and Peggy Tuck Sinko, <em><a href="http://publications.newberry.org/ahcbp/">Atlas of Historical County Boundaries</a></em>, Dr.&nbsp;William M. Scholl Center for American History and Culture, Newberry Library (2010).</li>
+<li>Jeffrey B. Lewis, Brandon DeVine, Lincoln Pitcher, and Kenneth C. Martis, <em><a href="http://cdmaps.polisci.ucla.edu/">Digital Boundary Definitions of United States Congressional Districts, 1789–2012</a></em>, University of California, Los Angels (2013).</li>
+<li>Erik Steiner, <em><a href="https://github.com/cestastanford/historical-us-city-populations">United States Historical City Populations, 1790–2010</a></em>, Spatial History Project, Center for Spatial and Textual Analysis, Stanford University (2015).</li>
+</ul>
+</div>
+        </div>
+        </div>
+    </div>
+
+
+<!--     <div class="large-3 column">
+        <div class="large-12 column">
+          <p>We might want some more text here to fill the space. Maybe a brief blurb about the project with a redundant link to the <a href="">About Page.</a></p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dignissimos rerum deserunt ratione magni placeat quisquam alias, quam adipisci delectus architecto minus doloribus quaerat fugiat veniam, et. Et commodi, quia saepe.</p>
+        </div>
+    </div> -->
+
+</div>
+
+<div class="row">
+      <hr>
+      <div class="small-12 medium-7 large-9 column">
+        <p><em>Mapping Early American Elections</em> is generously funded by the <a href="http://www.neh.gov/" title="">National Endowment for the Humanities</a> and developed by the <a href="http://rrchnm.org/" title="">Roy Rosenzweig Center for History and New Media</a> at <a href="http://gmu.edu/" title="">George Mason University</a>.</p>
+
+          <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img class="cc-img" alt="Creative Commons License" src="./Mapping Early American Elections_files/80x15.png"></a> This site is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>   
+      </div>
+      <div class="small-8 small-pull-4 medium-5 medium-pull-0 large-3 large-pull-0 column">
+          <img src="./Mapping Early American Elections_files/RR-CHNM-logo-K.png" alt="RRCHNM logo">
+          <img src="./Mapping Early American Elections_files/neh__logo_hor_grayscale_lg.jpg" alt="NEH logo">
+      </div>
+</div>
+
+    <script src="./Mapping Early American Elections_files/jquery.js.download"></script>
+    <script src="./Mapping Early American Elections_files/what-input.js.download"></script>
+    <script src="./Mapping Early American Elections_files/foundation.js.download"></script>
+    <script src="./Mapping Early American Elections_files/app.js.download"></script>
+    <script src="./Mapping Early American Elections_files/donate-positioning.js.download"></script>
+    <script>
+      // Check whether the browser is touch enabled. If it is, hide the map labels.
+      function is_touch_device() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints;
+      };
+      if (is_touch_device()) {
+        $('<style>.leaflet-label { display: none !important; } </style>')
+          .appendTo('head');
+      }
+    </script>
+  
+
+</body></html>

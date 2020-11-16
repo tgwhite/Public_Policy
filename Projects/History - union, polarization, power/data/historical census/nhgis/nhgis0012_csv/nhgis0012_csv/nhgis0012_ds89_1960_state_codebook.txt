@@ -1,0 +1,190 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0012_ds89_1960_state'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             1960
+Geographic level: State
+Dataset:          1960 Census: Detailed Age Data for All Ages [US, States & Counties]
+   NHGIS code:    1960_cAge1
+   NHGIS ID:      ds89
+ 
+Tables:
+ 
+1. Race
+   Universe:    Persons
+   Source code: NT10
+   NHGIS code:  B48
+ 
+2. Race by Sex by Age
+   Universe:    Persons
+   Source code: NT11
+   NHGIS code:  B49
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+    GISJOIN:     GIS Join Match Code
+    YEAR:        Data File Year
+    STATE:       State Name
+    STATEA:      State Code
+    COUNTYA:     County Code
+    AREANAME:    Area name
+ 
+Table 1:     Race
+Universe:    Persons
+Source code: NT10
+NHGIS code:  B48
+    B48001:      White
+    B48002:      Non-white
+ 
+Table 2:     Race by Sex by Age
+Universe:    Persons
+Source code: NT11
+NHGIS code:  B49
+    B49001:      White >> Male >> 0 to 4 years of age
+    B49002:      White >> Male >> 5 to 9 years of age
+    B49003:      White >> Male >> 10 to 14 years of age
+    B49004:      White >> Male >> 15 to 19 years of age
+    B49005:      White >> Male >> 20 to 24 years of age
+    B49006:      White >> Male >> 25 to 29 years of age
+    B49007:      White >> Male >> 30 to 34 years of age
+    B49008:      White >> Male >> 35 to 39 years of age
+    B49009:      White >> Male >> 40 to 44 years of age
+    B49010:      White >> Male >> 45 to 49 years of age
+    B49011:      White >> Male >> 50 to 54 years of age
+    B49012:      White >> Male >> 55 to 59 years of age
+    B49013:      White >> Male >> 60 to 64 years of age
+    B49014:      White >> Male >> 65 to 69 years of age
+    B49015:      White >> Male >> 70 to 74 years of age
+    B49016:      White >> Male >> 75 to 79 years of age
+    B49017:      White >> Male >> 80 to 84 years of age
+    B49018:      White >> Male >> 85 years of age and over
+    B49019:      White >> Female >> 0 to 4 years of age
+    B49020:      White >> Female >> 5 to 9 years of age
+    B49021:      White >> Female >> 10 to 14 years of age
+    B49022:      White >> Female >> 15 to 19 years of age
+    B49023:      White >> Female >> 20 to 24 years of age
+    B49024:      White >> Female >> 25 to 29 years of age
+    B49025:      White >> Female >> 30 to 34 years of age
+    B49026:      White >> Female >> 35 to 39 years of age
+    B49027:      White >> Female >> 40 to 44 years of age
+    B49028:      White >> Female >> 45 to 49 years of age
+    B49029:      White >> Female >> 50 to 54 years of age
+    B49030:      White >> Female >> 55 to 59 years of age
+    B49031:      White >> Female >> 60 to 64 years of age
+    B49032:      White >> Female >> 65 to 69 years of age
+    B49033:      White >> Female >> 70 to 74 years of age
+    B49034:      White >> Female >> 75 to 79 years of age
+    B49035:      White >> Female >> 80 to 84 years of age
+    B49036:      White >> Female >> 85 years of age and over
+    B49037:      Non-white >> Male >> 0 to 4 years of age
+    B49038:      Non-white >> Male >> 5 to 9 years of age
+    B49039:      Non-white >> Male >> 10 to 14 years of age
+    B49040:      Non-white >> Male >> 15 to 19 years of age
+    B49041:      Non-white >> Male >> 20 to 24 years of age
+    B49042:      Non-white >> Male >> 25 to 29 years of age
+    B49043:      Non-white >> Male >> 30 to 34 years of age
+    B49044:      Non-white >> Male >> 35 to 39 years of age
+    B49045:      Non-white >> Male >> 40 to 44 years of age
+    B49046:      Non-white >> Male >> 45 to 49 years of age
+    B49047:      Non-white >> Male >> 50 to 54 years of age
+    B49048:      Non-white >> Male >> 55 to 59 years of age
+    B49049:      Non-white >> Male >> 60 to 64 years of age
+    B49050:      Non-white >> Male >> 65 to 69 years of age
+    B49051:      Non-white >> Male >> 70 to 74 years of age
+    B49052:      Non-white >> Male >> 75 to 79 years of age
+    B49053:      Non-white >> Male >> 80 to 84 years of age
+    B49054:      Non-white >> Male >> 85 years of age and over
+    B49055:      Non-white >> Female >> 0 to 4 years of age
+    B49056:      Non-white >> Female >> 5 to 9 years of age
+    B49057:      Non-white >> Female >> 10 to 14 years of age
+    B49058:      Non-white >> Female >> 15 to 19 years of age
+    B49059:      Non-white >> Female >> 20 to 24 years of age
+    B49060:      Non-white >> Female >> 25 to 29 years of age
+    B49061:      Non-white >> Female >> 30 to 34 years of age
+    B49062:      Non-white >> Female >> 35 to 39 years of age
+    B49063:      Non-white >> Female >> 40 to 44 years of age
+    B49064:      Non-white >> Female >> 45 to 49 years of age
+    B49065:      Non-white >> Female >> 50 to 54 years of age
+    B49066:      Non-white >> Female >> 55 to 59 years of age
+    B49067:      Non-white >> Female >> 60 to 64 years of age
+    B49068:      Non-white >> Female >> 65 to 69 years of age
+    B49069:      Non-white >> Female >> 70 to 74 years of age
+    B49070:      Non-white >> Female >> 75 to 79 years of age
+    B49071:      Non-white >> Female >> 80 to 84 years of age
+    B49072:      Non-white >> Female >> 85 years of age and over
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* REDISTRIBUTION: You will not redistribute the data without permission.
+
+  You may publish a subset of the data to meet journal requirements for accessing 
+  data related to a particular publication. Contact us for permission for any other 
+  redistribution; we will consider requests for free and commercial redistribution.
+
+* CITATION: You will cite NHGIS appropriately.
+
+    * Publications and research reports employing NHGIS data (either tabular or GIS) 
+      should include the following citation:
+
+        Steven Manson, Jonathan Schroeder, David Van Riper, Tracy Kugler, and Steven Ruggles. 
+        IPUMS National Historical Geographic Information System: Version 15.0 
+        [dataset]. Minneapolis, MN: IPUMS. 2020. 
+        http://doi.org/10.18128/D050.V15.0
+
+    * Publications and research reports employing school attendance areas data 
+      (either tabular or GIS) must cite it appropriately. The citation should 
+      include the following:
+
+        The College of William and Mary and the Minnesota Population Center.
+        School Attendance Boundary Information System (SABINS): Version 1.0.
+        Minneapolis, MN: University of Minnesota 2011.
+
+    * For policy briefs, online resources, or articles in the popular press, we 
+      recommend that you cite the use of NHGIS data as follows:
+
+        IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+    * If possible, citations involving school attendance areas should also include
+      the URL for the SABINS site:
+
+        http://www.sabinsdata.org/.
+
+These terms of use are a legally binding agreement. You can use the data only in 
+accordance with these terms, and any other use is a violation of the agreement. 
+Violations may result in revocation of the agreement and prohibition from using other 
+IPUMS data. If IPUMS or our partners are harmed from your violation, you are 
+responsible for all damages, including reasonable attorney's fees and expenses.
+        
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+
+Send electronic material to: nhgis@umn.edu
+
+Printed matter should be sent to:
+
+    IPUMS NHGIS
+    Institute for Social Research and Data Innovation
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455

@@ -1,0 +1,233 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0007_ds7_1840_state'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             1840
+Geographic level: State
+Dataset:          1840 Census: Population & Other Data [US, States & Counties]
+   NHGIS code:    1840_cPopX
+   NHGIS ID:      ds7
+ 
+Tables:
+ 
+1. Total Population
+   Universe:    Persons
+   Source code: NT1
+   NHGIS code:  ACD
+ 
+2. Free White Population by Sex by Age
+   Universe:    Free White Persons
+   Source code: NT4
+   NHGIS code:  ACY
+ 
+3. Colored Population by Slave Status by Sex by Age
+   Universe:    Colored Persons
+   Source code: NT5
+   NHGIS code:  ACZ
+ 
+4. Employed Population by Occupation
+   Universe:    Employed Persons
+   Source code: NT7
+   NHGIS code:  AC1
+ 
+5. White Population by Sex
+   Universe:    White Persons
+   Source code: NT24
+   NHGIS code:  ACR
+ 
+6. Race/Slave Status
+   Universe:    Persons
+   Source code: NT25
+   NHGIS code:  ACS
+ 
+7. Colored Population by Slave Status by Sex
+   Universe:    Colored Persons
+   Source code: NT28
+   NHGIS code:  ACU
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+    GISJOIN:     GIS Join Match Code
+    YEAR:        Data File Year
+    STATE:       State Name
+    STATEA:      State Code
+    COUNTYA:     County Code
+    AREANAME:    Area name
+ 
+Table 1:     Total Population
+Universe:    Persons
+Source code: NT1
+NHGIS code:  ACD
+    ACD001:      Total
+ 
+Table 2:     Free White Population by Sex by Age
+Universe:    Free White Persons
+Source code: NT4
+NHGIS code:  ACY
+    ACY001:      Male >> Under 5 years of age
+    ACY002:      Male >> 5 to 9 years of age
+    ACY003:      Male >> 10 to 14 years of age
+    ACY004:      Male >> 15 to 19 years of age
+    ACY005:      Male >> 20 to 29 years of age
+    ACY006:      Male >> 30 to 39 years of age
+    ACY007:      Male >> 40 to 49 years of age
+    ACY008:      Male >> 50 to 59 years of age
+    ACY009:      Male >> 60 to 69 years of age
+    ACY010:      Male >> 70 to 79 years of age
+    ACY011:      Male >> 80 to 89 years of age
+    ACY012:      Male >> 90 to 99 years of age
+    ACY013:      Male >> 100 years of age and over
+    ACY014:      Female >> Under 5 years of age
+    ACY015:      Female >> 5 to 9 years of age
+    ACY016:      Female >> 10 to 14 years of age
+    ACY017:      Female >> 15 to 19 years of age
+    ACY018:      Female >> 20 to 29 years of age
+    ACY019:      Female >> 30 to 39 years of age
+    ACY020:      Female >> 40 to 49 years of age
+    ACY021:      Female >> 50 to 59 years of age
+    ACY022:      Female >> 60 to 69 years of age
+    ACY023:      Female >> 70 to 79 years of age
+    ACY024:      Female >> 80 to 89 years of age
+    ACY025:      Female >> 90 to 99 years of age
+    ACY026:      Female >> 100 years of age and over
+ 
+Table 3:     Colored Population by Slave Status by Sex by Age
+Universe:    Colored Persons
+Source code: NT5
+NHGIS code:  ACZ
+    ACZ001:      Free >> Male >> Under 10 years of age
+    ACZ002:      Free >> Male >> 10 to 23 years of age
+    ACZ003:      Free >> Male >> 24 to 35 years of age
+    ACZ004:      Free >> Male >> 36 to 54 years of age
+    ACZ005:      Free >> Male >> 55 to 99 years of age
+    ACZ006:      Free >> Male >> 100 years of age and over
+    ACZ007:      Free >> Female >> Under 10 years of age
+    ACZ008:      Free >> Female >> 10 to 23 years of age
+    ACZ009:      Free >> Female >> 24 to 35 years of age
+    ACZ010:      Free >> Female >> 36 to 54 years of age
+    ACZ011:      Free >> Female >> 55 to 99 years of age
+    ACZ012:      Free >> Female >> 100 years of age and over
+    ACZ013:      Slave >> Male >> Under 10 years of age
+    ACZ014:      Slave >> Male >> 10 to 23 years of age
+    ACZ015:      Slave >> Male >> 24 to 35 years of age
+    ACZ016:      Slave >> Male >> 36 to 54 years of age
+    ACZ017:      Slave >> Male >> 55 to 99 years of age
+    ACZ018:      Slave >> Male >> 100 years of age and over
+    ACZ019:      Slave >> Female >> Under 10 years of age
+    ACZ020:      Slave >> Female >> 10 to 23 years of age
+    ACZ021:      Slave >> Female >> 24 to 35 years of age
+    ACZ022:      Slave >> Female >> 36 to 54 years of age
+    ACZ023:      Slave >> Female >> 55 to 99 years of age
+    ACZ024:      Slave >> Female >> 100 years of age and over
+ 
+Table 4:     Employed Population by Occupation
+Universe:    Employed Persons
+Source code: NT7
+NHGIS code:  AC1
+    AC1001:      Mining
+    AC1002:      Agriculture
+    AC1003:      Commerce
+    AC1004:      Manufacturing and trades
+    AC1005:      Navigation of the ocean
+    AC1006:      Navigation of canals, lakes, and rivers
+    AC1007:      Learned professions and engineers
+ 
+Table 5:     White Population by Sex
+Universe:    White Persons
+Source code: NT24
+NHGIS code:  ACR
+    ACR001:      Male
+    ACR002:      Female
+ 
+Table 6:     Race/Slave Status
+Universe:    Persons
+Source code: NT25
+NHGIS code:  ACS
+    ACS001:      White
+    ACS002:      Nonwhite: Free
+    ACS003:      Nonwhite: Slave
+ 
+Table 7:     Colored Population by Slave Status by Sex
+Universe:    Colored Persons
+Source code: NT28
+NHGIS code:  ACU
+    ACU001:      Free >> Male
+    ACU002:      Free >> Female
+    ACU003:      Slave >> Male
+    ACU004:      Slave >> Female
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* REDISTRIBUTION: You will not redistribute the data without permission.
+
+  You may publish a subset of the data to meet journal requirements for accessing 
+  data related to a particular publication. Contact us for permission for any other 
+  redistribution; we will consider requests for free and commercial redistribution.
+
+* CITATION: You will cite NHGIS appropriately.
+
+    * Publications and research reports employing NHGIS data (either tabular or GIS) 
+      should include the following citation:
+
+        Steven Manson, Jonathan Schroeder, David Van Riper, Tracy Kugler, and Steven Ruggles. 
+        IPUMS National Historical Geographic Information System: Version 15.0 
+        [dataset]. Minneapolis, MN: IPUMS. 2020. 
+        http://doi.org/10.18128/D050.V15.0
+
+    * Publications and research reports employing school attendance areas data 
+      (either tabular or GIS) must cite it appropriately. The citation should 
+      include the following:
+
+        The College of William and Mary and the Minnesota Population Center.
+        School Attendance Boundary Information System (SABINS): Version 1.0.
+        Minneapolis, MN: University of Minnesota 2011.
+
+    * For policy briefs, online resources, or articles in the popular press, we 
+      recommend that you cite the use of NHGIS data as follows:
+
+        IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+    * If possible, citations involving school attendance areas should also include
+      the URL for the SABINS site:
+
+        http://www.sabinsdata.org/.
+
+These terms of use are a legally binding agreement. You can use the data only in 
+accordance with these terms, and any other use is a violation of the agreement. 
+Violations may result in revocation of the agreement and prohibition from using other 
+IPUMS data. If IPUMS or our partners are harmed from your violation, you are 
+responsible for all damages, including reasonable attorney's fees and expenses.
+        
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+
+Send electronic material to: nhgis@umn.edu
+
+Printed matter should be sent to:
+
+    IPUMS NHGIS
+    Institute for Social Research and Data Innovation
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455

@@ -1,0 +1,37 @@
+GISJOIN,YEAR,STATE,STATEA,COUNTYA,AREANAME,AE6001,AE6002,AE6003
+"G010","1850","Alabama","010",,"Alabama",426514,2265,342844
+"G050","1850","Arkansas","050",,"Arkansas",162189,608,47100
+"G060","1850","California","060",,"California",91635,962,0
+"G090","1850","Connecticut","090",,"Connecticut",363099,7693,0
+"G100","1850","Delaware","100",,"Delaware",71169,18073,2290
+"G110","1850","District Of Columbia","110",,"District of Columbia",37941,10059,3687
+"G120","1850","Florida","120",,"Florida",47203,932,39310
+"G130","1850","Georgia","130",,"Georgia",521572,2931,381682
+"G170","1850","Illinois","170",,"Illinois",846034,5436,0
+"G180","1850","Indiana","180",,"Indiana",977154,11262,0
+"G190","1850","Iowa","190",,"Iowa",191881,333,0
+"G210","1850","Kentucky","210",,"Kentucky",761413,10011,210981
+"G220","1850","Louisiana","220",,"Louisianna",255491,17462,244809
+"G230","1850","Maine","230",,"Maine",581813,1356,0
+"G240","1850","Maryland","240",,"Maryland",417943,74723,90368
+"G250","1850","Massachusetts","250",,"Massachusetts",985450,9064,0
+"G260","1850","Michigan","260",,"Michigan",395071,2583,0
+"G275","1850","Minnesota Territory","275",,"Minnesota Territory",6038,39,0
+"G280","1850","Mississippi","280",,"Mississippi",295718,930,309878
+"G290","1850","Missouri","290",,"Missouri",592004,2618,87422
+"G330","1850","New Hampshire","330",,"New Hampshire",317456,520,0
+"G340","1850","New Jersey","340",,"New Jersey",465509,23810,236
+"G355","1850","New Mexico Territory","355",,"New Mexico Territory",61525,22,0
+"G360","1850","New York","360",,"New York",3048325,49069,0
+"G370","1850","North Carolina","370",,"North Carolina",553028,27463,288548
+"G390","1850","Ohio","390",,"Ohio",1955050,25279,0
+"G413","1850","Oregon Territory","413",,"Oregon Territory",13087,207,0
+"G420","1850","Pennsylvania","420",,"Pennsylvania",2258160,53626,0
+"G440","1850","Rhode Island","440",,"Rhode Island",143875,3670,0
+"G450","1850","South Carolina","450",,"South Carolina",274563,8960,384984
+"G470","1850","Tennessee","470",,"Tennessee",756836,6422,239459
+"G480","1850","Texas","480",,"Texas",154034,397,58161
+"G495","1850","Utah Territory","495",,"Utah Territory",11330,24,26
+"G500","1850","Vermont","500",,"Vermont",313402,718,0
+"G510","1850","Virginia","510",,"Virginia",894800,54333,472528
+"G550","1850","Wisconsin","550",,"Wisconsin",304756,635,0

@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+#support-rrchnm-banner {
+  padding: .5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: "Open Sans", sans-serif;
+  overflow: hidden;
+  box-shadow: 0 0 10px #ccc;
+  z-index: 1;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.donate-button {
+  height: 2rem;
+  display: inline-block;
+  margin: 0 0 0 1rem;
+}
+
+#support-rrchnm-banner .donate-button img {
+  height: 100%;
+  width: auto;
+  margin: 0;
+}
+
+#support-rrchnm-banner:after {
+  content: "";
+  position: absolute;
+  left: -9999px;
+  right: -999px;
+  background-color: #fff;
+  bottom: 0;
+  top: 0;
+  z-index: -1;
+}
