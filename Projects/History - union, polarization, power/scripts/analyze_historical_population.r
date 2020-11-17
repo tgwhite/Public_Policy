@@ -129,7 +129,7 @@ stats_since_1970$population = rowSums(
   na.rm = T
 )
 
-stacked_pops_since_1860 = race_stat_files %>% 
+stacked_pops_since_1790_dt = race_stat_files %>% 
   bind_rows() %>%
   select(GISJOIN, YEAR, STATE, black_pop, population) %>%
   bind_rows(
@@ -138,17 +138,62 @@ stacked_pops_since_1860 = race_stat_files %>%
   ) %>%
   mutate(
     black_pct = black_pop / population
-  )
-View(stacked_pops_since_1860)
+  ) %>%
+  arrange(STATE, YEAR) %>%
+  data.table()
 
-filter(stacked_pops_since_1860, YEAR %in% c(1880), black_pct >= .40) %>%
+stacked_pops_since_1790 = stacked_pops_since_1790_dt[, {
+  
+  list(
+    YEAR = YEAR, 
+    black_pct_change = black_pct - lag(black_pct, 1),
+    black_pop_change = black_pop - lag(black_pop, 1),
+    black_pct = black_pct, 
+    population = black_pct, 
+    black_pop = black_pop
+  )
+}, by = list(STATE, GISJOIN)] %>% as.data.frame()
+
+
+state_shapefiles = seq(1790, 2000, by = 10) %>% paste0('-01-01') %>% as.Date() %>% map(function(the_date){
+  us_states(map_date = the_date) %>% mutate(map_date = the_date)
+}) %>% 
+  bind_rows() %>%
+  bind_rows(
+    us_states(map_date = '2000-01-01') %>% mutate(map_date = '2010-01-01' %>% as.Date())
+  ) %>% 
+  mutate(
+    map_year = year(map_date)
+  ) %>%
+  filter(!str_detect(name, 'Alaska|Hawaii'))
+
+joined_shapefiles = left_join(state_shapefiles, stacked_pops_since_1790, by = c('name' = 'STATE', 'map_year'='YEAR'))
+
+ggplot(joined_shapefiles) +
+  facet_wrap(~map_year) + 
+  theme_map() +
+  geom_sf(aes(fill = black_pct)) + 
+  scale_fill_viridis_c(option = 'A', name = 'Black % of Population', labels = percent)
+
+ggplot(joined_shapefiles) +
+  facet_wrap(~map_year) + 
+  theme_map() +
+  geom_sf(aes(fill = black_pct_change < 0.02))  
+  # scale_fill_gradient2(midpoint = 0, mid = '#ffffbf', high = '#fc8d59', low = '#91bfdb') 
+  # scale_fill_viridis_c(option = 'A', name = 'Black % of Population', labels = percent)
+
+setwd("~/Public_Policy/Projects/History - union, polarization, power/output")
+ggsave('black_pct_change_pop_map_hist.png', height = 14, width = 18, units = 'in', dpi = 600)
+
+
+
+filter(stacked_pops_since_1790, YEAR %in% c(1880), black_pct >= .40) %>%
   ggplot(aes(STATE, black_pct, fill = factor(YEAR))) +
   geom_bar(stat = 'identity', position = 'dodge') + 
   geom_hline(aes(yintercept = 0.5))
 
 
-
-national_black_pop_total = group_by(stacked_pops_since_1860, YEAR) %>%
+national_black_pop_total = group_by(stacked_pops_since_1790, YEAR) %>%
   summarize(
     total_black_pop = sum(black_pop, na.rm = T),
     total_pop = sum(population, na.rm = T)
@@ -281,7 +326,7 @@ date_df = tribble(
   ~start_year, ~end_year, ~desc, ~color,
   1787, 1865, '1619-1865: Legalized Slavery', "#E41A1C",
   1865, 1877, 'Post-Civil War\nReconstruction', '#377EB8',
-  1877, 1965, 'Jim Crow', "#E41A1C",
+  1877, 1965, 'Jim Crow Era', "#E41A1C",
   1965, 2020, 'Post-Voting Rights Act', "#377EB8"
 ) %>%
   mutate(
@@ -295,7 +340,7 @@ ggplot(combined_black_representation_stats) +
   labs(
     x = '', y = '',
     title = 'Timeline of Political Rights for Black Americans',
-    subtitle = 'The number of black members of Congress is a proxy for political rights and participation. After the Civil War, several black Americans were elected to Congress. The Compromise of 1877 halted this progress when federal troops were removed from the South. By 1881, blacks comprised over 40% of the population in seven states, with majorities in three, yet only had two representatives in Congress.' %>% str_wrap(120),
+    subtitle = 'The number of black members of Congress is a measure of political rights and participation. After the Civil War, several black Americans were elected to Congress. This progress was halted by the Compromise of 1877, which removed federal troops from the South. By 1881, blacks comprised over 40% of the population in seven states, with majorities in three, yet only had two representatives in Congress.' %>% str_wrap(120),
     caption = 'Chart: Taylor G. White\nData: NHGIS/U.S. Census/ACS, Brookings'
   ) +
   theme(
@@ -329,3 +374,4 @@ ggplot(combined_black_representation_stats) +
 
 setwd("~/Public_Policy/Projects/History - union, polarization, power/output")
 ggsave('black_political_rights_timeline.png', height = 10, width = 14, units = 'in', dpi = 600)
+
