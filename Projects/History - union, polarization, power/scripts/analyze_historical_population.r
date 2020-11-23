@@ -4,6 +4,10 @@ library(tigris)
 library(htmltab)
 library(viridisLite)
 library(scales)
+library(data.table)
+library(cowplot)
+library(treemapify)
+library(ggrepel)
 
 
 large_text_theme = theme(
@@ -22,6 +26,7 @@ us_states_current = us_states()
 
 us_cities_1790 = us_cities(map_date = '1790-01-01', states = NULL)
 
+# treemap and packcircles
 
 
 setwd("~/Public_Policy/Projects/History - union, polarization, power/data/historical census/historical population stats/nhgis0012_csv")
@@ -149,10 +154,27 @@ stacked_pops_since_1790 = stacked_pops_since_1790_dt[, {
     black_pct_change = black_pct - lag(black_pct, 1),
     black_pop_change = black_pop - lag(black_pop, 1),
     black_pct = black_pct, 
-    population = black_pct, 
+    population = population, 
     black_pop = black_pop
   )
 }, by = list(STATE, GISJOIN)] %>% as.data.frame()
+
+
+filter(stacked_pops_since_1790, STATE == 'Louisiana', YEAR %in% c(1860, 1870, 1880))
+
+ggplot(stacked_pops_since_1790 %>% filter(YEAR == 1790), aes(area = population, fill = black_pct, label = STATE)) +
+  geom_treemap() +
+  geom_treemap_text(fontface = "italic", colour = "gray", place = "centre",
+                    grow = TRUE) +
+  scale_fill_viridis_c(option = 'A', labels = percent)
+
+ggplot(stacked_pops_since_1790 %>% filter(YEAR == 1870), aes(area = population, fill = black_pct, label = STATE)) +
+  geom_treemap() +
+  geom_treemap_text(fontface = "italic", colour = "gray", place = "centre",
+                    grow = TRUE) +
+  scale_fill_viridis_c(option = 'A', labels = percent)
+
+stacked_pops_since_1790 %>% filter(YEAR == 1870) %>% arrange(-black_pct)
 
 
 state_shapefiles = seq(1790, 2000, by = 10) %>% paste0('-01-01') %>% as.Date() %>% map(function(the_date){
@@ -178,7 +200,7 @@ ggplot(joined_shapefiles) +
 ggplot(joined_shapefiles) +
   facet_wrap(~map_year) + 
   theme_map() +
-  geom_sf(aes(fill = black_pct_change < 0.02))  
+  geom_sf(aes(fill = black_pct_change < -0.02))  
   # scale_fill_gradient2(midpoint = 0, mid = '#ffffbf', high = '#fc8d59', low = '#91bfdb') 
   # scale_fill_viridis_c(option = 'A', name = 'Black % of Population', labels = percent)
 
@@ -209,6 +231,17 @@ national_black_pop_total = group_by(stacked_pops_since_1790, YEAR) %>%
   mutate(
     total_black_pct = total_black_pop / total_pop
   ) 
+
+ggplot(national_black_pop_total %>% filter(between(YEAR, 1790, 2019)), aes(YEAR, (total_pop - lag(total_pop))/lag(total_pop))) +
+  geom_bar(stat = 'identity') + 
+  scale_y_continuous(labels = percent) + 
+  scale_x_continuous(breaks = seq(1800, 2019, by = 10))
+
+ggplot(national_black_pop_total , aes(YEAR, (total_black_pop - lag(total_black_pop))/lag(total_black_pop))) +
+  geom_bar(stat = 'identity') + 
+  scale_y_continuous(labels = percent) + 
+  scale_x_continuous(breaks = seq(1800, 2019, by = 10))
+
 
 
 
@@ -317,17 +350,17 @@ african_americans_in_congress = read_csv("african americans in congress brooking
 
 
 combined_black_representation_stats = bind_rows(
-  african_americans_in_congress %>% mutate(variable = 'of Congress (House)', value = black_member_pct) %>% filter(Chamber == 'House'),
-  national_black_pop_total %>% mutate(variable = 'of Population', value = total_black_pct ) %>% rename(Year = YEAR)
+  african_americans_in_congress %>% mutate(variable = '% of Congress (House)', value = black_member_pct) %>% filter(Chamber == 'House'),
+  national_black_pop_total %>% mutate(variable = '% of Population', value = total_black_pct ) %>% rename(Year = YEAR)
 )
 filter(combined_black_representation_stats, Year == 1881)
 
 date_df = tribble(
   ~start_year, ~end_year, ~desc, ~color,
-  1787, 1865, '1619-1865: Legalized Slavery', "#E41A1C",
-  1865, 1877, 'Post-Civil War\nReconstruction', '#377EB8',
-  1877, 1965, 'Jim Crow Era', "#E41A1C",
-  1965, 2020, 'Post-Voting Rights Act', "#377EB8"
+  1787, 1865, '1619-1865: Legalized Slavery', "black",
+  1865, 1877, 'Post-Civil War\nReconstruction', 'lightgray',
+  1877, 1965, 'Jim Crow Era', "black",
+  1965, 2020, 'Post-Voting Rights Act', "lightgray"
 ) %>%
   mutate(
     desc_factor = factor(desc, levels = desc)
@@ -335,12 +368,13 @@ date_df = tribble(
 fill_colors = date_df$color
 names(fill_colors) = date_df$desc
 
+
 ggplot(combined_black_representation_stats) +
   theme_bw() +
   labs(
     x = '', y = '',
     title = 'Timeline of Political Rights for Black Americans',
-    subtitle = 'The number of black members of Congress is a measure of political rights and participation. After the Civil War, several black Americans were elected to Congress. This progress was halted by the Compromise of 1877, which removed federal troops from the South. By 1881, blacks comprised over 40% of the population in seven states, with majorities in three, yet only had two representatives in Congress.' %>% str_wrap(120),
+    subtitle = 'The number of black members of Congress is a measure of political rights and participation. After the Civil War, several black Americans were elected to Congress. This progress was halted by the Compromise of 1877, which removed federal troops from the South. By 1881, blacks comprised over 40% of the population in seven states, with majorities in three, yet only had two representatives in Congress.' %>% str_wrap(130),
     caption = 'Chart: Taylor G. White\nData: NHGIS/U.S. Census/ACS, Brookings'
   ) +
   theme(
@@ -351,16 +385,16 @@ ggplot(combined_black_representation_stats) +
   geom_rect(data = date_df, aes(
     xmin = start_year, xmax = end_year, ymin = 0, ymax = 0.20,
     fill = desc_factor
-  ), alpha = 0.25, colour = 'gray', show.legend = F) + 
+  ), alpha = 0.25, show.legend = F) + 
   geom_text(
     data = filter(date_df, desc == 'Post-Civil War\nReconstruction'),
     aes(x = (start_year + end_year)/2, y = 0.2, label = desc), 
-    angle = 90, hjust = 1.1
+    angle = 90, hjust = 1.1, size = 5
   ) +
   geom_text(
     data = filter(date_df, desc != 'Post-Civil War\nReconstruction'),
     aes(x = (start_year + end_year)/2, y = 0.2, label = desc),
-    vjust = -1
+    vjust = -1, size = 5
   ) +
   geom_step(aes(Year, value, linetype = variable), size = 1.25) +
   scale_x_continuous(breaks = seq(1790, 2020, by = 20)) +
@@ -368,9 +402,13 @@ ggplot(combined_black_representation_stats) +
     values = fill_colors
   ) +
   # scale_fill_brewer(palette = 'Set1', name = '') +
-  scale_linetype(name = 'Black American %') + 
+  scale_linetype(name = 'Black American %', guide = F) + 
   # geom_vline(aes(xintercept = 1964)) +
-  scale_y_continuous( labels = percent) 
+  scale_y_continuous( labels = percent) +
+  geom_text(data = tibble(variable = c('% of Congress', '% of Population'), value = c(0.075, 0.135), Year = 2010), 
+            aes(Year, value, label = variable), size = 5)
+  # geom_text_repel(data = combined_black_representation_stats %>% filter(Year %in% c(1930, 1931)), aes(Year, value, label = variable))
+
 
 setwd("~/Public_Policy/Projects/History - union, polarization, power/output")
 ggsave('black_political_rights_timeline.png', height = 10, width = 14, units = 'in', dpi = 600)

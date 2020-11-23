@@ -247,23 +247,23 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
     mortality_rate = cumulative_deaths / population,
     mortality_per_100k = mortality_rate * 1e5
   ) 
-
-ggplot(covid_deaths_by_country_date_diffs, aes(GovernmentResponseIndex, StringencyIndex)) +
-  geom_point()
-
-selected_countries = filter(covid_deaths_by_country_date_diffs, country %in% c('United States', 'Japan', 'Germany'))
-
-ggplot(selected_countries, aes(date, one_week_stringency, colour = country)) +
-  geom_point()
-
-ggplot(selected_countries, aes(one_week_stringency, avg_7_mobility, colour = country)) +
-  geom_point()
-
-ggplot(covid_deaths_by_country_date_diffs, aes(change_StringencyIndex, avg_7_mobility)) +
-  geom_point()
+# 
+# ggplot(covid_deaths_by_country_date_diffs, aes(GovernmentResponseIndex, StringencyIndex)) +
+#   geom_point()
+# 
+# selected_countries = filter(covid_deaths_by_country_date_diffs, country %in% c('United States', 'Japan', 'Germany'))
+# 
+# ggplot(selected_countries, aes(date, one_week_stringency, colour = country)) +
+#   geom_point()
+# 
+# ggplot(selected_countries, aes(one_week_stringency, avg_7_mobility, colour = country)) +
+#   geom_point()
+# 
+# ggplot(covid_deaths_by_country_date_diffs, aes(change_StringencyIndex, avg_7_mobility)) +
+#   geom_point()
 
 us = filter(covid_deaths_by_country_date_diffs, country == 'United States')
-ggplot(us, aes(StringencyIndex, avg_7_mobility)) + geom_point()
+# ggplot(us, aes(StringencyIndex, avg_7_mobility)) + geom_point()
 
 
 covid_deaths_by_country = group_by(deaths_by_country_province, country) %>%
@@ -535,15 +535,7 @@ gdp_rank_plot
 combined_plot = plot_grid(mortality_rank_plot, gdp_rank_plot)
 save_plot('mortality_growth_comparison_oecd.png', base_height = 10, base_width = 18, 
           units = 'in', dpi = 600, plot = combined_plot)
-shell('explorer .')
 
-
-head(latest_jh_data_with_growth)
-filter(latest_jh_data_with_growth, !is.na(mortality_rate)) %>% pull(country) %>% n_distinct()
-filter(latest_jh_data_with_growth, !is.na(qtr_gdp_change) & !is.na(mortality_rate)) %>% pull(country) %>% n_distinct()
-filter(latest_jh_data_with_growth, !is.na(qtr_gdp_change) & !is.na(mean_index)) %>% pull(country) %>% n_distinct()
-
-View(latest_jh_data_with_growth)
 
 
 
@@ -676,14 +668,14 @@ animated_mortality_map =
 
 
 # ?transition_reveal
-
-animate(animated_mortality_map, 
-        nframes = 450,
-        renderer = gifski_renderer("europe_mortality_map.gif"),
-        height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 200)
+# 
+# animate(animated_mortality_map, 
+#         nframes = 450,
+#         renderer = gifski_renderer("europe_mortality_map.gif"),
+#         height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
 ##### analysis --- covid response and effectiveness #####
-head(covid_deaths_by_country_date_diffs)
+
 covid_stats_by_country = 
   covid_deaths_by_country_date_diffs %>%
   filter(population > 10e6) %>%
@@ -1019,14 +1011,15 @@ ggplot() +
 ##### Stats by Region #####
 
 
-peak_mortality_dates
-
 
 
 stacked_daily_stats_selected_regions = bind_rows(
   us_daily_stats = filter(covid_deaths_by_country_date_diffs, country %in% c('United States', 'Canada')) %>% select(region = country, roll_7_new_deaths_per_100k, date),
   stats_by_region %>% filter(region %in% c('Europe & Central Asia', 'Latin America & Caribbean')) %>% select(region, roll_7_new_deaths_per_100k = total_new_death_100k_roll_7, date)
 )
+
+
+
 
 peak_mortality_dates = group_by(stacked_daily_stats_selected_regions, region) %>%
   summarize(
@@ -1056,3 +1049,33 @@ ggplot(stacked_daily_stats_selected_regions, aes(date, roll_7_new_deaths_per_100
   scale_x_date(date_breaks = '1 month', date_labels = '%b', limits = c(as.Date('2020-03-01'), max(stats_by_region$date))) +
   guides(colour = guide_legend(override.aes = list(size = 2.5)))
 ggsave('average_daily_mortality_by_region.png', height= 10, width = 12, units = 'in', dpi = 600)
+
+
+
+
+
+nordics_daily_stats = filter(covid_deaths_by_country_date_diffs, country %in% nordics) 
+
+ggplot(nordics_daily_stats, aes(date, roll_7_new_deaths_per_100k, colour = country)) +
+  theme_bw() +
+  geom_line(size = 1, show.legend = F) +
+  geom_text(data = filter(nordics_daily_stats, date == max(date)), aes(date + 10, roll_7_new_deaths_per_100k, label = country), show.legend = F) +
+  labs(
+    y = '7 Day Average of Daily Mortality\nPer 100k Population', 
+    x = '',
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
+    title = 'COVID-19 Daily Mortality, Nordic Countries'
+  ) +
+  theme(
+    plot.title = element_text(size = 18),
+    plot.subtitle  = element_text(hjust = 0, face = 'italic', size = 15),
+    plot.caption = element_text(hjust = 0, face = 'italic', size = 11),
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 15),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 15)
+  ) +
+  scale_colour_brewer(palette = 'Set1') +
+  scale_x_date(date_breaks = '1 month', date_labels = '%b', limits = c(as.Date('2020-03-01'), max(stats_by_region$date) + 10)) 
+
+ggsave('nodic_mortality_comparison.png', height = 9, width = 12, units = 'in', dpi = 600)
