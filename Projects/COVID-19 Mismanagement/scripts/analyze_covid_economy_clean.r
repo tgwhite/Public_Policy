@@ -33,7 +33,7 @@ large_text_theme = theme(
 #### use the imf projections for growth 
 
 setwd("~/Public_Policy/Projects/COVID-19")
-nordics = c('Sweden', 'Finland', 'Norway', 'Denmark')
+nordic_countries = c('Sweden', 'Finland', 'Norway', 'Denmark')
 top_europe = c('Spain', 'United Kingdom', 'Italy', 'France', 'Germany', 'Belgium')
 
 ##### get map data #####
@@ -235,6 +235,10 @@ covid_deaths_by_country_date = group_by(jh_with_pop, country, province_state, da
   ) %>%
   data.table() 
 
+
+# find daily stringency percentiles 
+
+
 covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
   new_deaths = c(NA, diff(cumulative_deaths))
   death_50_date = date[cumulative_deaths >= 50][1]
@@ -242,22 +246,33 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
   
   new_cases = c(NA, diff(cumulative_cases))
   roll_7_new_cases = c(rep(NA, 6), roll_mean(new_cases, 7))
+  roll_7_new_deaths = c(rep(NA, 6), roll_mean(new_deaths, 7))
+  roll_14_new_deaths = c(rep(NA, 13), roll_mean(new_deaths, 14))
+  roll_7_new_deaths_avg = roll_7_new_deaths / roll_14_new_deaths
+  roll_7_new_deaths_rollsum_7 = c(rep(NA, 6), roll_sum(roll_7_new_deaths_avg > 1, 7))
   
   list(
     days_since_death_50_date = days_since_death_50_date, 
     date = date, 
     
     new_deaths = new_deaths,
+    new_deaths_pct_14_avg = new_deaths / roll_14_new_deaths,
+    new_deaths_pct_7_avg = new_deaths / roll_7_new_deaths,
+    roll_7_new_deaths_avg = roll_7_new_deaths_avg,
+    roll_7_new_deaths_rollsum_7 = roll_7_new_deaths_rollsum_7,
     new_cases = new_cases, 
     roll_7_new_cases = roll_7_new_cases,
     new_deaths_pct_of_max = new_deaths / max(new_deaths, na.rm = T),
-    roll_7_new_deaths = c(rep(NA, 6), roll_mean(new_deaths, 7)),
+    roll_7_new_deaths = roll_7_new_deaths,
+    roll_7_new_deaths_pct_max = roll_7_new_deaths / max(roll_7_new_deaths, na.rm = T),
+    roll_7_new_deaths_pct = cume_dist(roll_7_new_deaths),
+    StringencyIndex_pct = cume_dist(StringencyIndex),
     cumulative_cases = cumulative_cases, 
     cumulative_deaths = cumulative_deaths,
     ContainmentHealthIndex  = ContainmentHealthIndex , 
     EconomicSupportIndex = EconomicSupportIndex ,
     GovernmentResponseIndex = GovernmentResponseIndex , 
-    StringencyIndex = StringencyIndex ,
+    StringencyIndex = StringencyIndex,
     one_week_stringency = c(rep(NA, 6), roll_mean(StringencyIndex, 7)),
     two_week_stringency = c(rep(NA, 13), roll_mean(StringencyIndex, 14)),
     Stringency_z = Stringency_z,
@@ -277,8 +292,142 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
     roll_7_new_deaths_per_100k = (roll_7_new_deaths / population) * 1e5,
     new_cases_per_100k = (new_cases / population) * 1e5,
     mortality_rate = cumulative_deaths / population,
-    mortality_per_100k = mortality_rate * 1e5
+    mortality_per_100k = mortality_rate * 1e5,
+    stringency_pct_new_deaths_interaction = roll_7_new_deaths_pct * StringencyIndex_pct
   ) 
+
+# summary(covid_deaths_by_country_date_diffs$new_deaths_per_100k)
+# 
+# group_by(covid_deaths_by_country_date_diffs, date) %>%
+#   summarize(
+#     mean_new_deaths_per_100k = mean(new_deaths_per_100k, na.rm = T)
+#   ) %>%
+#   ggplot(aes(date, mean_new_deaths_per_100k)) +
+#   geom_line() +
+#   geom_hline(aes(yintercept = mean(mean_new_deaths_per_100k, na.rm = T)))
+
+
+daily_stats = group_by(covid_deaths_by_country_date_diffs, date) %>%
+  summarize(
+    mean_roll_7_new_deaths_per_100k = mean(roll_7_new_deaths_per_100k, na.rm = T),
+    mean_stringency = mean(ContainmentHealthIndex, na.rm = T),
+    median_stringency = median(ContainmentHealthIndex, na.rm = T),
+    mean_roll_7_new_deaths_pct = mean(roll_7_new_deaths_pct, na.rm = T),
+    countries_near_peak = n_distinct(country[roll_7_new_deaths_pct > 0.75]),
+    mean_stringency_new_deaths_20 = mean(ContainmentHealthIndex[roll_7_new_deaths_pct >= 0.2], na.rm = T),
+    mean_stringency_new_deaths_40 = mean(ContainmentHealthIndex[roll_7_new_deaths_pct >= 0.4], na.rm = T),
+    mean_stringency_new_deaths_60 = mean(ContainmentHealthIndex[roll_7_new_deaths_pct >= 0.6], na.rm = T),
+    mean_stringency_new_deaths_80 = mean(ContainmentHealthIndex[roll_7_new_deaths_pct >= 0.8], na.rm = T)
+  )
+
+# match high periods with stringency, stringency being measured across countries
+
+covid_deaths_by_country_date_diffs = 
+  left_join(covid_deaths_by_country_date_diffs, daily_stats) %>%
+  mutate(
+    containment_mean_diff = ContainmentHealthIndex - mean(ContainmentHealthIndex, na.rm = T),
+    new_deaths_pct_mean = new_deaths_per_100k / mean(new_deaths_per_100k, na.rm = T),
+    roll_7_new_deaths_pct_mean = roll_7_new_deaths_per_100k / mean(roll_7_new_deaths_per_100k, na.rm = T),
+    roll_7_new_deaths_per_100k_pct_mean = roll_7_new_deaths_per_100k / mean_roll_7_new_deaths_per_100k
+  )
+
+
+filter(covid_deaths_by_country_date_diffs, roll_7_new_deaths_rollsum_7 == 7, country == 'Sweden')
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('Sweden')), aes(date)) +
+  geom_step(aes(y = roll_7_new_deaths_rollsum_7)) +
+  geom_point(aes(y = roll_7_new_deaths_rollsum_7, colour = roll_7_new_deaths_rollsum_7 == 7))
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States')), aes(date)) +
+  geom_step(aes(y = roll_7_new_deaths_rollsum_7)) +
+  geom_point(aes(y = roll_7_new_deaths_rollsum_7, colour = roll_7_new_deaths_rollsum_7 == 7))
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('Brazil')), aes(date)) +
+  geom_step(aes(y = roll_7_new_deaths_rollsum_7)) +
+  geom_point(aes(y = roll_7_new_deaths_rollsum_7, colour = roll_7_new_deaths_rollsum_7 == 7))
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('Sweden', 'Italy')), aes(date)) +
+  geom_step(aes(y = roll_7_new_deaths_rollsum_7)) +
+  facet_wrap(~country) +
+  geom_point(aes(y = roll_7_new_deaths_rollsum_7, fill = StringencyIndex, size = StringencyIndex), pch = 21) +
+  scale_fill_viridis_c(option = 'A')
+
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('Sweden', 'Italy'), roll_7_new_deaths_rollsum_7 == 7), aes(date)) +
+  geom_point(aes(y = roll_7_new_deaths_per_100k, colour = country)) +
+  geom_hline(aes(yintercept = 1))
+
+
+#### analyze peak covid vs. stringency during the peak ####
+ggplot(covid_deaths_by_country_date_diffs %>% 
+         filter(country %in% c('Sweden', 'Italy', 'United States', 'Brazil', 'United Kingdom', 'Spain', 'Peru'), 
+                roll_7_new_deaths_rollsum_7 == 7), aes(date)) +
+  geom_point(aes(y = roll_7_new_deaths_per_100k, colour = country)) +
+  geom_hline(aes(yintercept = 1))
+
+
+
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(date)) +
+  geom_line(aes(y = roll_7_new_deaths_pct_max, colour = country)) +
+  geom_hline(aes(yintercept = 1))
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(date)) +
+  geom_line(aes(y = ContainmentHealthIndex, colour = country)) 
+
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(date)) +
+  geom_line(aes(y = roll_7_new_deaths_pct_mean, colour = country)) +
+  geom_hline(aes(yintercept = 1))
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(Stringency_z, roll_7_new_deaths_pct_mean)) +
+  geom_point()
+
+
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States')), aes(date)) +
+  geom_line(aes(y = ContainmentHealthIndex, colour = country)) 
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States')), aes(date)) +
+  geom_line(aes(y = new_deaths_pct_14_avg), colour = 'blue') +
+  geom_line(aes(y = new_deaths_pct_7_avg), colour = 'red') 
+
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(date, colour = country)) +
+  geom_line(aes(y = roll_7_new_deaths_avg)) 
+
+
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(date, colour = country)) +
+  geom_line(aes(y = roll_7_new_deaths_per_100k_pct_mean)) 
+
+group_by(covid_deaths_by_country_date_diffs, country) %>%
+  summarize(
+    median_roll_7_new_deaths_per_100k_pct_mean = median(roll_7_new_deaths_per_100k_pct_mean, na.rm = T)
+  ) %>%
+  arrange(
+    -median_roll_7_new_deaths_per_100k_pct_mean
+  ) %>%
+  View()
+
+  
+
+
+ggplot(daily_stringency_stats, aes(date)) +
+  geom_line(aes(y = countries_near_peak))
+
+ggplot(covid_deaths_by_country_date_diffs, aes(date)) +
+  geom_line(aes(y = countries_near_peak))
+
+ggplot(daily_stringency_stats, aes(date)) +
+  geom_line(aes(y = mean_roll_7_new_deaths_pct))
+
+
+  
+
+filter(covid_deaths_by_country_date_diffs, country %in% nordic_countries) %>%
+  ggplot(aes(date, stringency_pct_new_deaths_interaction, colour = country)) +
+  geom_point()
+
 
 covid_deaths_by_country_date_diffs_dt = data.table(arrange(covid_deaths_by_country_date_diffs, region, country, date))
 
@@ -416,10 +565,16 @@ covid_ur_indexes = monthly_2020_unemployment_rate_dt[, {
 # https://fiscaldata.treasury.gov/datasets/monthly-statement-public-debt/summary-of-treasury-securities-outstanding
 
 ##### analysis data -- combine everything, compute stats by country #####
+
 covid_stats_by_country = 
   covid_deaths_by_country_date_diffs %>%
+  arrange(country, date) %>%
   group_by(country, income) %>%
   summarize(
+    median_roll_7_new_deaths_per_100k_pct_mean = median(roll_7_new_deaths_per_100k_pct_mean, na.rm = T),
+    case_1k_date = min(date[cumulative_cases >= 1000], na.rm = T),
+    death_100_date = min(date[cumulative_deaths >= 100], na.rm = T),
+    peak_deaths_date = min(date[roll_7_new_deaths_per_100k == max(roll_7_new_deaths_per_100k , na.rm = T)], na.rm = T),
     as_of_date = max(date, na.rm = T),
     total_deaths = max(cumulative_deaths, na.rm = T),
     mean_mobility = mean(mobility, na.rm = T),
@@ -437,7 +592,10 @@ covid_stats_by_country =
   arrange(mortality_per_100k) %>%
   mutate(
     country_ranked_mortality = factor(country, levels = rev(country)),
-    country_factor = factor(country, levels = rev(country))
+    country_factor = factor(country, levels = rev(country)),
+    case_1k_minus_min = as.numeric(case_1k_date - min(case_1k_date, na.rm = T)),
+    death_100_minus_min = as.numeric(death_100_date - min(death_100_date, na.rm = T)),
+    peak_date_minus_min = as.numeric(peak_deaths_date - min(peak_deaths_date, na.rm = T))
   ) %>%
   left_join(
     imf_real_gdp_projections, by = c('country' =   "entity")
@@ -448,7 +606,7 @@ covid_stats_by_country =
   rename(
     projection_2020 = `2020`
   ) %>%
-  filter(population > 5e6, projection_2020 >= -15) %>%
+  # filter(population > 5e6, projection_2020 >= -15) %>%
   mutate(
     three_year_avg_growth = (`2019` + `2018` + `2017` ) / 3,
     two_year_avg_growth = (`2019` + `2018`) / 2,
@@ -463,16 +621,54 @@ covid_stats_by_country =
   ) %>%
   arrange(-gdp_per_capita_us)
 
+ggplot(covid_stats_by_country, aes(max_stringency, mortality_per_100k)) +
+  geom_point()
+
+ggplot(covid_stats_by_country, aes(median_roll_7_new_deaths_per_100k_pct_mean, mortality_per_100k)) +
+  geom_text(aes(label = country, colour = region)) +
+  stat_smooth()
+
+
+
+# ggplot(covid_stats_by_country, aes(death_100_minus_min, mortality_per_100k)) + 
+#   geom_point(aes(size = mortality_per_100k)) +
+#   stat_smooth()
+
+ggplot(covid_stats_by_country %>% filter(continent == 'Europe', death_100_minus_min <= 90), 
+       aes(case_1k_minus_min, mortality_per_100k)) + 
+  # geom_point(aes(size = mortality_per_100k), pch = 21) +
+  geom_text(aes(label = country)) +
+  stat_smooth(se = F)
+
+
 covid_stats_by_country$geometry = NULL
 min_mortality_not_zero = covid_stats_by_country$mortality_per_100k[covid_stats_by_country$mortality_per_100k > 0] %>% min()
 covid_stats_by_country$mortality_per_100k_log = ifelse(covid_stats_by_country$mortality_per_100k == 0, min_mortality_not_zero, covid_stats_by_country$mortality_per_100k)
 
-ggplot(covid_stats_by_country , aes(last_trust_in_gov, log(mortality_per_100k_log))) +
-  geom_point() +
-  stat_smooth(method = 'lm')
-View(covid_stats_by_country)
-ggplot(covid_stats_by_country%>% filter(!is.na(last_trust_in_gov)), aes(country, last_trust_in_gov)) +
-  geom_bar(stat = 'identity')
+europe_map_data = left_join(europe_cropped, covid_stats_by_country, by = c('name' = 'country'))
+
+selected_european_countries = c('Sweden', 'Denmark', 'Finland', 'Norway', 'Germany', 'Italy', 'Spain', 'France', 'United Kingdom', 'Ireland')
+ggplot(europe_map_data) +
+  geom_sf(aes(fill = mortality_per_100k)) +
+  scale_fill_viridis_c(name = 'Deaths Per\n100k Pop.',option = 'A') +
+  theme_map() +
+  # theme_dark() +
+  # theme_minimal() +
+  geom_sf_label(data = filter(europe_map_data, name %in% selected_european_countries), aes(label = paste0(name, '\n', comma(mortality_per_100k, accuracy = 0.1))), size = 3.5) +
+  labs(
+    x = '', y = '', 
+    title = 'COVID-19 Mortality Rates in Europe',
+    subtitle = sprintf('Data through %s', max(covid_stats_by_country$as_of_date, na.rm=T) %>% format('%b %d, %Y')),
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE, World Bank'
+  ) +
+  theme(
+    # axis.text = element_blank(),
+    plot.subtitle = element_text(face = 'italic'),
+    plot.caption = element_text(hjust = 0, face = 'italic')
+  )
+
+ggsave('europe_mortality_rate_map.png', height = 9, width = 12, units = 'in', dpi = 600)
+
 
 
 ggplot(covid_stats_by_country , aes(gini_index, last_trust_in_gov)) +
@@ -486,54 +682,49 @@ ggplot(covid_stats_by_country , aes(gini_index, last_trust_in_gov)) +
 
   # stat_smooth(method = 'lm')
 ggsave('inequality_vs_trust.png', height = 8, width = 10, units = 'in')
-
-head(covid_stats_by_country)
-names(covid_stats_by_country)
-
-ggplot(covid_stats_by_country, aes(log(international_tourism), log(mortality_per_100k_log))) +
-  geom_point(aes(colour = region)) +
-  stat_smooth(span = 1)
-
-ggplot(covid_stats_by_country, aes(international_tourism_pop, log(mortality_per_100k_log))) +
-  geom_point(aes(colour = region)) +
-  stat_smooth(span = 1)
-
-
-ggplot(covid_stats_by_country, aes(international_tourism_pop, log(mortality_per_100k_log))) +
-  facet_wrap(~continent, scales = 'free_x') +
-  geom_point(aes(size = gdp_per_capita_us)) +
-  stat_smooth(span = 1)
-
-ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
-  facet_wrap(~continent) +
-  geom_point() +
-  stat_smooth(span = 1)
-
-ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
-  facet_wrap(~continent) +
-  geom_point() +
-  stat_smooth(span = 1)
-
-
-
-
-ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
-  geom_point(aes(size = gdp_per_capita_us)) +
-  stat_smooth(span = 1)
-
-ggplot(covid_stats_by_country, aes(gini_index, gdp_per_capita_us)) +
-  geom_point() +
-  stat_smooth(span = 1)
-
-ggplot(covid_stats_by_country, aes(health_exp_gdp, log(mortality_per_100k_log))) +
-  geom_point() +
-  stat_smooth(span = 1)
-
-
-ggplot(covid_stats_by_country, aes(health_exp_gdp, pop_pct_65_over)) +
-  geom_point(aes(size = gdp_per_capita_us, colour = log(mortality_per_100k_log))) +
-  scale_color_viridis_c(option = 'A') +
-  stat_smooth(method = 'lm')
+# 
+# ggplot(covid_stats_by_country, aes(log(international_tourism), log(mortality_per_100k_log))) +
+#   geom_point(aes(colour = region)) +
+#   stat_smooth(span = 1)
+# 
+# ggplot(covid_stats_by_country, aes(international_tourism_pop, log(mortality_per_100k_log))) +
+#   geom_point(aes(colour = region)) +
+#   stat_smooth(span = 1)
+# 
+# 
+# ggplot(covid_stats_by_country, aes(international_tourism_pop, log(mortality_per_100k_log))) +
+#   facet_wrap(~continent, scales = 'free_x') +
+#   geom_point(aes(size = gdp_per_capita_us)) +
+#   stat_smooth(span = 1)
+# 
+# ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
+#   facet_wrap(~continent) +
+#   geom_point() +
+#   stat_smooth(span = 1)
+# 
+# ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
+#   facet_wrap(~continent) +
+#   geom_point() +
+#   stat_smooth(span = 1)
+# 
+# 
+# ggplot(covid_stats_by_country, aes(gini_index, log(mortality_per_100k_log))) +
+#   geom_point(aes(size = gdp_per_capita_us)) +
+#   stat_smooth(span = 1)
+# 
+# ggplot(covid_stats_by_country, aes(gini_index, gdp_per_capita_us)) +
+#   geom_point() +
+#   stat_smooth(span = 1)
+# 
+# ggplot(covid_stats_by_country, aes(health_exp_gdp, log(mortality_per_100k_log))) +
+#   geom_point() +
+#   stat_smooth(span = 1)
+# 
+# 
+# ggplot(covid_stats_by_country, aes(health_exp_gdp, pop_pct_65_over)) +
+#   geom_point(aes(size = gdp_per_capita_us, colour = log(mortality_per_100k_log))) +
+#   scale_color_viridis_c(option = 'A') +
+#   stat_smooth(method = 'lm')
 
 
 
@@ -552,39 +743,25 @@ us_comparator_countries$diff_projection_avg %>% median()
 us_comparator_countries = mutate(us_comparator_countries, 
                                  growth_z = (projection_2020 - growth_mean) / growth_sd,
                                  mortality_iqr_over_median = (mortality_per_100k - mortality_median) / mortality_iqr 
-                                 )
+                                 ) %>%
+  filter(population > 5e6, projection_2020 >= -15) 
+  
 
+# stacked_dat = bind_rows(
+#   covid_stats_by_country, 
+#   mutate(covid_stats_by_country, region = 'Overall')
+# ) %>%
+#   filter(region %in% c('Overall', 'North America', 'Europe & Central Asia', 'Latin America & Carribean', 'Middle East & North Africa')) %>%
+#   mutate(
+#     region_upd = recode(region, `North America` = "Europe and North America", 
+#                         `Europe & Central Asia` = "Europe and North America", 
+#                         `East Asia & Pacific` = 'East Asia, South Asia, and Pacific',
+#                         ``) %>%
+#       factor(
+#         levels = c('East Asia & Pacific', '')
+#       )
+#   )
 
-#### growth projections vs. mortality 
-ggplot(covid_stats_by_country, aes(mortality_per_100k_log, diff_projection_avg/100)) +
-  geom_point() +
-  scale_color_brewer(palette = 'Set1') +
-  facet_wrap(~region) +
-  stat_smooth(method = 'lm', se = F) + 
-  theme_bw() +
-  labs(
-    x = 'COVID Mortality Per 100k, Log Scale', y = 'COVID Economic Impact\n2020 Real GDP Growth Projection vs. Three-Year Average'
-  ) + 
-  scale_y_continuous(labels = percent, breaks = seq(-.20, 0.05, by = .05)) +
-  scale_x_continuous(trans = 'log10', labels = trans_format("log10", math_format(10^.x)))
-ggsave('economic_impact_vs_mortality_facet.png', height = 9, width = 12, units = 'in', dpi = 400)
-
-
-stacked_dat = bind_rows(
-  covid_stats_by_country, 
-  mutate(covid_stats_by_country, region = 'Overall')
-) %>%
-  filter(region %in% c('Overall', 'North America', 'Europe & Central Asia', 'Latin America & Carribean', 'Middle East & North Africa')) %>%
-  mutate(
-    region_upd = recode(region, `North America` = "Europe and North America", 
-                        `Europe & Central Asia` = "Europe and North America", 
-                        `East Asia & Pacific` = 'East Asia, South Asia, and Pacific',
-                        ``) %>%
-      factor(
-        levels = c('East Asia & Pacific', '')
-      )
-  )
-us_comparator_countries$c
 
 ggplot(us_comparator_countries, aes(country_ranked_gdp)) +
   geom_hline(aes(yintercept = 0)) +
@@ -599,27 +776,27 @@ ggplot(us_comparator_countries, aes(country_ranked_gdp)) +
 region_order = c('East Asia & Pacific', 'Europe & Central Asia', 'North America', '')
 
 #### growth projections vs. mortality 
-anim = ggplot(stacked_dat, aes(mortality_per_100k_log, diff_projection_avg/100)) +
-  geom_point(aes(colour = region)) +
-  transition_states(region,
-                    transition_length = 2,
-                    state_length = 4) + 
-  enter_fade() +
-  exit_shrink() +
-  # scale_color_brewer(palette = 'Set1') +
-  scale_color_hue(name = 'Region') +
-  stat_smooth(method = 'lm') +
-  theme_bw() +
-  theme(legend.position = 'bottom') +
-  labs(
-    x = 'COVID Mortality Per 100k, Log Scale', y = 'COVID Economic Impact\n2020 Real GDP Growth Projection vs. Three-Year Average'
-  ) + 
-  scale_y_continuous(labels = percent, breaks = seq(-.20, 0.00, by = .05), limits = seq()) +
-  scale_x_continuous(trans = 'log10', labels = trans_format("log10", math_format(10^.x)))
-
-anim
-ggsave('economic_impact_vs_mortality.png', height = 9, width = 12, units = 'in', dpi = 400)
-
+# anim = ggplot(stacked_dat, aes(mortality_per_100k_log, diff_projection_avg/100)) +
+#   geom_point(aes(colour = region)) +
+#   transition_states(region,
+#                     transition_length = 2,
+#                     state_length = 4) + 
+#   enter_fade() +
+#   exit_shrink() +
+#   # scale_color_brewer(palette = 'Set1') +
+#   scale_color_hue(name = 'Region') +
+#   stat_smooth(method = 'lm') +
+#   theme_bw() +
+#   theme(legend.position = 'bottom') +
+#   labs(
+#     x = 'COVID Mortality Per 100k, Log Scale', y = 'COVID Economic Impact\n2020 Real GDP Growth Projection vs. Three-Year Average'
+#   ) + 
+#   scale_y_continuous(labels = percent, breaks = seq(-.20, 0.00, by = .05), limits = seq()) +
+#   scale_x_continuous(trans = 'log10', labels = trans_format("log10", math_format(10^.x)))
+# 
+# # anim
+# ggsave('economic_impact_vs_mortality.png', height = 9, width = 12, units = 'in', dpi = 400)
+# 
 
 
 
@@ -638,8 +815,12 @@ length(superior_countries$country) / nrow(us_comparator_countries)
 
 
 # output helper data 
-filter(us_comparator_countries, country %in% c('United States', 'Germany','Japan', 'Denmark', 'Finland', 'Sweden', 'Norway')) %>% 
-  select(country, three_year_avg_growth, projection_2020, diff_projection_avg, mortality_per_100k, population, median_stringency, max_stringency, gdp_per_capita_us, trade_pct_gdp, pop_pct_65_over) %>%
+nordic_table_data = filter(us_comparator_countries, country %in% c('United States', 'Germany','Japan', 'Denmark', 'Finland', 'Sweden', 'Norway')) %>% 
+  select(country, three_year_avg_growth, projection_2020, diff_projection_avg, mortality_per_100k, 
+         population, median_stringency, max_stringency, gdp_per_capita_us, trade_pct_gdp, pop_pct_65_over, international_tourism, case_1k_date)
+names(us_comparator_countries)
+filter(nordic_table_data, country %in% nordic_countries) %>% View()
+nordic_table_data %>%
   write.csv('comparison_stats_nordics.csv', row.names = F)
 
 # lives that could have been saved at median mortality
@@ -704,49 +885,6 @@ save_plot('mortality_growth_comparison_oecd.png', base_height = 15, base_width =
 
 
 ##### map european mortality rates ##### 
-
-europe_map_data = left_join(europe_cropped, covid_stats_by_country, by = c('name' = 'country'))
-
-selected_european_countries = c('Sweden', 'Denmark', 'Finland', 'Norway', 'Germany', 'Italy', 'Spain', 'France', 'United Kingdom', 'Ireland')
-ggplot(europe_map_data) +
-  geom_sf(aes(fill = mortality_per_100k)) +
-  scale_fill_viridis_c(name = 'Deaths Per\n100k Pop.',option = 'A') +
-  theme_map() +
-  # theme_dark() +
-  # theme_minimal() +
-  geom_sf_label(data = filter(europe_map_data, name %in% selected_european_countries), aes(label = paste0(name, '\n', comma(mortality_per_100k, accuracy = 0.1))), size = 3.5) +
-  labs(
-    x = '', y = '', 
-    title = 'COVID-19 Mortality Rates in Europe',
-    subtitle = sprintf('Data through %s', max(covid_stats_by_country$as_of_date, na.rm=T) %>% format('%b %d, %Y')),
-    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE, World Bank'
-  ) +
-  theme(
-    # axis.text = element_blank(),
-    plot.subtitle = element_text(face = 'italic'),
-    plot.caption = element_text(hjust = 0, face = 'italic')
-  )
-
-ggsave('europe_mortality_rate_map.png', height = 9, width = 12, units = 'in', dpi = 600)
-europe_map_data$last_trust_in_gov
-ggplot(europe_map_data) +
-  geom_sf(aes(fill = gini_index)) +
-  scale_fill_viridis_c(name = 'GINI Index',option = 'A') +
-  theme_map() +
-  # theme_dark() +
-  # theme_minimal() +
-  # geom_sf_label(data = filter(europe_map_data, name %in% selected_european_countries), aes(label = paste0(name, '\n', comma(mortality_per_100k, accuracy = 0.1))), size = 3.5) +
-  labs(
-    x = '', y = '', 
-    title = 'Trust in Government',
-    # subtitle = sprintf('Data through %s', max(covid_stats_by_country$as_of_date, na.rm=T) %>% format('%b %d, %Y')),
-    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE, World Bank'
-  ) +
-  theme(
-    # axis.text = element_blank(),
-    plot.subtitle = element_text(face = 'italic'),
-    plot.caption = element_text(hjust = 0, face = 'italic')
-  )
 
 # date_seq = seq.Date(min(europe_map_data_daily$date, na.rm = T), max(europe_map_data_daily$date, na.rm = T), by = 7)
 
@@ -884,7 +1022,6 @@ covid_stats_by_country = left_join(covid_stats_by_country, region_growth_stats_b
   mutate(
     
   )
-covid_stats_by_country$continent 
 
 options(na.action = na.exclude)
 # 
@@ -903,7 +1040,7 @@ options(na.action = na.exclude)
 
 
 ##### Sweden analysis ##### 
-nordics = filter(covid_deaths_by_country_date_diffs, country %in% c('Sweden', 'Denmark', 'Finland', 'Norway', 'United States'))
+nordics = filter(covid_deaths_by_country_date_diffs, country %in% nordic_countries)
 ggplot(nordics, aes(date, roll_7_new_deaths_per_100k, fill = StringencyIndex)) +
   geom_bar(stat = 'identity') +
   geom_line(aes(), show.legend = F, size = 0.75) +
@@ -947,7 +1084,7 @@ ggplot(nordics, aes(date, avg_7_mobility, colour = country)) +
     colour = guide_legend(override.aes = list(size = 2.5))
   )
 
-nordics$roll_7_new_cases_per_100k
+
 ggplot(nordics, aes(date, roll_7_new_cases_per_100k, colour = country)) +
   geom_line(size = 0.75) +
   geom_point(aes(size = roll_7_new_deaths_per_100k)) +
@@ -1069,3 +1206,40 @@ ggplot(selected_countries, aes(date, roll_7_new_deaths_per_100k)) +
   geom_point(aes(colour = factor(fin_groups))) + 
   facet_wrap(~country, scales = 'free_y') 
   
+
+
+nordics_daily_stats = filter(covid_deaths_by_country_date_diffs, country %in% nordics) 
+
+ggplot(nordics_daily_stats, aes(date, roll_7_new_deaths_per_100k, colour = country)) +
+  theme_bw() +
+  geom_line(size = 1, show.legend = F) +
+  geom_text(data = filter(nordics_daily_stats, date == max(date)), aes(date + 10, roll_7_new_deaths_per_100k, label = country), show.legend = F, size = 5) +
+  labs(
+    y = '7 Day Average of Daily Mortality\nPer 100k Population', 
+    x = '',
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
+    title = 'COVID-19 Daily Mortality Rate, Nordic Countries'
+  ) +
+  theme(
+    plot.title = element_text(size = 28),
+    plot.subtitle  = element_text(hjust = 0, face = 'italic', size = 18),
+    plot.caption = element_text(hjust = 0, face = 'italic', size = 13),
+    axis.text = element_text(size = 16),
+    axis.title = element_text(size = 18),
+    legend.text = element_text(size = 17),
+    legend.title = element_text(size = 17)
+  ) +
+  scale_colour_brewer(palette = 'Set1') +
+  scale_x_date(date_breaks = '1 month', date_labels = '%b', limits = c(as.Date('2020-03-01'), max(stats_by_region$date) + 10)) 
+
+ggsave('nodic_mortality_comparison.png', height = 9, width = 12, units = 'in', dpi = 600)
+
+head(nordics_daily_stats)
+ggplot(nordics_daily_stats, aes(date, roll_7_new_deaths_per_100k, fill = ContainmentHealthIndex )) +
+  geom_bar(stat = 'identity') +
+  facet_wrap(~country) +
+  scale_fill_viridis_c(option = 'A', direction = 1)
+
+ggplot(nordics_daily_stats, aes(date, ContainmentHealthIndex)) +
+  geom_point(aes(fill = roll_7_new_deaths_per_100k), shape = 21) +
+  facet_wrap(~country) 

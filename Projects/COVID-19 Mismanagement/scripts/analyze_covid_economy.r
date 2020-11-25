@@ -1053,29 +1053,3 @@ ggsave('average_daily_mortality_by_region.png', height= 10, width = 12, units = 
 
 
 
-
-nordics_daily_stats = filter(covid_deaths_by_country_date_diffs, country %in% nordics) 
-
-ggplot(nordics_daily_stats, aes(date, roll_7_new_deaths_per_100k, colour = country)) +
-  theme_bw() +
-  geom_line(size = 1, show.legend = F) +
-  geom_text(data = filter(nordics_daily_stats, date == max(date)), aes(date + 10, roll_7_new_deaths_per_100k, label = country), show.legend = F, size = 5) +
-  labs(
-    y = '7 Day Average of Daily Mortality\nPer 100k Population', 
-    x = '',
-    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
-    title = 'COVID-19 Daily Mortality Rate, Nordic Countries'
-  ) +
-  theme(
-    plot.title = element_text(size = 28),
-    plot.subtitle  = element_text(hjust = 0, face = 'italic', size = 18),
-    plot.caption = element_text(hjust = 0, face = 'italic', size = 13),
-    axis.text = element_text(size = 16),
-    axis.title = element_text(size = 18),
-    legend.text = element_text(size = 17),
-    legend.title = element_text(size = 17)
-  ) +
-  scale_colour_brewer(palette = 'Set1') +
-  scale_x_date(date_breaks = '1 month', date_labels = '%b', limits = c(as.Date('2020-03-01'), max(stats_by_region$date) + 10)) 
-
-ggsave('nodic_mortality_comparison.png', height = 9, width = 12, units = 'in', dpi = 600)
