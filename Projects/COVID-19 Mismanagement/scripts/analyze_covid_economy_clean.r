@@ -71,7 +71,8 @@ wdi_indicators = c(
   'NY.GDP.PCAP.CD', # per capita gdp 
   'SI.POV.GINI', # gini index
   'SH.XPD.CHEX.GD.ZS', # health exp % gdp
-  'ST.INT.ARVL' # tourist arrivals
+  'ST.INT.ARVL', # tourist arrivals
+  'SP.URB.TOTL.IN.ZS' # Urban population %
 )
 
 
@@ -113,6 +114,7 @@ trust_in_government = fread('DP_LIVE_30102020213545055.csv') %>%
   ungroup()
 # summarize_if(trust_in_government, is.character, unique)
 
+
 latest_country_pop = filter(wdi_data_wide) %>%
   group_by(country, income, region) %>%
   summarize(
@@ -123,7 +125,8 @@ latest_country_pop = filter(wdi_data_wide) %>%
     trade_pct_gdp = tail(NE.TRD.GNFS.ZS[!is.na(NE.TRD.GNFS.ZS)], 1) / 100,
     gdp_per_capita_us = tail(NY.GDP.PCAP.CD[!is.na(NY.GDP.PCAP.CD)], 1),
     pop_pct_65_over = tail(SP.POP.65UP.TO.ZS[!is.na(SP.POP.65UP.TO.ZS)], 1) / 100,
-    health_exp_gdp = tail(SH.XPD.CHEX.GD.ZS[!is.na(SH.XPD.CHEX.GD.ZS)], 1) / 100
+    health_exp_gdp = tail(SH.XPD.CHEX.GD.ZS[!is.na(SH.XPD.CHEX.GD.ZS)], 1) / 100,
+    urban_pop_pct = tail(SP.URB.TOTL.IN.ZS[!is.na(SP.URB.TOTL.IN.ZS)], 1) / 100
   ) %>%
   rename(
     year = latest_pop_year
@@ -240,6 +243,9 @@ covid_deaths_by_country_date = group_by(jh_with_pop, country, province_state, da
 
 
 covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
+  # us = filter(covid_deaths_by_country_date, country == 'United States')
+  # attach(us)
+  
   new_deaths = c(NA, diff(cumulative_deaths))
   death_50_date = date[cumulative_deaths >= 50][1]
   days_since_death_50_date = as.numeric(date - death_50_date)
@@ -249,21 +255,35 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
   roll_7_new_deaths = c(rep(NA, 6), roll_mean(new_deaths, 7))
   roll_14_new_deaths = c(rep(NA, 13), roll_mean(new_deaths, 14))
   roll_7_new_deaths_avg = roll_7_new_deaths / roll_14_new_deaths
+  roll_7_new_deaths_avg_roll = c(rep(NA, 6), roll_mean(roll_7_new_deaths_avg, 7))
   roll_7_new_deaths_rollsum_7 = c(rep(NA, 6), roll_sum(roll_7_new_deaths_avg > 1, 7))
+  avg_equalized = between(roll_7_new_deaths_avg_roll, 0.95, 1.05)
+  
+  in_equal_band = c(rep(NA, 13), roll_sum(avg_equalized, 14))
+  avg_equalized - lag(avg_equalized)
+  
+  in_death_peak = roll_7_new_deaths_rollsum_7 == 7
+  peak_changes = in_death_peak - lag(in_death_peak, 1)
+  peak_changes_filled = ifelse(peak_changes == 0, roll_7_new_deaths_rollsum_7, peak_changes)
+  
+  # loop over roll_7_new_deaths_rollsum_7. A peak window is when this exceeds 7 for a while and then comes back down 
+  
   
   list(
     days_since_death_50_date = days_since_death_50_date, 
     date = date, 
-    
     new_deaths = new_deaths,
+    roll_14_new_deaths = roll_14_new_deaths, 
+    roll_7_new_deaths = roll_7_new_deaths,
     new_deaths_pct_14_avg = new_deaths / roll_14_new_deaths,
     new_deaths_pct_7_avg = new_deaths / roll_7_new_deaths,
+    roll_7_new_deaths_avg_roll = roll_7_new_deaths_avg_roll, 
     roll_7_new_deaths_avg = roll_7_new_deaths_avg,
     roll_7_new_deaths_rollsum_7 = roll_7_new_deaths_rollsum_7,
     new_cases = new_cases, 
     roll_7_new_cases = roll_7_new_cases,
     new_deaths_pct_of_max = new_deaths / max(new_deaths, na.rm = T),
-    roll_7_new_deaths = roll_7_new_deaths,
+    
     roll_7_new_deaths_pct_max = roll_7_new_deaths / max(roll_7_new_deaths, na.rm = T),
     roll_7_new_deaths_pct = cume_dist(roll_7_new_deaths),
     StringencyIndex_pct = cume_dist(StringencyIndex),
@@ -290,6 +310,7 @@ covid_deaths_by_country_date_diffs = covid_deaths_by_country_date[, {
     new_deaths_per_100k = (new_deaths / population) * 1e5,
     roll_7_new_cases_per_100k = (roll_7_new_cases / population) * 1e5,
     roll_7_new_deaths_per_100k = (roll_7_new_deaths / population) * 1e5,
+    roll_14_new_deaths_per_100k = (roll_14_new_deaths / population) * 1e5,
     new_cases_per_100k = (new_cases / population) * 1e5,
     mortality_rate = cumulative_deaths / population,
     mortality_per_100k = mortality_rate * 1e5,
@@ -332,6 +353,16 @@ covid_deaths_by_country_date_diffs =
   )
 
 
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States')), aes(date)) +
+  geom_line(aes(y = roll_14_new_deaths_per_100k), colour = 'blue') +
+  geom_line(aes(y = roll_7_new_deaths_per_100k), colour = 'red') +
+  geom_point(aes(y = roll_7_new_deaths_avg_roll, colour = roll_7_new_deaths_rollsum_7 == 7)) +
+  geom_line(aes(y = roll_7_new_deaths_avg_roll), colour = 'black') 
+
+covid_deaths_by_country_date_diffs %>% filter(country %in% c('Italy'), month(date) == 10) %>% 
+  select(date, roll_7_new_deaths_avg_roll)
+
+
 filter(covid_deaths_by_country_date_diffs, roll_7_new_deaths_rollsum_7 == 7, country == 'Sweden')
 
 ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('Sweden')), aes(date)) +
@@ -366,7 +397,9 @@ ggplot(covid_deaths_by_country_date_diffs %>%
   geom_hline(aes(yintercept = 1))
 
 
-
+ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(date)) +
+  geom_line(aes(y = roll_7_new_deaths_per_100k, colour = country)) +
+  geom_hline(aes(yintercept = 1))
 
 ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(date)) +
   geom_line(aes(y = roll_7_new_deaths_pct_max, colour = country)) +
@@ -386,11 +419,7 @@ ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United Stat
 
 
 ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States')), aes(date)) +
-  geom_line(aes(y = ContainmentHealthIndex, colour = country)) 
-
-ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States')), aes(date)) +
-  geom_line(aes(y = new_deaths_pct_14_avg), colour = 'blue') +
-  geom_line(aes(y = new_deaths_pct_7_avg), colour = 'red') 
+  geom_line(aes(y = roll_14_new_deaths, colour = country)) 
 
 
 ggplot(covid_deaths_by_country_date_diffs %>% filter(country %in% c('United States', 'Sweden', 'Italy')), aes(date, colour = country)) +
@@ -732,7 +761,12 @@ ggsave('inequality_vs_trust.png', height = 8, width = 10, units = 'in')
 setwd("~/Public_Policy/Projects/COVID-19 Mismanagement/output")
 
 # us_comparator_countries = filter(covid_stats_by_country,  str_detect(economy, 'G7') | str_detect(economy, 'Emerging') | income == 'High income', !is.na(projection_2020))
-us_comparator_countries = head(covid_stats_by_country, 30)
+
+us_comparator_countries = filter(covid_stats_by_country, population > 5e6, projection_2020 >= -15) %>% head(30) %>%
+  mutate( 
+    growth_z = (projection_2020 - growth_mean) / growth_sd,
+    mortality_iqr_over_median = (mortality_per_100k - mortality_median) / mortality_iqr 
+  ) 
 
 growth_sd = sd(us_comparator_countries$projection_2020)
 growth_mean = mean(us_comparator_countries$projection_2020)
@@ -740,12 +774,6 @@ mortality_iqr = IQR(us_comparator_countries$mortality_per_100k)
 mortality_median = median(us_comparator_countries$mortality_per_100k)
 us_comparator_countries$diff_projection_avg %>% median()
 
-us_comparator_countries = mutate(us_comparator_countries, 
-                                 growth_z = (projection_2020 - growth_mean) / growth_sd,
-                                 mortality_iqr_over_median = (mortality_per_100k - mortality_median) / mortality_iqr 
-                                 ) %>%
-  filter(population > 5e6, projection_2020 >= -15) 
-  
 
 # stacked_dat = bind_rows(
 #   covid_stats_by_country, 
@@ -813,15 +841,6 @@ us_calcs$diff_projection_avg / median_econ_impact
 superior_countries = filter(us_comparator_countries, mortality_per_100k <= us_calcs$mortality_per_100k & diff_projection_avg >= us_calcs$diff_projection_avg, country != 'United States')
 length(superior_countries$country) / nrow(us_comparator_countries)
 
-
-# output helper data 
-nordic_table_data = filter(us_comparator_countries, country %in% c('United States', 'Germany','Japan', 'Denmark', 'Finland', 'Sweden', 'Norway')) %>% 
-  select(country, three_year_avg_growth, projection_2020, diff_projection_avg, mortality_per_100k, 
-         population, median_stringency, max_stringency, gdp_per_capita_us, trade_pct_gdp, pop_pct_65_over, international_tourism, case_1k_date)
-names(us_comparator_countries)
-filter(nordic_table_data, country %in% nordic_countries) %>% View()
-nordic_table_data %>%
-  write.csv('comparison_stats_nordics.csv', row.names = F)
 
 # lives that could have been saved at median mortality
 us_data$total_deaths - ((us_data$population / 1e5) * median_mortality)
@@ -1207,18 +1226,80 @@ ggplot(selected_countries, aes(date, roll_7_new_deaths_per_100k)) +
   facet_wrap(~country, scales = 'free_y') 
   
 
+##### nordics analysis #####
+nordics_daily_stats = filter(covid_deaths_by_country_date_diffs, country %in% nordic_countries) 
 
-nordics_daily_stats = filter(covid_deaths_by_country_date_diffs, country %in% nordics) 
+nordics_daily_stats$urban_pop_pct
+# output helper data 
+names(us_comparator_countries)
+us_comparator_countries$total_deaths
+nordic_table_data = filter(us_comparator_countries, country %in% nordic_countries) %>% 
+  select(country, three_year_avg_growth, projection_2020, diff_projection_avg, mortality_per_100k, 
+         population, median_stringency, max_stringency, gdp_per_capita_us, trade_pct_gdp, 
+        total_deaths,  
+         urban_pop_pct, 
+         pop_pct_65_over, international_tourism, case_1k_date) %>%  as.data.frame() %>%
+  arrange(-diff_projection_avg)
 
-ggplot(nordics_daily_stats, aes(date, roll_7_new_deaths_per_100k, colour = country)) +
+
+
+economic_table = select(nordic_table_data, 
+                        `IMF Projected Growth, 2020` = projection_2020,
+                        `3-Year Avg. Growth` = three_year_avg_growth,
+                        `Diff. from Avg. Growth`= diff_projection_avg,
+                        `GDP Per Capita` = gdp_per_capita_us,
+                        `Annual Tourist\nArrivals (M)` = international_tourism,
+                        `Trade/GDP` = trade_pct_gdp
+                        ) %>%
+  mutate(
+    `3-Year Avg. Growth` = percent(`3-Year Avg. Growth`/100, accuracy = 0.1),
+    `GDP Per Capita` = dollar(`GDP Per Capita`, accuracy = 1),
+    `Diff. from Avg. Growth` = percent(`Diff. from Avg. Growth`/100, accuracy = 0.1),
+    `IMF Projected Growth, 2020` = percent(`IMF Projected Growth, 2020`/ 100, accuracy = 0.1),
+    `Annual Tourist\nArrivals (M)` = round(`Annual Tourist\nArrivals (M)`/1e6, 1),
+    `Trade/GDP` = percent(`Trade/GDP`, accuracy = 1)
+  )
+
+row.names(economic_table) = nordic_table_data$country
+
+demographics_table = select(nordic_table_data, 
+                          
+                            `Population (M)` = population,
+                            `COVID Deaths` = total_deaths,
+                            `Mortality Per 100k` = mortality_per_100k, 
+                            `Max. Stringency` = max_stringency,
+                            `Date Cases > 1k` = case_1k_date,
+                        `Urban Pop.` = urban_pop_pct,
+                        `Pop. Age 65+` = pop_pct_65_over
+                        
+                        ) %>%
+  mutate(
+    `Population (M)` = round(`Population (M)`/1e6, 1),
+    `COVID Deaths`= comma(`COVID Deaths`),
+    `Mortality Per 100k` = round(`Mortality Per 100k`, 1),
+    `Urban Pop.` = percent(`Urban Pop.`, accuracy = 0.1),
+    `Pop. Age 65+` = percent(`Pop. Age 65+`, accuracy = 0.1),
+    `Date Cases > 1k` = format(`Date Cases > 1k`, '%b-%d'),
+    `Max. Stringency` = round(`Max. Stringency`, 1)
+  )
+
+row.names(demographics_table) = nordic_table_data$country
+
+label_data$peak_deaths_date
+peak_deaths_data = filter(covid_stats_by_country, country %in% nordic_countries)
+label_data = inner_join(nordics_daily_stats, peak_deaths_data, by = c('country', 'date' = 'peak_deaths_date'))
+
+mortality_plot = ggplot(nordics_daily_stats, aes(date, roll_7_new_deaths_per_100k, colour = country)) +
   theme_bw() +
+  
   geom_line(size = 1, show.legend = F) +
-  geom_text(data = filter(nordics_daily_stats, date == max(date)), aes(date + 10, roll_7_new_deaths_per_100k, label = country), show.legend = F, size = 5) +
+  geom_label_repel(data = label_data, aes(date, roll_7_new_deaths_per_100k, label = country), 
+                   show.legend = F, size = 4.5) +
   labs(
     y = '7 Day Average of Daily Mortality\nPer 100k Population', 
     x = '',
-    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
-    title = 'COVID-19 Daily Mortality Rate, Nordic Countries'
+    # caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE',
+    title = "Comparing COVID Outcomes Across Nordic Countries"
   ) +
   theme(
     plot.title = element_text(size = 28),
@@ -1232,14 +1313,56 @@ ggplot(nordics_daily_stats, aes(date, roll_7_new_deaths_per_100k, colour = count
   scale_colour_brewer(palette = 'Set1') +
   scale_x_date(date_breaks = '1 month', date_labels = '%b', limits = c(as.Date('2020-03-01'), max(stats_by_region$date) + 10)) 
 
-ggsave('nodic_mortality_comparison.png', height = 9, width = 12, units = 'in', dpi = 600)
+ggsave('nodic_mortality_comparison.png', height = 9, width = 12, units = 'in', dpi = 600, plot = mortality_plot)
 
-head(nordics_daily_stats)
-ggplot(nordics_daily_stats, aes(date, roll_7_new_deaths_per_100k, fill = ContainmentHealthIndex )) +
-  geom_bar(stat = 'identity') +
-  facet_wrap(~country) +
-  scale_fill_viridis_c(option = 'A', direction = 1)
+economic_table_plot = ggplot(data.frame(x = 0:10, y = seq(0, 5, by = 0.5)), aes(x, y)) +
+  geom_blank() +
+  # theme_nothing() +
+  annotation_custom(tableGrob(economic_table), xmin = 0, xmax = 10, ymin = 0.5, ymax = 2) +
+  coord_cartesian(ylim = c(1, 1.5), clip = "on") +
+  theme(
+    plot.subtitle = element_text(size = 24),
+    plot.caption = element_text(size = 14, face = 'italic', hjust = 0.5)
+    ) 
 
-ggplot(nordics_daily_stats, aes(date, ContainmentHealthIndex)) +
-  geom_point(aes(fill = roll_7_new_deaths_per_100k), shape = 21) +
-  facet_wrap(~country) 
+tt1 <- ttheme_default()
+tt2 = ttheme_default(
+  core=list(bg_params = list(fill = c('white', 'lightgray')))
+)
+
+
+tt3 <- ttheme_minimal(
+  core=list(bg_params = list(fill = blues9[1:4], col=NA),
+            fg_params=list(fontface=3)),
+  colhead=list(fg_params=list(col="navyblue", fontface=4L)),
+  rowhead=list(fg_params=list(col="orange", fontface=3L)))
+
+combined_tables_plot = ggplot(data.frame(x = 0:10, y = 0:10), aes(x, y)) +
+  geom_blank() +
+  theme_nothing() +
+  annotate('text', x=0, y = 10, label = 'Demographics and COVID Outcomes', size = 5, fontface = 'italic', hjust = 0) +
+  annotate('text', x=0, y = 5, label = 'Economic Characteristics and Outcomes', size = 5, fontface = 'italic', hjust = 0) +
+  annotation_custom(tableGrob(demographics_table, theme = tt2), xmin = 0, xmax = 10, ymin = 5.5, ymax = 9.5) +
+  annotation_custom(tableGrob(economic_table, theme = tt2), xmin = 0, xmax = 10, ymin = 0, ymax = 4.5) +
+  theme(
+    plot.subtitle = element_text(size = 24),
+    plot.caption = element_text(size = 12, face = 'italic', hjust = 0.5)
+  ) +
+  labs(
+    caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE, IMF October Outlook, World Bank, Oxford Stringency Index'
+  )
+
+
+combined_mortality_comparison_plot = plot_grid(
+  plotlist = list(mortality_plot, combined_tables_plot),
+  nrow = 2,
+  rel_heights = c(1, 0.85)
+)
+
+
+save_plot('nordic_mortality_comparison_with_tables.png', base_height = 9, base_width = 12, dpi = 600, plot = combined_mortality_comparison_plot)
+
+
+
+nordic_table_data %>%
+  write.csv('comparison_stats_nordics.csv', row.names = F)
