@@ -878,6 +878,18 @@ covid_stats_by_country =
     country_ranked_gdp = factor(country, levels = rev(country)),
   ) %>%
   arrange(-gdp_per_capita_us)
+<<<<<<< HEAD
+covid_stats_by_country$
+
+covid_stats_by_country$diff_projection_avg / 100
+### output data ###
+covid_stats_by_country$geometry = NULL
+
+write.csv(covid_stats_by_country, 'covid_stats_by_country.csv', row.names = F)
+# write.csv(covid_deaths_by_country_date_diffs, 'covid_deaths_by_country_date.csv', row.names = F)
+
+=======
+>>>>>>> 45dc18cdb0eeda0ffaa3308922c6adce67096026
 
 filter(covid_stats_by_country, income == 'High income') %>%
   ggplot(aes(mean_mobility_during_first_cycle, first_cycle_mortality_100k)) +
