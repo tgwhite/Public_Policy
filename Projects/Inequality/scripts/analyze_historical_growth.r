@@ -4,6 +4,8 @@ library(readxl)
 library(scales)
 library(ggrepel)
 library(ggforce)
+library(gganimate)
+library(gifski)
 
 setwd("~/Public_Policy_Upd/Projects/Inequality")
 
@@ -117,6 +119,101 @@ argentine_coups_regime_changes %>% select(country, year, prior, polity2, durable
 n_coups = filter(argentine_coups_regime_changes, n_coups > 0) %>% pull(n_coups) %>% sum()
 n_successful_coups = filter(argentine_coups_regime_changes, n_coups > 0) %>% pull(scoup1) %>% sum()
 n_autocratic_shifts = filter(argentine_coups_regime_changes, autocratic_shift) %>% nrow()
+
+# 
+# anim = 
+#   growth_comparison_dat %>% filter(days_since_case_100 >=0) %>%
+#   ggplot(aes(days_since_case_100, value, colour = country_region)) + 
+#   geom_line(size = 1) + 
+#   geom_point(size = 2) + 
+#   transition_reveal(days_since_case_100) + 
+#   coord_cartesian(clip = 'off') + 
+#   labs(
+#     title = paste0('COVID-19 Cases by Day, Through ', format(max(growth_comparison_dat$date_upd), '%B %d')), 
+#     y = 'Case Count\n', 
+#     x = '\nDays Since Case 100', 
+#     subtitle = 'Diverging paths illustrate the varied effectiveness of public health responses.',
+#     caption = 'Chart: Taylor G. White\nData: Johns Hopkins CSSE') + 
+#   theme_minimal() + 
+#   scale_y_continuous(labels = comma) +
+#   scale_x_continuous(breaks = seq(0, 60, by = 10)) +
+#   theme(
+#     plot.caption = element_text(size = 10, hjust = 0),
+#     legend.position = 'bottom'
+#   ) +
+#   theme(plot.margin = margin(5.5, 10, 5.5, 5.5), plot.subtitle = element_text(size=11, face = 'italic')) +
+#   scale_colour_hue(name = 'Country', labels = c('Korea, South' = 'South Korea')) +
+#   geom_segment(aes(xend = max(days_since_case_100) + 1, yend = value, group = country_region), linetype = 2, colour = 'grey') + 
+#   geom_point(size = 2) + 
+#   geom_text_repel(aes(x = max(days_since_case_100) + 1, label = comma(value)), hjust = 0, size = 3, 
+#                   vjust = -0.5,
+#                   show.legend = F) +
+#   geom_text_repel(data = key_dates, aes(x =days_since_case_100, y = c(60000, 70000, 80000), label = action), hjust = 0, size = 3, 
+#                   vjust = -0.5,
+#                   show.legend = F) +
+#   geom_vline(data = key_dates, 
+#              aes(xintercept = days_since_case_100, colour = country_region), size = 0.5, linetype = 'dashed', show.legend = F) 
+# 
+# animate(anim, nframes = 300,
+#         renderer = gifski_renderer("output/covid_case_growth_comparison.gif"), 
+#         height = 6, width = 6, units = 'in',  type = 'cairo-png', res = 200)
+
+argentina_rects_anim = tibble(
+  year = argentina_rects[2,]$xmin:argentina_rects[2,]$xmax %>% as.numeric(),
+  start_year = argentina_rects[2,]$xmin
+)
+
+animated_us_argentina = us_argentine_comparison %>%
+  ggplot(aes(group = country)) +
+  theme_bw() +
+  transition_reveal(year) +
+  geom_rect(data = argentina_rects_anim, aes(xmin = min(year), xmax = year, ymin = 0, group = seq_along(year),
+                                             ymax = 55000), fill = 'gray90') +
+  geom_line(aes(year, rgdpnapc)) +
+  geom_text(data = argentina_greater_us, aes(x = year, y = Argentina * 2, label = "Argentina's income briefly passes the U.S.", group = NA)) +
+  geom_text(data = argentina_rects_anim, aes(x = mean(argentina_rects_anim$year), y = 55000, label = sprintf("Argentina:\n%s autocratic shifts, %s coups d'etat (%s attempted)", n_autocratic_shifts, n_successful_coups, n_coups), group = seq_along(year))) +
+  
+  geom_segment(data = argentina_greater_us, aes(x = year, xend = year, y = Argentina, yend = Argentina * 2, group = NA)) +
+  
+  # geom_point(data = argentine_coups_regime_changes %>% filter(!is.na(label)), aes(year, rgdpnapc, shape = label), size = 4) +
+  geom_point(aes(year, rgdpnapc, colour = polity_desc, group = seq_along(year)), size = 1.5) +
+  
+  scale_shape_manual(name = "Coups d'Etat",values = c("Success" = 8, "Failure" = 5)) +
+  # facet_zoom(xlim = c(1890, 1910), ylim = c(3000, 7000), horizontal = FALSE) +
+  scale_alpha(guide = F) +
+  scale_colour_manual(name = "Type of Government", values = c('Autocracy' = '#e61938', 'Anocracy (mixed)' = 'darkgray', 'Democracy' = '#0045a1')) +
+  guides(colour = guide_legend(override.aes = list(size = 5))) +
+  # annotate('text', x = mean(argentina_greater_us$year), y = 55000, label = "Argentina's income surpasses U.S., 1894-1896", angle = 0, vjust = -0.5) +
+  # annotate('text', x = mean(argentine_coups_regime_changes$year), y = 55000, label = sprintf("%s autocratic shifts, %s coups d'etat (%s attempted)", n_autocratic_shifts, n_successful_coups, n_coups), angle = 0, vjust = -0.5) +
+  # scale_colour_gradient2(name = 'Polity V Score\n>0 is Democratic',low = '#e61938', high = '#0045a1', mid = 'gray', midpoint = 0) +
+  # scale_colour_hue(name = 'Democratic', labels = c('TRUE' = 'Yes', 'FALSE' = 'No')) +
+  geom_label_repel(aes(year, rgdpnapc, label = country), nudge_x = 1, na.rm = T, nudge_y = 3) +
+  scale_y_continuous(labels = dollar, breaks = seq(0, 50000, by = 10000)) +
+  scale_x_continuous(breaks = seq(1850, 2015, by = 10)) +
+  labs(
+    y = 'Real GDP Per Capita (2011 USD)\n', x = '',
+    title = 'Democracy and Economic Prosperity',
+    subtitle = 'Comparing divergent political and economic paths of the U.S. and Argentina',
+    caption = 'Chart: Taylor G. White (@t_g_white)\nData: Polity Project, Maddison Project'
+  ) +
+  theme_minimal() +
+  theme(
+    legend.background = element_rect(fill = 'white'),
+    legend.position = c(0.15, 0.9),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 14),
+    plot.subtitle = element_text(size = 15),
+    legend.text = element_text(size = 9),
+    legend.title = element_text(size = 10),
+    plot.caption = element_text(size = 11, face = 'italic', hjust = 0),
+    title = element_text(size = 18)
+  )
+
+animate(animated_us_argentina, nframes = 200,
+        renderer = gifski_renderer("argentina_vs_us_income_comparison.gif"),
+        height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 150, start_pause = 4, end_pause = 20)
+?animate
+
 
 
 us_argentine_comparison %>%
