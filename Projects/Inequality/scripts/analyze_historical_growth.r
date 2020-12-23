@@ -212,7 +212,7 @@ animated_us_argentina = us_argentine_comparison %>%
 animate(animated_us_argentina, nframes = 200,
         renderer = gifski_renderer("argentina_vs_us_income_comparison.gif"),
         height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 150, start_pause = 4, end_pause = 20)
-?animate
+
 
 
 
