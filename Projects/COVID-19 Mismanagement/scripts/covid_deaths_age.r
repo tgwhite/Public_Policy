@@ -126,7 +126,8 @@ ggplot(aes(age_group_factor, value)) +
   geom_bar(stat = 'identity') +
   # shadow_mark(past = TRUE, future = TRUE, colour = 'grey') +
   scale_y_continuous(labels = comma) +
-  view_zoom(pause_length = 3, step_length = 2, nsteps = 2, ease = 'linear')
+  # view_step(pause_length = 3, step_length = 2, nsteps = 2, ease = 'linear')
+  view_zoom(pause_length = 5, step_length = 1, nsteps = 2, ease = 'sine-in-out')
 
 anim <- ggplot(iris, aes(Petal.Length, Petal.Width, colour = Species)) +
   geom_point() +
