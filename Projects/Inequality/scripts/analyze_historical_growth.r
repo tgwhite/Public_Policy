@@ -24,7 +24,7 @@ polity_v_fin =
                      `Korea South` = 'South Korea',
                      `Korea North` = 'North Korea')
   )
-View(polity_v_fin)
+
 
 
 historical_gdp_stats = read_excel("data/angus maddison historical gdp statistics.xlsx", 'Full data') %>% 
@@ -84,6 +84,9 @@ historical_gdp_stats_growth = historical_gdp_stats[, {
     autocratic_shift = change < 0 & sign(polity2) != sign(prior) & is.na(interim),
     n_coups = scoup1 + atcoup2
   )
+
+filter(historical_gdp_stats_growth, country %in% c('United States', 'United Kingdom', 'Argentina'), between(year, 1890, 1900) | between(year, 1930, 1940)) %>%
+  select(country, year, rgdpnapc) %>% pivot_wider(names_from = "country", values_from = 'rgdpnapc') %>% View()
 
 
 setwd('output')
@@ -365,7 +368,7 @@ ggsave('russia+ussr versus US.png', height = 9, width = 12, units = 'in', dpi = 
 
 
 ##### median income by polity type #####
-historical_gdp_stats_growth$real_gdp_cap_growth
+
 filter(historical_gdp_stats_growth, is.na(polity_desc)) %>% select(country, year, polity2, interim, prior, regtrans) %>% filter(year > 1800) %>%View()
 growth_by_polity_type = group_by(historical_gdp_stats_growth, year, polity_desc) %>% 
   filter(year >= 1800) %>%
@@ -379,6 +382,27 @@ growth_by_polity_type = group_by(historical_gdp_stats_growth, year, polity_desc)
 ggplot(growth_by_polity_type, aes(year, median_rgdpnapc )) +
   geom_line(aes(colour = polity_desc)) +
   geom_point(aes(colour = polity_desc, alpha = obs, size = obs))
+
+
+top_incomes_by_year = group_by(year) %>%
+  top_n(20, rgdpnapc)
+
+top_n(historical_gdp_stats_growth, 10, rgdpnapc)
+
+
+historical_gdp_stats_growth %>% filter(year >= 1800, pop >= 1000) %>%
+ggplot(aes(factor(cyl), mpg)) +
+  geom_boxplot() +
+  # Here comes the gganimate code
+  transition_states(
+    gear,
+    transition_length = 2,
+    state_length = 1
+  ) +
+  enter_fade() +
+  exit_shrink() +
+  ease_aes('sine-in-out')
+
 
 ##### global trends, democracy and growth #####
 
