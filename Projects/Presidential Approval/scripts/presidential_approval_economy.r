@@ -120,7 +120,7 @@ president_stats = group_by(stacked_presidential_approval, President) %>%
   arrange(
     start_date
   ) 
-arrange(president_stats, min_approval)
+
 
 president_stats_by_term = group_by(stacked_presidential_approval, President, first_term) %>% summarize(
   obs = n(),
@@ -194,28 +194,63 @@ ten_year_interest_rates_df = get_monthly_annual_index_fred('DGS10') %>% rename(t
 interest_rate_spread_df = get_monthly_annual_index_fred('T10Y2Y') %>% rename(ten_two_spread = last_val) 
 unemployment_rate_df = get_monthly_annual_index_fred('UNRATE') %>% rename(unemployment_rate = last_val) 
 
+# debt_gdp_ratio_df = get_monthly_annual_index_fred('GFDEGDQ188S') %>% rename(debt_to_gdp = last_val) 
+# annual_deficit_df = get_monthly_annual_index_fred('FYFSD') %>% rename(annual_deficit = last_val) 
+# annual_gdp_df = get_monthly_annual_index_fred('GDPA') %>% rename(annual_gdp = last_val) 
 
-gdp = getSymbols('GDPC1', from = 1940, to = 2020, src = 'FRED', auto.assign = F)
-index(gdp) = index(gdp) - 1 # change the reporting dates to end of period 
-gdp_changes = allReturns(gdp) %>% as.data.frame()
-gdp_df = tibble(
-  date = index(gdp), 
-  quarterly_value = as.numeric(gdp$GDPC1)
-) %>% 
-  bind_cols(
-    gdp_changes
-  ) %>%
-  rename(
-    annual_gdp = yearly, 
-    quarterly_gdp = quarterly
-  ) %>%
-  mutate(
-    year = year(date),
-    month = month(date)
-  )
+
+get_quarterly_changes = function(symbol) {
+  # symbol = 'GDPC1'
+  the_symbol = getSymbols(symbol, from = 1940, to = 2020, src = 'FRED', auto.assign = F)
+  
+  index(the_symbol) = index(the_symbol) - 1 # change the reporting dates to end of period 
+  changes = allReturns(the_symbol) %>% as.data.frame()
+  the_df = tibble(
+    date = index(the_symbol), 
+    quarterly_value = as.numeric(the_symbol[,symbol])
+  ) %>% 
+    bind_cols(
+      changes
+    ) %>%
+    rename(
+      annual_val = yearly, 
+      quarterly_val = quarterly
+    ) %>%
+    mutate(
+      year = year(date),
+      month = month(date)
+    )
+  return(the_df)
+}
+
+gdp_df = get_quarterly_changes('GDPC1') %>% rename(annual_gdp = annual_val, quarterly_gdp = quarterly_val)
+debt_gdp_ratio_df = get_quarterly_changes('GFDEGDQ188S') %>% rename(annual_deficit = annual_val, quarterly_deficit = quarterly_val, quarterly_debt_gdp = quarterly_value)
+
+# annual_deficit_df = get_monthly_annual_index_fred('FYFSD') %>% rename(annual_deficit = last_val) 
+
+
+
+# gdp = getSymbols('GDPC1', from = 1940, to = 2020, src = 'FRED', auto.assign = F)
+
+# index(gdp) = index(gdp) - 1 # change the reporting dates to end of period 
+# gdp_changes = allReturns(gdp) %>% as.data.frame()
+# gdp_df = tibble(
+#   date = index(gdp), 
+#   quarterly_value = as.numeric(gdp$GDPC1)
+# ) %>% 
+#   bind_cols(
+#     gdp_changes
+#   ) %>%
+#   rename(
+#     annual_gdp = yearly, 
+#     quarterly_gdp = quarterly
+#   ) %>%
+#   mutate(
+#     year = year(date),
+#     month = month(date)
+#   )
 
 inflation = getSymbols('CPIAUCSL', from = 1940, to = 2020, src = 'FRED', auto.assign = F) 
-
 
 inflation_changes = allReturns(inflation) %>% as.data.frame()
 inflation_df = tibble(
@@ -233,6 +268,7 @@ inflation_df = tibble(
     year = year(date),
     month = month(date)
   )
+
 
 # annual_inflation = filter(inflation_df, !is.na(yearly)) %>% mutate(year = year(date))
 # 
@@ -271,6 +307,9 @@ get_monthly_symbol_returns = function(symbol, src) {
 
 sp500_df = get_monthly_symbol_returns('^GSPC') 
 gold_df = get_monthly_symbol_returns('IAU') 
+
+
+
 
 
 # get month end returns
@@ -346,7 +385,6 @@ ggplot(president_indexes %>% filter(month_index <= 48, month_date >= as.Date('19
   )
 ggsave('stock_market_by_president.png', height = 9, width = 12, units = 'in', dpi = 600)
 
-View(president_indexes)
 
 
 financial_statistics_with_presidents_dt[, {month_date[1]}, by = list(year)]
@@ -474,42 +512,3 @@ ggplot(annual_comparison, aes(annual_inflation, ten_year_yield)) +
 
 ggsave('inflation_vs_10yr_yield.png', height = 10, width = 10, units = 'in', dpi = 450)
 
-ggplot(monthly_comparison, aes(monthly_inflation, ten_year_yield )) +
-  geom_point()
-
-ggplot(annual_comparison, aes(annual_gdp, annual_inflation)) +
-  geom_point()
-
-
-ggplot(annual_comparison, aes(annual_gdp, annual_inflation)) +
-  geom_point()
-
-ggplot(annual_comparison, aes(year, annual_inflation)) +
-  geom_bar(stat = 'identity', aes(fill = annual_gdp)) +
-  scale_fill_viridis_c(option = 'A')
-
-ggplot(annual_comparison, aes(year, annual_inflation)) +
-  geom_point(stat = 'identity', aes(colour = annual_gdp, size = annual_gdp)) +
-  scale_colour_viridis_c(option = 'A')
-
-
-
-
-tail(joined_inflation_gold_growth, 12)
-
-
-ggplot(monthly_comparison, aes(scaled_gold , scaled_inflation)) +
-  geom_point() +
-  stat_smooth(method = 'lm')
-
-
-
-ggplot(monthly_comparison, aes(annual_inflation  , annual_gold )) +
-  geom_point() +
-  stat_smooth(method = 'lm')
-
-summary(monthly_comparison$monthly_gold)
-summary(monthly_comparison$monthly_inflation)
-hist(monthly_comparison$monthly_gold)
-hist(monthly_comparison$monthly_inflation)
-scale(monthly_comparison$monthly_gold)
