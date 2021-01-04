@@ -16,7 +16,8 @@ font_family = 'Calibri'
 setwd("~/Public_Policy_Upd/Projects/COVID-19 Mismanagement/output")
 
 ##### get comparative flu stats #####
-flu_links = c('https://www.cdc.gov/flu/about/burden/2018-2019.html', 'https://www.cdc.gov/flu/about/burden/2017-2018.htm', 
+flu_links = c('https://www.cdc.gov/flu/about/burden/2019-2020.html',
+              'https://www.cdc.gov/flu/about/burden/2018-2019.html', 'https://www.cdc.gov/flu/about/burden/2017-2018.htm', 
               'https://www.cdc.gov/flu/about/burden/2016-2017.html', 'https://www.cdc.gov/flu/about/burden/2015-2016.html', 
               'https://www.cdc.gov/flu/about/burden/2014-2015.html', 'https://www.cdc.gov/flu/about/burden/2013-2014.html',
               'https://www.cdc.gov/flu/about/burden/2012-2013.html', 'https://www.cdc.gov/flu/about/burden/2011-2012.html',
@@ -56,7 +57,12 @@ johns_hopkins_deaths = read_csv('https://raw.githubusercontent.com/CSSEGISandDat
   ) %>%
   filter(country == 'US')
 
-flu_season_total_deaths = filter(flu_burden_tables, age_group == 'All ages') %>% select(age_group, season, deaths) %>% mutate(illness = 'Influenza')
+flu_season_total_deaths = filter(flu_burden_tables, age_group == 'All ages') %>% select(age_group, season, deaths) %>% mutate(illness = 'Influenza') %>%
+  head(9)
+# flu_season_total_deaths = bind_rows(
+#   data.frame(season = '2019-2020', deaths = 22000),
+#   flu_season_total_deaths
+# )
 covid_deaths = filter(johns_hopkins_deaths, date == as.Date('2020-12-31')) %>% mutate(illness = 'COVID-19', season = '2020')
 stacked_flu_covid_total_deaths = bind_rows(covid_deaths, flu_season_total_deaths) %>% select(season, illness, deaths) %>% mutate(id = 1:length(deaths))
 
@@ -77,16 +83,17 @@ ggplot(data = dat.gg) +
     axis.title = element_blank(),
     panel.grid = element_blank(),
     plot.title = element_text(size = 28),
-    plot.subtitle = element_text(size = 16, face = 'italic'),
+    plot.subtitle = element_text(size = 15, face = 'italic'),
     plot.caption = element_text(size = 13, face = 'italic', hjust = 0)
+    # plot.margin = unit(c(1.5, 0, 1.5, 0), 'cm')
   ) +
   labs(
     x = '\n\n',
-    title = 'Comparing COVID-19 vs. Influenza Mortality in the U.S.',
+    title = 'COVID-19 vs. Influenza Mortality in the U.S.',
     caption = 'Chart: Taylor G. White (@t_g_white)\nData: CDC Flu Disease Burden, Johns Hopkins CSSE',
     subtitle = sprintf('COVID-19 killed more Americans in one year (%s) than did the flu over the last nine seasons (%s).', 
                        covid_deaths$deaths %>% comma(), sum(flu_season_total_deaths$deaths) %>% comma()) %>%
-      str_wrap(100)
+      str_wrap(110)
   ) +
   geom_text(data = packing, aes(x, y, label = paste0(season %>% str_extract('[0-9]{4}'), ':\n',comma(deaths)), size = radius), family = font_family) +
   scale_size(range = c(3, 8), guide = F) +
@@ -357,13 +364,39 @@ total_covid_cdc = sum(total_deaths_by_age_group$total_deaths) %>% comma()
 ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
   labs(
     x = '', y = '',
-    subtitle = "As of the end of the 2020, COVID killed roughly the same number of people in the U.S. (%s) as the last nine flu seasons combined (%s)",
-    title = 'U.S. COVID vs. Flu Mortality by Age Group',
+    title = 'U.S. COVID Mortality by Age Group',
     caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s)', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
   ) +
   theme_bw() +
-  annotation_custom(tableGrob(flu_stats_by_age_group_pretty, theme=tt2), 
-                    xmin = levels(total_deaths_by_age_group$age_group_factor)[1], xmax = levels(total_deaths_by_age_group$age_group_factor)[4], 
+  # annotation_custom(tableGrob(flu_stats_by_age_group_pretty, theme=tt2), 
+  #                   xmin = levels(total_deaths_by_age_group$age_group_factor)[1], xmax = levels(total_deaths_by_age_group$age_group_factor)[4], 
+  #                   ymin = 75e3, ymax = 100e3
+  #                   )  +
+  theme(
+    text = element_text(family = font_family),
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 14),
+    plot.title = element_text(size = 26),
+    plot.subtitle = element_text(size = 15, face = 'italic'),
+    plot.caption = element_text(size = 11, hjust = 0, face = 'italic'),
+    strip.background = element_rect(fill = 'black'),
+    strip.text = element_text(colour = 'white', face = 'bold', size = 16)
+  ) +
+  geom_bar(aes(), stat = 'identity', fill = 'firebrick', width = 0.75) +
+  geom_text(aes(x = age_group_factor, y = total_deaths, label = comma(total_deaths)), family = font_family, size = 4, vjust = -1) +
+  scale_y_continuous(labels = comma) 
+ggsave('covid_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
+
+ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
+  labs(
+    x = '', y = '',
+    title = 'COVID vs. Flu Mortality in the U.S., by Age Group',
+    caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s)', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
+  ) +
+  theme_bw() +
+  annotation_custom(tableGrob(flu_stats_by_age_group_pretty, theme=tt2),
+                    xmin = levels(total_deaths_by_age_group$age_group_factor)[1], xmax = levels(total_deaths_by_age_group$age_group_factor)[4],
                     ymin = 75e3, ymax = 100e3
                     )  +
   theme(
@@ -380,4 +413,4 @@ ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
   geom_bar(aes(), stat = 'identity', fill = 'firebrick', width = 0.75) +
   geom_text(aes(x = age_group_factor, y = total_deaths, label = comma(total_deaths)), family = font_family, size = 4, vjust = -1) +
   scale_y_continuous(labels = comma) 
-ggsave('covid_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
+ggsave('covid_flu_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
