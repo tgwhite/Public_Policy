@@ -6,13 +6,101 @@ library(htmltab)
 library(gganimate)
 library(extrafont)
 library(ggrepel)
+library(gridExtra)
+library(packcircles)
 
 loadfonts(device = "win")
 windowsFonts()
 font_family = 'Calibri'
 
-
 setwd("~/Public_Policy_Upd/Projects/COVID-19 Mismanagement/output")
+
+##### get comparative flu stats #####
+flu_links = c('https://www.cdc.gov/flu/about/burden/2018-2019.html', 'https://www.cdc.gov/flu/about/burden/2017-2018.htm', 
+              'https://www.cdc.gov/flu/about/burden/2016-2017.html', 'https://www.cdc.gov/flu/about/burden/2015-2016.html', 
+              'https://www.cdc.gov/flu/about/burden/2014-2015.html', 'https://www.cdc.gov/flu/about/burden/2013-2014.html',
+              'https://www.cdc.gov/flu/about/burden/2012-2013.html', 'https://www.cdc.gov/flu/about/burden/2011-2012.html',
+              'https://www.cdc.gov/flu/about/burden/2010-2011.html')
+
+flu_burden_tables = lapply(flu_links, function(the_link){
+  the_season = str_extract(the_link, '[0-9]{4}-[0-9]{4}')
+  the_df = htmltab(the_link) %>% 
+    mutate(
+      season = the_season
+    )
+  names(the_df) = c('age_group', 'syptomatic_illnesses', 'syptomatic_illnesses_ci', 
+                    'medical_visits', 'medical_visits_ci', 'hosptitalizations', 'hosptitalizations_ci',
+                    'deaths', 'deaths_ci', 'season')
+  the_df
+}) %>% 
+  bind_rows() %>%
+  mutate(
+    deaths = str_remove(deaths, ',') %>% as.numeric() 
+  )
+
+
+
+
+##### get JH data and create circle plots #####
+
+
+johns_hopkins_deaths = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv') %>%
+  pivot_longer(cols = matches('^([0-9])'), names_to = 'date', values_to = 'deaths') %>% 
+  mutate(
+    date_upd = as.Date(date, format = '%m/%d/%y')
+  ) %>%
+  select(-date) %>%
+  rename(
+    date = date_upd,
+    country = `Country/Region`
+  ) %>%
+  filter(country == 'US')
+
+flu_season_total_deaths = filter(flu_burden_tables, age_group == 'All ages') %>% select(age_group, season, deaths) %>% mutate(illness = 'Influenza')
+covid_deaths = filter(johns_hopkins_deaths, date == as.Date('2020-12-31')) %>% mutate(illness = 'COVID-19', season = '2020')
+stacked_flu_covid_total_deaths = bind_rows(covid_deaths, flu_season_total_deaths) %>% select(season, illness, deaths) %>% mutate(id = 1:length(deaths))
+
+packing <- circleProgressiveLayout(stacked_flu_covid_total_deaths, sizecol = 'deaths') %>% bind_cols(stacked_flu_covid_total_deaths)
+
+dat.gg <- circleLayoutVertices(packing) %>% left_join(stacked_flu_covid_total_deaths)
+
+ggplot(data = dat.gg) +
+  geom_polygon(aes(x, y, group = id, fill = illness), 
+               colour = "black",
+               show.legend = T) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = font_family),
+    legend.position = 'bottom',
+    legend.text = element_text(size = 16),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    plot.title = element_text(size = 28),
+    plot.subtitle = element_text(size = 16, face = 'italic'),
+    plot.caption = element_text(size = 13, face = 'italic', hjust = 0)
+  ) +
+  labs(
+    x = '\n\n',
+    title = 'Comparing COVID-19 vs. Influenza Mortality in the U.S.',
+    caption = 'Chart: Taylor G. White (@t_g_white)\nData: CDC Flu Disease Burden, Johns Hopkins CSSE',
+    subtitle = sprintf('COVID-19 killed more Americans in one year (%s) than did the flu over the last nine seasons (%s).', 
+                       covid_deaths$deaths %>% comma(), sum(flu_season_total_deaths$deaths) %>% comma()) %>%
+      str_wrap(100)
+  ) +
+  geom_text(data = packing, aes(x, y, label = paste0(season %>% str_extract('[0-9]{4}'), ':\n',comma(deaths)), size = radius), family = font_family) +
+  scale_size(range = c(3, 8), guide = F) +
+  scale_fill_manual(name = '', values = c('COVID-19' = 'orange', 'Influenza' = 'steelblue')) +
+  coord_equal()
+ggsave('deaths_by_influenza_covid.png', height = 10, width = 10, units = 'in', dpi = 600)
+
+ggplot(stacked_flu_covid_total_deaths, aes(illness, size = deaths)) +
+  geom_point(data = filter(stacked_flu_covid_total_deaths, illness == 'COVID-19'), aes(y = 10), pch = 21) +
+  geom_point(data = filter(stacked_flu_covid_total_deaths, illness == 'Influenza'), aes(y = 10), position = position_jitter(width = .2, height = 1), pch = 21) +
+  scale_size(range = c(2, 20)) +
+  scale_y_continuous(limits = c(8, 12))
+  
+  ?position_jitter
 
 
 ##### get ssa life table data #####
@@ -79,7 +167,7 @@ ggplot(life_table_plot_dat, aes(age_x, value)) +
     title = 'U.S. Life Expectancy by Age',
     caption = 'Chart: Taylor G. White (@t_g_white)\nData: Social Security Administration Life Tables',
     subtitle = 'Bars are shaded according to the probability of reaching that age. While life expectancy is 78 years at birth, the expected age someone will reach increases given that they already survived to old age.' %>%
-      str_wrap(140)
+      str_wrap(130)
   ) +
   geom_label_repel(data = selected_expectancies, aes(x = age, y = overall_expected_age, label = label), nudge_y = 20) +
   # annotate('text', x = 65, y = 120, label = sprintf('Life Expectancy of %s Years at 65', round(selected_expectancies_vec['65']))) +
@@ -238,5 +326,58 @@ ggplot(long_dat, aes(age_group_factor, value)) +
 ggsave('total_deaths_years_lost_age_group.png', height = 14, width = 12, units = 'in', dpi = 600)
 shell('explorer .')
 
+##### deaths by age group #####
 
-head(total_deaths_by_age_group)
+
+
+flu_stats_by_age_group = group_by(flu_burden_tables, age_group) %>%
+  summarize(
+    `Total Flu Deaths\nLast 9 Seasons` = sum(deaths, na.rm = T) %>% comma(),
+    `Avg. Flu Deaths\nPer Season` = mean(deaths, na.rm = T) %>% comma()
+  ) %>%
+  mutate(
+    `Age Group` = factor(age_group, levels = c('0-4 yrs', '5-17 yrs', '18-49 yrs','50-64 yrs', '65+ yrs', 'All ages'))
+  ) %>%
+  arrange(`Age Group`) %>%
+  select(`Age Group`, `Total Flu Deaths\nLast 9 Seasons`, `Avg. Flu Deaths\nPer Season`)
+
+flu_stats_by_age_group_pretty = select(flu_stats_by_age_group, contains('Flu')) %>% as.data.frame()
+row.names(flu_stats_by_age_group_pretty) = flu_stats_by_age_group$`Age Group`
+
+
+tt2 = ttheme_default(
+  core=list(bg_params = list(fill = c('white', 'lightgray')))
+)
+
+
+deaths_55_64 = filter(total_deaths_by_age_group, between(age_group_start, 55, 64)) %>% pull(total_deaths) %>% sum()
+deaths_65plus = filter(total_deaths_by_age_group, age_group_start >= 65) %>% pull(total_deaths) %>% sum()
+total_covid_cdc = sum(total_deaths_by_age_group$total_deaths) %>% comma()
+
+ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
+  labs(
+    x = '', y = '',
+    subtitle = "As of the end of the 2020, COVID killed roughly the same number of people in the U.S. (%s) as the last nine flu seasons combined (%s)",
+    title = 'U.S. COVID vs. Flu Mortality by Age Group',
+    caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s)', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
+  ) +
+  theme_bw() +
+  annotation_custom(tableGrob(flu_stats_by_age_group_pretty, theme=tt2), 
+                    xmin = levels(total_deaths_by_age_group$age_group_factor)[1], xmax = levels(total_deaths_by_age_group$age_group_factor)[4], 
+                    ymin = 75e3, ymax = 100e3
+                    )  +
+  theme(
+    text = element_text(family = font_family),
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 14),
+    plot.title = element_text(size = 26),
+    plot.subtitle = element_text(size = 15, face = 'italic'),
+    plot.caption = element_text(size = 11, hjust = 0, face = 'italic'),
+    strip.background = element_rect(fill = 'black'),
+    strip.text = element_text(colour = 'white', face = 'bold', size = 16)
+  ) +
+  geom_bar(aes(), stat = 'identity', fill = 'firebrick', width = 0.75) +
+  geom_text(aes(x = age_group_factor, y = total_deaths, label = comma(total_deaths)), family = font_family, size = 4, vjust = -1) +
+  scale_y_continuous(labels = comma) 
+ggsave('covid_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
