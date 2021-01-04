@@ -5,6 +5,8 @@ library(ggforce)
 library(htmltab)
 library(gganimate)
 library(extrafont)
+library(ggrepel)
+
 loadfonts(device = "win")
 windowsFonts()
 font_family = 'Calibri'
@@ -27,20 +29,66 @@ ssa_life_table =
   filter(!is.na(age)) %>%
   mutate(
     male_expected_age = age + male_life_expectancy,
-    female_expected_age = age + female_life_expectancy
+    female_expected_age = age + female_life_expectancy,
+    row_total_denom = males_alive + females_alive,
+    prop_alive = row_total_denom / max(row_total_denom, na.rm = T),
+    overall_life_expectancy = (males_alive / row_total_denom) * male_life_expectancy + (females_alive / row_total_denom) * female_life_expectancy,
+    overall_expected_age = age + overall_life_expectancy
+  ) 
+
+selected_expectancies = filter(ssa_life_table, age %in% c(0, 65, 75, 85)) %>% select(age, overall_life_expectancy, overall_expected_age) %>%
+  mutate(
+    label = sprintf('Life Exp. at %s:\n%s Years', ifelse(age == 0, 'Birth', age), round(overall_life_expectancy))
   )
+selected_expectancies_vec = selected_expectancies$overall_life_expectancy
+names(selected_expectancies_vec) = selected_expectancies$age
 
-ssa_life_table %>%
-  pivot_longer(cols = c('male_expected_age', 'female_expected_age')) %>%
-  filter(between(age, 18, 90)) %>%
-  ggplot(aes(age, value, colour = name)) +
-  geom_point()
 
+life_table_plot_dat = 
 ssa_life_table %>%
-  pivot_longer(cols = c('male_life_expectancy', 'female_life_expectancy')) %>%
-  filter(between(age, 18, 90)) %>%
-  ggplot(aes(age, value, colour = name)) +
-  geom_point()
+  mutate(
+    age_x = age
+  ) %>%
+  pivot_longer(cols = c('age', 'overall_life_expectancy')) %>%
+  mutate(
+    name_factor = factor(name, levels = c('age', 'overall_life_expectancy') %>% rev()),
+    bar_labels = ifelse(name == 'overall_life_expectancy' & age_x %in% selected_expectancies$age, 
+                        paste('Life Expectancy of', selected_expectancies_vec[as.character(age_x)] %>% round(), 'Years at Age', age_x), NA)
+  ) 
+
+ggplot(life_table_plot_dat, aes(age_x, value)) + 
+  theme_bw() +
+  theme(
+    legend.position = 'bottom',
+    text = element_text(family = font_family),
+    axis.title = element_text(size = 15),
+    legend.text = element_text(size = 14),
+    panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 14),
+    plot.title = element_text(size = 26),
+    plot.subtitle = element_text(size = 15, face = 'italic'),
+    plot.caption = element_text(size = 11, hjust = 0, face = 'italic'),
+    strip.background = element_rect(fill = 'black'),
+    strip.text = element_text(colour = 'white', face = 'bold', size = 16)
+  ) +
+  scale_alpha(range = c(0.3, 1), guide = F) +
+  scale_y_continuous(breaks = seq(0, 120, by = 10)) +
+  scale_x_continuous(breaks = seq(0, 120, by = 10)) +
+  labs(
+    x = '', y = 'Life Expectancy',
+    title = 'U.S. Life Expectancy by Age',
+    caption = 'Chart: Taylor G. White (@t_g_white)\nData: Social Security Administration Life Tables',
+    subtitle = 'Bars are shaded according to the probability of reaching that age. While life expectancy is 78 years at birth, the expected age someone will reach increases given that they already survived to old age.' %>%
+      str_wrap(140)
+  ) +
+  geom_label_repel(data = selected_expectancies, aes(x = age, y = overall_expected_age, label = label), nudge_y = 20) +
+  # annotate('text', x = 65, y = 120, label = sprintf('Life Expectancy of %s Years at 65', round(selected_expectancies_vec['65']))) +
+  # geom_segment(data = selected_expectancies, aes(x = age, xend = age, y = 120, yend = overall_expected_age)) +
+  geom_bar(aes(alpha = prop_alive, fill = name_factor), stat = 'identity') + 
+  geom_hline(aes(yintercept = filter(selected_expectancies, age == 0)$overall_life_expectancy),  colour = 'black', linetype = 'dashed') +
+  # geom_text(aes(label = bar_labels), size = 3, position = position_stack(vjust = 0.5), angle = 90, family = font_family, hjust = 0.25) +
+  scale_fill_manual(name = '', labels = c('age' = 'Current Age', 'overall_life_expectancy' = 'Years Remaining'), values = c('age' = 'steelblue', 'overall_life_expectancy' = 'orange'))
+ggsave('life_expectancy_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
 
 
 ##### get covid deaths by age and week #####
@@ -73,10 +121,6 @@ for (it in 1:nrow(age_groups_df)) {
   # it = 11
   the_row = age_groups_df[it,]
   ssa_sub = filter(ssa_life_table, between(age, the_row$age_group_start, the_row$age_group_end)) %>%
-    mutate(
-      row_total_denom = males_alive + females_alive,
-      overall_life_expectancy = (males_alive / row_total_denom) * male_life_expectancy  + (females_alive / row_total_denom) * female_life_expectancy 
-    ) %>%
     filter(
       row_total_denom > 0
     )
@@ -111,13 +155,22 @@ long_dat =   total_deaths_by_age_group %>% pivot_longer(cols = c('total_deaths',
     desc = str_replace_all(name, '_', ' ') %>% str_to_title()
   ) 
 
-total_deaths_by_age_group$total_deaths %>% sum()
 
 labels_df = group_by(long_dat, name, desc) %>%
   summarize(
     max_val = max(value, na.rm = T), 
-    age_group_factor = levels(age_group_factor)[1]
-  ) 
+    age_group_factor = levels(age_group_factor)[1],
+    total_val = sum(value, na.rm = T)
+  ) %>%
+  arrange(
+    total_val
+  ) %>%
+  mutate(
+    num_label = sprintf(paste(desc, '(%s)'), comma(total_val)),
+    num_label = factor(num_label, levels = num_label)
+  )
+
+long_dat = left_join(long_dat, labels_df %>% select(name, num_label), by = c('name'))
 
 years_lost_anim = ggplot(long_dat, aes()) +
   transition_states(
@@ -153,14 +206,14 @@ years_lost_anim = ggplot(long_dat, aes()) +
   view_zoom(pause_length = 25, step_length = 8, nsteps = 2, ease = 'sine-in-out')
 
 
-animate(years_lost_anim, 
-         renderer = gifski_renderer("deaths_years_lost.gif"),
-        nframes = 100,
-         height = 9, width = 12, units = 'in',  type = 'cairo-png', res = 150)
+# animate(years_lost_anim, 
+#          renderer = gifski_renderer("deaths_years_lost.gif"),
+#         nframes = 100,
+#          height = 9, width = 12, units = 'in',  type = 'cairo-png', res = 150)
 
 
 ggplot(long_dat, aes(age_group_factor, value)) +
-  facet_wrap(~factor(desc, levels = c('Total Deaths','Person Years Lost')), scales = 'free_y', ncol = 1) +
+  facet_wrap(~num_label, scales = 'free_y', ncol = 1) +
   labs(
     x = '', y = '',
     title = 'Comparing U.S. COVID Mortality and Person-Years Lost by Age Group',
@@ -177,9 +230,13 @@ ggplot(long_dat, aes(age_group_factor, value)) +
     plot.subtitle = element_text(size = 15, face = 'italic'),
     plot.caption = element_text(size = 11, hjust = 0, face = 'italic'),
     strip.background = element_rect(fill = 'black'),
-    strip.text = element_text(colour = 'white', face = 'bold', size = 14)
+    strip.text = element_text(colour = 'white', face = 'bold', size = 16)
   ) +
-  geom_bar(aes(), stat = 'identity', fill = 'steelblue') +
-  geom_text(aes(x = age_group_factor, y = value, label = comma(value)), family = font_family, size = 3, vjust = -1) +
+  geom_bar(aes(), stat = 'identity', fill = 'firebrick', width = 0.75) +
+  geom_text(aes(x = age_group_factor, y = value, label = comma(value)), family = font_family, size = 4, vjust = -1) +
   scale_y_continuous(labels = comma) 
 ggsave('total_deaths_years_lost_age_group.png', height = 14, width = 12, units = 'in', dpi = 600)
+shell('explorer .')
+
+
+head(total_deaths_by_age_group)

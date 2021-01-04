@@ -7,6 +7,19 @@ library(readxl)
 library(fuzzyjoin)
 library(data.table)
 library(ggrepel)
+library(WDI)
+
+
+rev_gdp = WDI(country = 'all', indicator = 'GC.REV.XGRT.GD.ZS') %>% filter(country == 'United States')
+tax_rev_gdp = WDI(indicator = 'GC.TAX.TOTL.GD.ZS') %>% filter(country == 'United States')
+exp_gdp = WDI(country = 'all', indicator = 'GC.XPN.TOTL.GD.ZS') %>% filter(country == 'United States')
+
+combined_stats = left_join(tax_rev_gdp, exp_gdp) %>% 
+  mutate(
+    deficit = GC.TAX.TOTL.GD.ZS - GC.XPN.TOTL.GD.ZS
+  )
+ggplot(combined_stats, aes(year, deficit)) +
+  geom_bar(stat = 'identity')
 
 setwd('~\\Public_Policy\\Projects\\Taxes vs. Deficits\\data')
 
@@ -41,6 +54,8 @@ president_start_dates = tibble(
   President = c('Franklin D. Roosevelt','Harry S. Truman','Dwight D. Eisenhower','John F. Kennedy',
   'Lyndon B. Johnson','Richard Nixon','Gerald R. Ford','Jimmy Carter','Ronald Reagan','George Bush',
   'William J. Clinton','George W. Bush','Barack Obama','Donald Trump'),
+  Party = c('Democratic', 'Democratic', 'Republican', 'Democratic', 'Democratic', 'Republican', 'Republican', 
+            'Democratic', 'Republican', 'Republican', 'Democratic', 'Republican', 'Democratic', 'Republican'),
   start_date = c('1933-03-04', '1945-04-12', '1953-01-20', '1961-01-20', 
            '1963-11-22', '1969-01-20', '1974-08-09', '1977-01-20', 
            '1981-01-20', '1989-01-20', '1993-01-20', '2001-01-20', 
@@ -194,37 +209,75 @@ ten_year_interest_rates_df = get_monthly_annual_index_fred('DGS10') %>% rename(t
 interest_rate_spread_df = get_monthly_annual_index_fred('T10Y2Y') %>% rename(ten_two_spread = last_val) 
 unemployment_rate_df = get_monthly_annual_index_fred('UNRATE') %>% rename(unemployment_rate = last_val) 
 
+
+
+
 # debt_gdp_ratio_df = get_monthly_annual_index_fred('GFDEGDQ188S') %>% rename(debt_to_gdp = last_val) 
 # annual_deficit_df = get_monthly_annual_index_fred('FYFSD') %>% rename(annual_deficit = last_val) 
 # annual_gdp_df = get_monthly_annual_index_fred('GDPA') %>% rename(annual_gdp = last_val) 
 
 
-get_quarterly_changes = function(symbol) {
+get_quarterly_changes = function(symbol, use_diff = F) {
   # symbol = 'GDPC1'
   the_symbol = getSymbols(symbol, from = 1940, to = 2020, src = 'FRED', auto.assign = F)
   
   index(the_symbol) = index(the_symbol) - 1 # change the reporting dates to end of period 
-  changes = allReturns(the_symbol) %>% as.data.frame()
+  
+  
+  
   the_df = tibble(
     date = index(the_symbol), 
-    quarterly_value = as.numeric(the_symbol[,symbol])
+    quarterly_index = as.numeric(the_symbol[,symbol])
   ) %>% 
-    bind_cols(
-      changes
-    ) %>%
-    rename(
-      annual_val = yearly, 
-      quarterly_val = quarterly
-    ) %>%
     mutate(
       year = year(date),
-      month = month(date)
+      month = month(date),
+      quarterly_diff = quarterly_index - lag(quarterly_index, 1),
+      quarterly_difftime = as.numeric(date - lag(date, 1))
     )
-  return(the_df)
+  
+  if (use_diff) {
+    
+    annual_diffs = group_by(the_df, year) %>%
+      summarize(
+        annual_index = quarterly_index[month == max(month, na.rm = T)],
+        date = max(date)
+      ) %>%
+      mutate(
+        annual_diff = annual_index - lag(annual_index, 1)
+      )
+    left_join(the_df, annual_diffs) %>% return()
+    
+  } else {
+    changes = allReturns(the_symbol)
+    bind_cols(the_df, as.data.frame(changes)) %>%
+      rename(
+        annual_val = yearly, 
+        quarterly_val = quarterly
+      ) %>%
+      return()
+  }
+  
 }
 
 gdp_df = get_quarterly_changes('GDPC1') %>% rename(annual_gdp = annual_val, quarterly_gdp = quarterly_val)
-debt_gdp_ratio_df = get_quarterly_changes('GFDEGDQ188S') %>% rename(annual_deficit = annual_val, quarterly_deficit = quarterly_val, quarterly_debt_gdp = quarterly_value)
+debt_gdp_ratio_df = get_quarterly_changes('GFDEGDQ188S', T) %>% 
+  rename(
+    quarterly_debt_gdp = quarterly_index,
+    annual_debt_gdp = annual_index
+    )
+deficit_gdp_df = get_quarterly_changes('FYFSGDA188S', T) %>% 
+  rename(
+    annual_deficit_gdp = quarterly_index
+  ) %>%
+  mutate(
+    change_annual_deficit = annual_deficit_gdp - lag(annual_deficit_gdp, 1)
+  ) %>%
+  select(
+    date, year, month, annual_deficit_gdp, change_annual_deficit
+  )
+
+
 
 # annual_deficit_df = get_monthly_annual_index_fred('FYFSD') %>% rename(annual_deficit = last_val) 
 
@@ -309,9 +362,6 @@ sp500_df = get_monthly_symbol_returns('^GSPC')
 gold_df = get_monthly_symbol_returns('IAU') 
 
 
-
-
-
 # get month end returns
 
 
@@ -322,7 +372,9 @@ financial_statistics_with_presidents = left_join(
   left_join(
     sp500_df %>% select(year, month, annual_sp500 = last_yearly_value, monthly_sp500 = last_monthly_value, sp500_adjusted_close = last_close_val)
   ) %>%
-  left_join(gdp_df %>% select(year, month, annual_gdp, quarterly_gdp, quarterly_gdp_value = quarterly_value)) %>%
+  left_join(gdp_df %>% select(year, month, annual_gdp, quarterly_gdp, quarterly_gdp_value = quarterly_index)) %>%
+  left_join(debt_gdp_ratio_df %>% select(year, month, quarterly_debt_gdp, annual_debt_gdp)) %>%
+  left_join(deficit_gdp_df %>% select(year, month, annual_deficit_gdp, change_annual_deficit)) %>%
   left_join(interest_rate_spread_df) %>%
   left_join(ten_year_interest_rates_df) %>%
   left_join(unemployment_rate_df) %>%
@@ -339,26 +391,32 @@ financial_statistics_with_presidents = left_join(
     match_fun = list(`>=`, `<=`)
   ) %>%
   mutate(
-    last_name = str_extract(President, '( [a-zA-Z]+)$') %>% str_trim()
+    last_name = str_extract(President, '( [a-zA-Z]+)$') %>% str_trim(),
+    years_into_presidency = as.numeric(month_date - start_date) / 365
   ) %>%
   arrange(month_date)
+
 
 financial_statistics_with_presidents_dt = data.table(financial_statistics_with_presidents)
 president_indexes = financial_statistics_with_presidents_dt[, {
   # obama_df = financial_statistics_with_presidents_dt[President == 'Barack Obama',]
   # attach(obama_df)
   filled_gdp = na.fill(quarterly_gdp_value, 'extend')
+  filled_debt_gdp = na.fill(quarterly_debt_gdp, 'extend')
+  
   list(
     month_date = month_date, 
     last_val = month_date == max(month_date),
     month_index = 1:length(month_date) - 1,
     last_month_index = length(month_date) -1,
     gdp_index = filled_gdp / filled_gdp[1],
+    debt_to_gdp_added = filled_debt_gdp - filled_debt_gdp[1],
     unemployment_index = unemployment_rate / unemployment_rate[1],
     sp500_index = sp500_adjusted_close / sp500_adjusted_close[1]
   )
   # detach(obama_df)
 }, by = list(President, last_name)] 
+
 
 ggplot(financial_statistics_with_presidents_dt, aes(month_date, sp500_adjusted_close, colour = President)) + geom_point()
 
@@ -367,6 +425,8 @@ ggplot(president_indexes %>% filter(year(month_date) >= 1981), aes(month_index, 
   geom_line(size = 1) + 
   scale_y_continuous(labels = percent)
 
+
+##### stock market by president #####
 ggplot(president_indexes %>% filter(month_index <= 48, month_date >= as.Date('1981-01-20')), aes(month_index, sp500_index-1, colour = President)) +
   theme_bw() +
   geom_line(size = 1) + 
@@ -387,21 +447,110 @@ ggsave('stock_market_by_president.png', height = 9, width = 12, units = 'in', dp
 
 
 
-financial_statistics_with_presidents_dt[, {month_date[1]}, by = list(year)]
+##### debt by president #####
 
-
-ggplot(financial_statistics_with_presidents, aes(month_date, unemployment_rate, colour = President)) +
-  geom_point()
-
-
-ggplot(financial_statistics_with_presidents, aes(month_date, quarterly_gdp_value, colour = President)) +
-  geom_point()
 
 annual_comparison = filter(financial_statistics_with_presidents, !is.na(annual_inflation), month == 12) %>%
   mutate(
     scaled_growth = scale(annual_gdp) %>% as.numeric(),
     scaled_sp500 = scale(annual_sp500) %>% as.numeric()
+  ) 
+head(annual_comparison)
+
+library(xgboost)
+
+names(annual_comparison)
+the_dat = select(
+  annual_comparison, 
+  change_annual_deficit,
+  annual_gdp,
+  annual_deficit_gdp,
+  year, 
+  Party, 
+  years_into_presidency,
+  ten_year_yield,
+  # ten_two_spread,
+  # annual_inflation,
+  # annual_sp500
+) %>%
+  mutate(
+    lag_1_annual_gdp = lag(annual_gdp, 1),
+    lag_1_annual_deficit_gdp = lag(annual_deficit_gdp, 1)
+  ) %>% na.omit() 
+
+dim(the_dat)
+
+test_data_predictions = lapply(1:100, function(it){
+  train_dat = sample_n(the_dat, 40)
+  test_dat = filter(the_dat, !year %in% train_dat$year)
+  
+  model_mat = model.matrix(change_annual_deficit ~ annual_gdp + lag_1_annual_gdp + 
+                             lag_1_annual_deficit_gdp + ten_year_yield + Party + year + years_into_presidency, data = train_dat)
+  
+  model_mat_test = model.matrix(change_annual_deficit ~ annual_gdp + lag_1_annual_gdp + 
+                                  lag_1_annual_deficit_gdp + ten_year_yield  + Party + year + years_into_presidency, data = test_dat)
+  
+  
+  boost_mod = xgboost(model_mat, label = train_dat$change_annual_deficit, nrounds = 20)
+  test_dat$predictions = predict(boost_mod, newdata = model_mat_test)
+  test_dat$it = it
+  test_dat
+}) %>%
+  bind_rows()
+
+combined_preds = group_by(test_data_predictions, year) %>%
+  summarize(
+    obs = n(),
+    mean_pred = mean(predictions),
+    actual_val = change_annual_deficit[1]
   )
+
+ggplot(combined_preds, aes(mean_pred, actual_val)) +
+  geom_point()
+
+cor(combined_preds$actual_val, combined_preds$mean_pred)
+
+ggplot(combined_preds %>% filter(between(year, 2006, 2020)), aes(year)) +
+  geom_bar(aes(y = actual_val), stat = 'identity') +
+  geom_point(aes(y = mean_pred), colour = 'red') 
+  
+
+
+
+group_by(importance_dats, Feature) %>%
+  summarize(
+    mean_freq = mean(Frequency)
+  ) %>%
+  arrange(
+    -mean_freq
+  )
+
+
+test_dat$predicted_boost = predict(boost_mod, newdata = model_mat_test)
+
+ggplot(test_dat, aes(predicted_boost, change_annual_deficit)) + geom_point()
+
+
+mod = lm(change_annual_deficit ~ annual_gdp + lag(annual_gdp, 1) + lag(annual_deficit_gdp, 1) + ten_year_yield + Party * years_into_presidency, data = annual_comparison)
+summary(mod)
+
+annual_comparison$ten_year_yield 
+ggplot(annual_comparison, aes(annual_gdp, change_annual_deficit)) +
+  geom_point() +
+  stat_smooth(method = 'lm')
+
+filter(annual_comparison, !is.na(annual_deficit_gdp)) %>% select(year) %>% tail()
+
+ggplot(annual_comparison, aes(year, annual_deficit_gdp, fill = Party)) +
+  geom_bar(stat = 'identity')
+
+ggplot(annual_comparison, aes(year, change_annual_deficit  )) +
+  geom_bar(stat = 'identity')
+View(annual_comparison %>% select(year, annual_debt_gdp, quarterly_debt_gdp, annual_deficit, quarterly_deficit))
+
+
+
+
 
 monthly_comparison = filter(joined_inflation_gold_growth) %>%
   mutate(
@@ -419,7 +568,7 @@ blank_df = data.frame(
   y = 0
 )
 
-
+##### approval vs growth #####
 ggplot(stacked_presidential_approval %>% filter(month_date >= as.Date('1947-01-01'))) +
   labs(
     y = 'Scaled Value', x = '', title = 'U.S. Presidential Approval Ratings vs. Economic Growth', 
