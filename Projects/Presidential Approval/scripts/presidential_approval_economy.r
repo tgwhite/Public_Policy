@@ -20,6 +20,15 @@ combined_stats = left_join(tax_rev_gdp, exp_gdp) %>%
   )
 ggplot(combined_stats, aes(year, deficit)) +
   geom_bar(stat = 'identity')
+ggplot(combined_stats, aes(year)) +
+  geom_line(aes(y = GC.XPN.TOTL.GD.ZS), colour = 'blue') +
+  geom_line(aes(y = GC.TAX.TOTL.GD.ZS), colour = 'black') +
+  scale_y_continuous(limits =c(0, 18))
+
+ggplot(combined_stats, aes(year)) +
+  geom_line(aes(y = GC.XPN.TOTL.GD.ZS))
+
+
 
 setwd('~\\Public_Policy\\Projects\\Taxes vs. Deficits\\data')
 

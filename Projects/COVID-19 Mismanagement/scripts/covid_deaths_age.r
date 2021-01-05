@@ -39,11 +39,7 @@ flu_burden_tables = lapply(flu_links, function(the_link){
     deaths = str_remove(deaths, ',') %>% as.numeric() 
   )
 
-
-
-
-##### get JH data and create circle plots #####
-
+##### get JH data #####
 
 johns_hopkins_deaths = read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv') %>%
   pivot_longer(cols = matches('^([0-9])'), names_to = 'date', values_to = 'deaths') %>% 
@@ -55,25 +51,29 @@ johns_hopkins_deaths = read_csv('https://raw.githubusercontent.com/CSSEGISandDat
     date = date_upd,
     country = `Country/Region`
   ) %>%
-  filter(country == 'US')
+  filter(country == 'US') %>%
+  arrange(date) %>%
+  mutate(
+    new_deaths = deaths - lag(deaths, 1)
+  )
+
+##### create circle plots #####
 
 flu_season_total_deaths = filter(flu_burden_tables, age_group == 'All ages') %>% select(age_group, season, deaths) %>% mutate(illness = 'Influenza') %>%
   head(9)
-# flu_season_total_deaths = bind_rows(
-#   data.frame(season = '2019-2020', deaths = 22000),
-#   flu_season_total_deaths
-# )
+
 covid_deaths = filter(johns_hopkins_deaths, date == as.Date('2020-12-31')) %>% mutate(illness = 'COVID-19', season = '2020')
 stacked_flu_covid_total_deaths = bind_rows(covid_deaths, flu_season_total_deaths) %>% select(season, illness, deaths) %>% mutate(id = 1:length(deaths))
 
 packing <- circleProgressiveLayout(stacked_flu_covid_total_deaths, sizecol = 'deaths') %>% bind_cols(stacked_flu_covid_total_deaths)
+# dat.gg <- circleLayoutVertices(packing) %>% left_join(stacked_flu_covid_total_deaths)
 
-dat.gg <- circleLayoutVertices(packing) %>% left_join(stacked_flu_covid_total_deaths)
 
-ggplot(data = dat.gg) +
-  geom_polygon(aes(x, y, group = id, fill = illness), 
-               colour = "black",
-               show.legend = T) +
+ggplot(data = packing) +
+geom_circle(aes(x0 = x, y0 = y, r = radius, fill = illness), colour = 'black') +
+    # geom_polygon(aes(x, y, group = id, fill = illness), 
+  #              colour = "black",
+  #              show.legend = T) +
   theme_minimal() +
   theme(
     text = element_text(family = font_family),
@@ -100,14 +100,6 @@ ggplot(data = dat.gg) +
   scale_fill_manual(name = '', values = c('COVID-19' = 'orange', 'Influenza' = 'steelblue')) +
   coord_equal()
 ggsave('deaths_by_influenza_covid.png', height = 10, width = 10, units = 'in', dpi = 600)
-
-ggplot(stacked_flu_covid_total_deaths, aes(illness, size = deaths)) +
-  geom_point(data = filter(stacked_flu_covid_total_deaths, illness == 'COVID-19'), aes(y = 10), pch = 21) +
-  geom_point(data = filter(stacked_flu_covid_total_deaths, illness == 'Influenza'), aes(y = 10), position = position_jitter(width = .2, height = 1), pch = 21) +
-  scale_size(range = c(2, 20)) +
-  scale_y_continuous(limits = c(8, 12))
-  
-  ?position_jitter
 
 
 ##### get ssa life table data #####
@@ -334,9 +326,6 @@ ggsave('total_deaths_years_lost_age_group.png', height = 14, width = 12, units =
 shell('explorer .')
 
 ##### deaths by age group #####
-
-
-
 flu_stats_by_age_group = group_by(flu_burden_tables, age_group) %>%
   summarize(
     `Total Flu Deaths\nLast 9 Seasons` = sum(deaths, na.rm = T) %>% comma(),
@@ -355,7 +344,6 @@ row.names(flu_stats_by_age_group_pretty) = flu_stats_by_age_group$`Age Group`
 tt2 = ttheme_default(
   core=list(bg_params = list(fill = c('white', 'lightgray')))
 )
-
 
 deaths_55_64 = filter(total_deaths_by_age_group, between(age_group_start, 55, 64)) %>% pull(total_deaths) %>% sum()
 deaths_65plus = filter(total_deaths_by_age_group, age_group_start >= 65) %>% pull(total_deaths) %>% sum()
@@ -414,3 +402,97 @@ ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
   geom_text(aes(x = age_group_factor, y = total_deaths, label = comma(total_deaths)), family = font_family, size = 4, vjust = -1) +
   scale_y_continuous(labels = comma) 
 ggsave('covid_flu_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
+
+
+##### analyze covid excess deaths #####
+
+us_excess_death_data = read_csv('https://data.cdc.gov/api/views/xkkf-xrst/rows.csv?accessType=DOWNLOAD&bom=true&format=true%20target') %>% 
+  mutate(
+    weeknum = week(`Week Ending Date`)
+  ) %>%
+  arrange(`Week Ending Date`, Type, Outcome) %>%
+  filter(State == 'United States', Year < 2020 | (Year == 2020 & weeknum <= 50)) %>%
+  mutate(
+    label = ifelse(Year < 2020 & weeknum == 53, Year, ifelse(Year == 2020 & weeknum == 50, Year, NA))
+  )
+names(us_excess_death_data) = str_to_lower(names(us_excess_death_data)) %>% str_replace_all(' ', '_')
+
+us_excess_death_data = mutate(us_excess_death_data, 
+                              excess_deaths_over_threshold = pmax(0, observed_number - upper_bound_threshold),
+                              excess_over_average = pmax(0, observed_number - average_expected_count),
+                              average_expected_ribbon_min = ifelse(average_expected_count > observed_number, observed_number, average_expected_count)
+                              )
+johns_hopkins_deaths_weekly = mutate(johns_hopkins_deaths, weeknum = week(date), year = year(date)) %>%
+  group_by(year, weeknum) %>%
+  summarize(
+    weekly_deaths = sum(new_deaths, na.rm = T)
+  )
+
+
+stats_by_year = group_by(us_excess_death_data, year, type, outcome) %>%
+  summarize(
+    last_weeknum = max(weeknum, na.rm = T),
+    last_observed_number = tail(observed_number, 1),
+   tot_excess_deaths_over_threshold = sum(excess_deaths_over_threshold, na.rm = T),
+   tot_excess_over_average = sum(excess_over_average, na.rm = T)
+  )
+
+type_to_use = 'Predicted (weighted)'
+
+johns_hopkins_deaths_with_excess = inner_join(
+  us_excess_death_data %>% filter(outcome == 'All causes', type == type_to_use), 
+  johns_hopkins_deaths_weekly
+)
+
+excess_2020 = filter(stats_by_year, type == type_to_use, outcome == 'All causes', year == 2020) %>% pull(tot_excess_over_average)
+
+selected_excess_death_data = filter(us_excess_death_data, outcome == 'All causes', type == type_to_use)
+
+ggplot(selected_excess_death_data, aes(weeknum, observed_number, colour = year < 2020)) +
+  
+  theme_bw() +
+  theme(
+    text = element_text(family = font_family),
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 14),
+    plot.title = element_text(size = 26),
+    plot.subtitle = element_text(size = 14.5, face = 'italic'),
+    plot.caption = element_text(size = 11, hjust = 0, face = 'italic'),
+    strip.background = element_rect(fill = 'black'),
+    strip.text = element_text(colour = 'white', face = 'bold', size = 16)
+  ) +
+  labs(
+    x = 'Week of the Year', 
+    y = 'Total Deaths (All Causes, Weighted)',
+    title = 'All Cause Mortality in the U.S., 2017-2020',
+    subtitle = sprintf("There were %s deaths above average (excess deaths) in 2020, which is %s greater than the John's Hopkins COVID death count.", comma(excess_2020), percent(excess_2020 / covid_deaths$deaths - 1)),
+    caption = 'Chart: Taylor G. White\nData: CDC -- 2020 data is through week 50 as there are lags in reporting.'
+  ) +
+  # geom_line(data = johns_hopkins_deaths_with_excess, aes(y = weekly_deaths + average_expected_ribbon_min), colour = 'black', linetype = 'dashed') +
+  geom_label_repel(data = data.frame(x = 30, y = 57e3, label = 'Shaded region shows excess mortality for 2020'), aes(x, y, label = label, colour = NULL), nudge_y = 20e3, family = font_family) +
+  geom_ribbon(data = filter(selected_excess_death_data, year == 2020), aes(x = weeknum, ymin = average_expected_ribbon_min, ymax = observed_number), fill = 'red', alpha = 0.25, size = 0, colour = NA) +
+  scale_x_continuous(breaks = seq(0, 50, by = 10)) +
+    scale_y_continuous(labels = comma) +
+  scale_colour_manual(guide = F, values = c('FALSE' = 'red', 'TRUE' = 'steelblue')) +
+  # geom_line(aes(y = average_expected_count)) +
+  geom_line(aes(group = year), size = 0.75) +
+  geom_label_repel(data = stats_by_year %>% filter(outcome == 'All causes', type == type_to_use), 
+                   aes(last_weeknum, last_observed_number, label = year), nudge_x = 0.75, segment.color = 'gray', family = font_family) 
+  
+ggsave('all_cause_mortality_us.png', height = 9, width = 12, units = 'in', dpi = 600)
+
+# geom_label_repel(aes(label = label), na.rm = T) +
+  # # transition_states(
+  # #   year, transition_length = 5, state_length = 10
+  # # ) +
+  # # transition_reveal(along = year) +
+  # shadow_trail() +
+  # ease_aes('linear')
+
+
+# animate(anim, nframes = 200,
+#         renderer = gifski_renderer("annual_excess_deaths_by_week.gif"),
+#         height = 9, width = 12, units = 'in',  type = 'cairo-png', res = 100, start_pause = 10, end_pause = 50)
+# 
+
