@@ -349,6 +349,34 @@ deaths_55_64 = filter(total_deaths_by_age_group, between(age_group_start, 55, 64
 deaths_65plus = filter(total_deaths_by_age_group, age_group_start >= 65) %>% pull(total_deaths) %>% sum()
 total_covid_cdc = sum(total_deaths_by_age_group$total_deaths) %>% comma()
 
+
+ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
+  labs(
+    x = '', y = '',
+    title = 'COVID vs. Flu Mortality in the U.S., by Age Group',
+    caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s)', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
+  ) +
+  theme_bw() +
+  annotation_custom(tableGrob(flu_stats_by_age_group_pretty, theme=tt2),
+                    xmin = levels(total_deaths_by_age_group$age_group_factor)[1], xmax = levels(total_deaths_by_age_group$age_group_factor)[4],
+                    ymin = 75e3, ymax = 100e3
+  )  +
+  theme(
+    text = element_text(family = font_family),
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 14),
+    plot.title = element_text(size = 26),
+    plot.subtitle = element_text(size = 15, face = 'italic'),
+    plot.caption = element_text(size = 11, hjust = 0, face = 'italic'),
+    strip.background = element_rect(fill = 'black'),
+    strip.text = element_text(colour = 'white', face = 'bold', size = 16)
+  ) +
+  geom_bar(aes(), stat = 'identity', fill = 'firebrick', width = 0.75) +
+  geom_text(aes(x = age_group_factor, y = total_deaths, label = comma(total_deaths)), family = font_family, size = 4, vjust = -1) +
+  scale_y_continuous(labels = comma) 
+ggsave('covid_flu_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
+
 ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
   labs(
     x = '', y = '',
@@ -376,17 +404,18 @@ ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
   scale_y_continuous(labels = comma) 
 ggsave('covid_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
 
-ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
+head(total_deaths_by_age_group)
+ggplot(total_deaths_by_age_group, aes(age_group_factor, person_years_lost)) +
   labs(
     x = '', y = '',
-    title = 'COVID vs. Flu Mortality in the U.S., by Age Group',
-    caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s)', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
+    title = 'U.S. Life Lost due to COVID, by Age Group',
+    caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s), SSA Life Tables', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
   ) +
   theme_bw() +
-  annotation_custom(tableGrob(flu_stats_by_age_group_pretty, theme=tt2),
-                    xmin = levels(total_deaths_by_age_group$age_group_factor)[1], xmax = levels(total_deaths_by_age_group$age_group_factor)[4],
-                    ymin = 75e3, ymax = 100e3
-                    )  +
+  # annotation_custom(tableGrob(flu_stats_by_age_group_pretty, theme=tt2), 
+  #                   xmin = levels(total_deaths_by_age_group$age_group_factor)[1], xmax = levels(total_deaths_by_age_group$age_group_factor)[4], 
+  #                   ymin = 75e3, ymax = 100e3
+  #                   )  +
   theme(
     text = element_text(family = font_family),
     axis.text.x = element_text(),
@@ -399,9 +428,10 @@ ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
     strip.text = element_text(colour = 'white', face = 'bold', size = 16)
   ) +
   geom_bar(aes(), stat = 'identity', fill = 'firebrick', width = 0.75) +
-  geom_text(aes(x = age_group_factor, y = total_deaths, label = comma(total_deaths)), family = font_family, size = 4, vjust = -1) +
+  geom_text(aes(x = age_group_factor, y = person_years_lost, label = comma(person_years_lost)), family = font_family, size = 4, vjust = -1) +
   scale_y_continuous(labels = comma) 
-ggsave('covid_flu_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
+ggsave('covid_life_lost_age_group.png', height = 9, width = 12, units = 'in', dpi = 600)
+
 
 
 ##### analyze covid excess deaths #####
@@ -467,7 +497,7 @@ ggplot(selected_excess_death_data, aes(weeknum, observed_number, colour = year <
     y = 'Total Deaths (All Causes, Weighted)',
     title = 'All Cause Mortality in the U.S., 2017-2020',
     subtitle = sprintf("There were %s deaths above average (excess deaths) in 2020, which is %s greater than the John's Hopkins COVID death count.", comma(excess_2020), percent(excess_2020 / covid_deaths$deaths - 1)),
-    caption = 'Chart: Taylor G. White\nData: CDC -- 2020 data is through week 50 as there are lags in reporting.'
+    caption = 'Chart: Taylor G. White\nData: CDC -- 2020 data is through week 50 due to reporting lags.'
   ) +
   # geom_line(data = johns_hopkins_deaths_with_excess, aes(y = weekly_deaths + average_expected_ribbon_min), colour = 'black', linetype = 'dashed') +
   geom_label_repel(data = data.frame(x = 30, y = 57e3, label = 'Shaded region shows excess mortality for 2020'), aes(x, y, label = label, colour = NULL), nudge_y = 20e3, family = font_family) +
