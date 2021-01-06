@@ -179,6 +179,7 @@ ggsave('life_expectancy_by_age.png', height = 9, width = 12, units = 'in', dpi =
 
 
 ##### get covid deaths by age and week #####
+# https://www.cdc.gov/nchs/nvss/vsrr/covid19/excess_deaths.htm
 
 covid_deaths_by_age_week = read_csv('https://data.cdc.gov/resource/vsak-wrfu.csv') %>% 
   mutate(
@@ -408,7 +409,7 @@ head(total_deaths_by_age_group)
 ggplot(total_deaths_by_age_group, aes(age_group_factor, person_years_lost)) +
   labs(
     x = '', y = '',
-    title = 'U.S. Life Lost due to COVID, by Age Group',
+    title = 'Life Lost to COVID in the U.S. by Age Group',
     caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s), SSA Life Tables', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
   ) +
   theme_bw() +
