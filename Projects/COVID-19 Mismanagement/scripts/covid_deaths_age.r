@@ -187,6 +187,14 @@ covid_deaths_by_age_week = read_csv('https://data.cdc.gov/resource/vsak-wrfu.csv
     as_of_date = as.Date(data_as_of)
   )
 
+total_covid_deaths_by_week = filter(covid_deaths_by_age_week, age_group != 'All Ages') %>% group_by(week_end) %>%
+  summarize(
+    sum_all_cause_deaths = sum(total_deaths, na.rm = T),
+    all_covid_deaths = sum(covid_19_deaths, na.rm = T)
+  )
+ggplot(total_covid_deaths_by_week, aes(week_end, all_covid_deaths)) + geom_line()
+
+
 age_midpoint_85p = filter(ssa_life_table, age >= 85)$age %>% mean()
 
 age_groups_df = tibble(
@@ -204,6 +212,15 @@ age_groups_df = tibble(
     age_group_start = ifelse(age_group_start == 1 & age_group_end == 0, 0, age_group_start),
   ) 
   
+# covid_deaths_by_age_week %>% 
+#   inner_join(age_groups_df %>% 
+#                mutate(age_group_factor = factor(age_group, levels = age_group))) %>%
+#   left_join(total_covid_deaths_by_week) %>%
+# ggplot(aes(week_end, covid_19_deaths/all_covid_deaths, colour = age_group_factor)) +
+#   geom_line() +
+#   scale_colour_viridis_d()
+
+
 
 for (it in 1:nrow(age_groups_df)) {
   # it = 11
@@ -380,7 +397,7 @@ ggsave('covid_flu_mortality_by_age.png', height = 9, width = 12, units = 'in', d
 
 ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
   labs(
-    x = '', y = '',
+    x = '', y = 'Total Deaths',
     title = 'U.S. COVID Mortality by Age Group',
     caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s)', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
   ) +
@@ -405,10 +422,11 @@ ggplot(total_deaths_by_age_group, aes(age_group_factor, total_deaths)) +
   scale_y_continuous(labels = comma) 
 ggsave('covid_mortality_by_age.png', height = 9, width = 12, units = 'in', dpi = 600)
 
-head(total_deaths_by_age_group)
+filter(total_deaths_by_age_group, age_group_start  <= 64) %>% pull(total_deaths ) %>% sum()
+
 ggplot(total_deaths_by_age_group, aes(age_group_factor, person_years_lost)) +
   labs(
-    x = '', y = '',
+    x = '', y = 'Person-Years Lost',
     title = 'Life Lost to COVID in the U.S. by Age Group',
     caption = sprintf('Chart: Taylor G. White (@t_g_white)\nData: CDC COVID Data (as of %s), SSA Life Tables', covid_deaths_by_age_week$as_of_date[1] %>% format('%b %d, %Y'))
   ) +
@@ -446,6 +464,7 @@ us_excess_death_data = read_csv('https://data.cdc.gov/api/views/xkkf-xrst/rows.c
   mutate(
     label = ifelse(Year < 2020 & weeknum == 53, Year, ifelse(Year == 2020 & weeknum == 50, Year, NA))
   )
+
 names(us_excess_death_data) = str_to_lower(names(us_excess_death_data)) %>% str_replace_all(' ', '_')
 
 us_excess_death_data = mutate(us_excess_death_data, 
@@ -462,6 +481,8 @@ johns_hopkins_deaths_weekly = mutate(johns_hopkins_deaths, weeknum = week(date),
 
 stats_by_year = group_by(us_excess_death_data, year, type, outcome) %>%
   summarize(
+    excess_higher_estimate = sum(excess_higher_estimate, na.rm = T),
+    excess_lower_estimate = sum(excess_lower_estimate, na.rm = T),
     last_weeknum = max(weeknum, na.rm = T),
     last_observed_number = tail(observed_number, 1),
    tot_excess_deaths_over_threshold = sum(excess_deaths_over_threshold, na.rm = T),
@@ -497,8 +518,8 @@ ggplot(selected_excess_death_data, aes(weeknum, observed_number, colour = year <
     x = 'Week of the Year', 
     y = 'Total Deaths (All Causes, Weighted)',
     title = 'All Cause Mortality in the U.S., 2017-2020',
-    subtitle = sprintf("There were %s deaths above average (excess deaths) in 2020, which is %s greater than the John's Hopkins COVID death count.", comma(excess_2020), percent(excess_2020 / covid_deaths$deaths - 1)),
-    caption = 'Chart: Taylor G. White\nData: CDC -- 2020 data is through week 50 due to reporting lags.'
+    subtitle = sprintf("There were %s deaths above average (excess deaths) in 2020, which is %s greater than the Johns Hopkins COVID death count.", comma(excess_2020), percent(excess_2020 / covid_deaths$deaths - 1)),
+    caption = 'Chart: Taylor G. White (@t_g_white)\nData: CDC -- 2020 data is through week 50 due to reporting lags.'
   ) +
   # geom_line(data = johns_hopkins_deaths_with_excess, aes(y = weekly_deaths + average_expected_ribbon_min), colour = 'black', linetype = 'dashed') +
   geom_label_repel(data = data.frame(x = 30, y = 57e3, label = 'Shaded region shows excess mortality for 2020'), aes(x, y, label = label, colour = NULL), nudge_y = 20e3, family = font_family) +
