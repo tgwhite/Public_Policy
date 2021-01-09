@@ -27,6 +27,9 @@ polity_political_violence = read_excel('data/MEPVv2018.xls')
 polity_coups = read_excel('data/CSPCoupsAnnualv2018 (1).xls')
 polity_v = read_excel( "data/polity iv data.xls" ) 
 
+filter(polity_political_violence, str_detect(country %>% tolower(), 'vietnam')) %>% pull(country) %>% unique()
+filter(polity_political_violence, str_detect(country %>% tolower(), 'cambodia')) %>% pull(country) %>% unique()
+filter(polity_political_violence, str_detect(country %>% tolower(), 'laos')) %>% pull(country) %>% unique()
 
 polity_v_fin = 
   left_join(polity_v, polity_coups) %>%
@@ -97,7 +100,7 @@ historical_gdp_stats = read_excel("data/angus maddison historical gdp statistics
   arrange(countrycode, year) %>%
   data.table()
 
-
+View(historical_gdp_stats)
 
 historical_gdp_stats_growth = historical_gdp_stats[, {
   # china = filter(historical_gdp_stats, country == 'China')
@@ -165,7 +168,7 @@ historical_gdp_stats_growth_rollstats = historical_gdp_stats_growth[, {
 
 
 
-
+View(stats_by_country)
 
 stats_by_country = historical_gdp_stats_growth[,{
   list(
@@ -809,16 +812,24 @@ stats_by_country_long = pivot_longer(
   cols = polity_income_vars$var_combo, names_to = 'variable', values_to = 'value'
 )
 
-stats_by_country_map = left_join(world_map, stats_by_country_long, by = c('name' = 'country'))
+
+ggplot(stats_by_country_map) +
+  geom_sf(aes(fill = n_civil_war_years > 0)) +
+  scale_fill_viridis_d()
+
+stats_by_country_map = left_join(world_map, stats_by_country, by = c('name' = 'country'))
+View(stats_by_country_map)
+
+stats_by_country_map_long = left_join(world_map, stats_by_country_long, by = c('name' = 'country'))
 
 
-filter(stats_by_country_map %>% filter(str_detect(variable, 'income')), continent == 'Africa') %>%
+filter(stats_by_country_map_long %>% filter(str_detect(variable, 'income')), continent == 'Africa') %>%
   ggplot() + 
   facet_wrap(~str_replace(variable, '_', " ") %>% str_to_title()) +
   geom_sf(aes(fill = value)) +
   scale_fill_viridis_c() 
 
-filter(stats_by_country_map %>% filter(str_detect(variable, 'polity')), continent == 'Africa') %>%
+filter(stats_by_country_map_long %>% filter(str_detect(variable, 'polity')), continent == 'Africa') %>%
   ggplot() + 
   facet_wrap(~str_replace(variable, '_', " ") %>% str_to_title()) +
   geom_sf(aes(fill = value)) +
