@@ -7,8 +7,20 @@ library(ggforce)
 library(gganimate)
 library(gifski)
 library(xts)
+library(roll)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(countrycode)
+library(cowplot)
+options(na.action = na.exclude)
 
 setwd("~/Public_Policy_Upd/Projects/Inequality")
+
+get_period_growth = function(start, end, periods) {
+  period_avg_growth = (end / start)^(1/periods) - 1
+  return(period_avg_growth)
+}
+
 
 ##### get polity data #####
 polity_political_violence = read_excel('data/MEPVv2018.xls')
@@ -23,11 +35,36 @@ polity_v_fin =
     country = recode(country, 
                      UAE = 'United Arab Emirates',
                      Bosnia =  "Bosnia and Herzegovina",
-                     `Congo Brazzaville` = 'Congo-Brazzaville',
+                     `Congo Brazzaville` = 'Congo',
+                     `Congo Kinshasa` = 'D.R. of the Congo',
                      `Korea South` = 'South Korea',
                      `Korea North` = 'North Korea',
                      `USSR` = 'Former USSR')
   )
+
+
+
+world_map <- ne_countries(scale = "medium", returnclass = "sf") %>% 
+  mutate(
+    name = recode(name, 
+                  `Dem. Rep. Korea` = 'South Korea', 
+                  `Czech Rep.` = 'Czech Republic', 
+                  `Slovakia` = 'Slovak Republic',
+                  `Bosnia and Herz.` = 'Bosnia and Herzegovina',
+                  `Macedonia` = 'North Macedonia',
+                  `Dem. Rep. Congo` = "D.R. of the Congo",
+                  `S. Sudan` = 'South Sudan',
+                  `Eq. Guinea`="Equatorial Guinea",
+                  `Central African Rep.` = "Central African Republic",
+                  `North Macedonia` = 'Macedonia',
+                  `Myanmar` = 'Myanmar (Burma)',
+                  `N. Cyprus` = 'Cyprus'
+                  )
+  )
+world_map$name = ifelse(str_detect(world_map$name, 'Ivoire'), "Cote D'Ivoire", world_map$name)
+
+
+
 
 
 #### get historical gdp stats and join everything #####
@@ -43,16 +80,18 @@ historical_gdp_stats = read_excel("data/angus maddison historical gdp statistics
                      `Iran (Islamic Republic of)` = 'Iran',
                      `Lao People's DR` = 'Laos',
                      # `Former USSR` = 'USSR',
+                     `Sudan (Former)` = 'Sudan',
                      `Myanmar` = 'Myanmar (Burma)',
                      `Slovakia` = 'Slovak Republic',
                      `Venezuela (Bolivarian Republic of)` = 'Venezuela',
                      `Taiwan, Province of China` = 'Taiwan',
                      `TFYR of Macedonia` = 'Macedonia',
-                     `D.R. of the Congo`='Congo Kinshasa',
-                     `Congo` = 'Congo-Brazzaville',
+                     # `D.R. of the Congo`='Congo Kinshasa',
+                     # `Congo` = 'Congo-Brazzaville',
                      `Republic of Moldova` = 'Moldova',
                      `Dominica` = 'Dominican Republic',
-                     `U.R. of Tanzania: Mainland` = 'Tanzania'
+                     `U.R. of Tanzania: Mainland` = 'Tanzania',
+                     `China, Hong Kong SAR` = 'Hong Kong'
                      )
   ) %>%
   arrange(countrycode, year) %>%
@@ -75,6 +114,11 @@ historical_gdp_stats_growth = historical_gdp_stats[, {
     ) %>%
     mutate(
       rgdpnapc_interpolated = na.approx(rgdpnapc, na.rm = F),
+      lag_1_rgdpnapc = lag(rgdpnapc, 1),
+      lag_2_rgdpnapc = lag(rgdpnapc, 2),
+      lag_5_rgdpnapc = lag(rgdpnapc, 5),
+      lag_10_rgdpnapc = lag(rgdpnapc, 10),
+      lag_10_rgdpnapc_interpolated = lag(rgdpnapc_interpolated, 10),
       pop_interpolated = na.approx(pop, na.rm = F),
       real_gdp_cap_growth = (rgdpnapc - lag(rgdpnapc, 1))/ lag(rgdpnapc, 1),
       real_gdp_cap_growth_interp = (rgdpnapc_interpolated - lag(rgdpnapc_interpolated, 1))/ lag(rgdpnapc_interpolated, 1),
@@ -86,7 +130,7 @@ historical_gdp_stats_growth = historical_gdp_stats[, {
   
   full_year_df
   
-}, by = list(countrycode, country)] %>%
+}, by = list(country)] %>%
   full_join(
     polity_v_fin,
     by = c('country', 'year')
@@ -101,38 +145,160 @@ historical_gdp_stats_growth = historical_gdp_stats[, {
   ) %>%
   arrange(country, year)
 
-get_period_growth = function(start, end, periods) {
-  period_avg_growth = (end / start)^(1/periods) - 1
-  return(period_avg_growth)
-}
 
-stats_by_country = group_by(historical_gdp_stats_growth, country) %>%
-  summarize(
+historical_gdp_stats_growth_rollstats = historical_gdp_stats_growth[, {
+  lagged_polity2 = lag(polity2, 1)
+  mean_real_gdp_cap_growth_interp_10 = roll_mean(real_gdp_cap_growth_interp, 10) 
+  
+  list(
+    year = year, 
+    mean_real_gdp_cap_growth_interp_10  = mean_real_gdp_cap_growth_interp_10,
+    lagged_mean_real_gdp_cap_growth_interp_10 = lag(mean_real_gdp_cap_growth_interp_10, 1),  
+    n_polity_changes_last_20_years = roll_sum(polity2 - lagged_polity2 != 0, 20),
+    lagged_polity2 = lagged_polity2,
+    n_autocratic_shifts_last_10_years = roll_sum(autocratic_shift, 10),
+    n_coup_attempts_last_10_years = roll_sum(atcoup2, 10),
+    n_coups_last_10_years = roll_sum(scoup1, 10),
+    n_civil_war_years_last_10_years = roll_sum(civwar > 0, 10)  
+  )
+}, by = list(country)]
+
+
+
+
+
+stats_by_country = historical_gdp_stats_growth[,{
+  list(
     anocracy_years = sum(between(polity2, -5, 5), na.rm = T),
     democracy_years = sum(polity2 > 5, na.rm = T),
     autocracy_years = sum(polity2 < -5, na.rm = T),
+    civ_war_denom = sum(!is.na(civwar)),
+    n_civil_war_years = sum(civwar > 0, na.rm = T),
     avg_polity2 = mean(polity2, na.rm = T),
     max_polity2 = max(polity2, na.rm = T),
     min_polity2 = min(polity2, na.rm = T),
     transition_periods = sum(is.na(polity2)),
     n_coup_attempts = sum(atcoup2, na.rm = T),
-    n_successful_coups = sum(scoup1, na.rm = T),
-    n_civil_wars = sum(had_civil_war, na.rm = T),
-    pop_1850 = pop_interpolated[year == 1850],
-    pop_2015 = pop_interpolated[year == 2015],
-    income_1850 = rgdpnapc_interpolated[year == 1850],
-    income_1900 = rgdpnapc_interpolated[year == 1900],
-    income_1950 = rgdpnapc_interpolated[year == 1950],
-    income_2015 = rgdpnapc_interpolated[year == 2015],
-    pop_2015 = pop_interpolated[year == 2015]
-  ) %>%
-  mutate(
+    n_successful_coups = sum(scoup1, na.rm = T)
+  )
+}, by = list(country)] 
+
+polity_income_years = c(1850, 1900, seq(1950, 2010, by = 10), 2015)
+wide_income_polity_stats = 
+  historical_gdp_stats_growth %>% filter(year %in% polity_income_years) %>%
+  select(-polity) %>%
+  rename(income = rgdpnapc_interpolated, polity = polity2) %>%
+  pivot_wider(id_cols = c('country'), 
+            values_from = c('polity', 'income', 'pop'), names_from = 'year', values_fn = mean)
+
+stats_by_country = left_join(
+  stats_by_country, 
+  wide_income_polity_stats
+) %>%
+  dplyr::mutate(
+    pct_civil_war_years = n_civil_war_years / civ_war_denom,
     percent_democracy_years = democracy_years / (anocracy_years + democracy_years + autocracy_years),
-    coup_war_score = (n_civil_wars > 0) + (n_coup_attempts > 0 | n_successful_coups > 0),
+    coup_war_score = (n_civil_war_years > 0) + (n_coup_attempts > 0 | n_successful_coups > 0),
     growth_1850_2015 = get_period_growth(income_1850, income_2015, 2015 - 1850 + 1),
     growth_1900_2015 = get_period_growth(income_1900, income_2015, 2015 - 1900 + 1),
-    growth_1950_2015 = get_period_growth(income_1950, income_2015, 2015 - 1950 + 1)
+    growth_1950_2015 = get_period_growth(income_1950, income_2015, 2015 - 1950 + 1),
+    percentile_1900 = cume_dist(income_1900),
+    percentile_2015 = cume_dist(income_2015)
   )
+
+
+
+stats_by_year = group_by(historical_gdp_stats_growth, year) %>%
+  summarize(
+    annual_income_95 = quantile(rgdpnapc, probs = 0.95, na.rm = T),
+    annual_income_max = max(rgdpnapc, na.rm = T),
+    annual_income_median = quantile(rgdpnapc, probs = 0.5, na.rm = T),
+    avg_world_gdp_growth = mean(real_gdp_cap_growth, na.rm = T)
+  )
+
+historical_gdp_stats_growth_fin = left_join(
+  historical_gdp_stats_growth, 
+  stats_by_country
+) %>%
+  left_join(
+    stats_by_year
+  ) %>%
+  left_join(
+    historical_gdp_stats_growth_rollstats
+  ) %>%
+  mutate(
+    percent_of_max_income = rgdpnapc_interpolated / annual_income_max,
+    had_attempted_coup = atcoup2 > 0,
+    had_successful_coup = scoup1 > 0,
+    civwar_factor = factor(civwar),
+    log_lag_10_rgdpnapc_interpolated = log(lag_10_rgdpnapc_interpolated),
+    log_rgdpnapc_interpolated = log(rgdpnapc_interpolated),
+    percent_polity_changes_20 = n_polity_changes_last_20_years / 20
+  )
+
+
+##### quick model for per capita gdp #### 
+
+filter(historical_gdp_stats_growth_fin, country == 'Argentina', between(year, 1940, 1980)) %>% select(year, scoup1, atcoup2 )
+names(historical_gdp_stats_growth_fin)
+
+full_mod = lm(log_rgdpnapc_interpolated ~ log_lag_10_rgdpnapc_interpolated + avg_world_gdp_growth + lagged_mean_real_gdp_cap_growth_interp_10 +
+                percent_of_max_income + year + polity2 + had_attempted_coup + 
+                civwar_factor + had_successful_coup + percent_polity_changes_20, 
+             data = historical_gdp_stats_growth_fin)
+summary(full_mod)
+plot(full_mod)
+
+polity_with_coups_wars = lm(log_rgdpnapc_interpolated ~ log_lag_10_rgdpnapc_interpolated + percent_of_max_income * polity2 + 
+                              had_attempted_coup + had_successful_coup + I(civwar > 0) + 
+                       lagged_mean_real_gdp_cap_growth_interp_10 + avg_world_gdp_growth + year, 
+                     data = historical_gdp_stats_growth_fin %>% filter(year <= 2005))
+
+
+
+pure_polity_mod = lm(log_rgdpnapc_interpolated ~ log_lag_10_rgdpnapc_interpolated + percent_of_max_income * polity2 + percent_polity_changes_20 + 
+                       lagged_mean_real_gdp_cap_growth_interp_10 + avg_world_gdp_growth + year, 
+                     data = historical_gdp_stats_growth_fin %>% filter(year <= 2005))
+
+
+
+
+predict(pure_polity_mod, newdata = overall_means %>% 
+          mutate(
+            log_lag_10_rgdpnapc_interpolated = log(6211.999),
+            avg_world_gdp_growth = 0.015,
+            year = 2015,
+            lagged_mean_real_gdp_cap_growth_interp_10 = 0.06,
+            polity2 = -7
+            )
+        ) %>% exp()
+
+
+anova(pure_polity_mod, polity_desc_mod)
+
+roll_mod = lm(log(rgdpnapc) ~ log(lag_10_rgdpnapc) + avg_world_gdp_growth + I(rgdpnapc / annual_income_max) + year + polity2 + 
+                I(n_coup_attempts_last_10_years > 0) + I(n_civil_war_years_last_10_years > 0) + I(n_coups_last_10_years > 0), 
+             data = historical_gdp_stats_growth_fin)
+
+historical_gdp_stats_growth_fin$predicted_income_polity_mod = predict(pure_polity_mod, newdata = historical_gdp_stats_growth_fin)
+
+ggplot(historical_gdp_stats_growth_fin, aes(predicted_income_polity_mod %>% exp(), rgdpnapc)) +
+  facet_wrap(~year <= 2005) + 
+  geom_point()
+
+historical_gdp_stats_growth_fin %>% filter(country %in% c('Argentina', 'United States', 'Botswana', 'Japan', 'South Korea'), year > 1850) %>%
+ggplot(aes(year)) +
+  geom_line(aes(y = predicted_income_full_mod %>% exp(), colour = country), linetype = 'dashed') +
+  geom_line(aes(y = rgdpnapc, colour = country)) 
+
+historical_gdp_stats_growth_fin %>% filter(country %in% c('Argentina', 'United States', 'Botswana', 'Japan', 'South Korea', 'China'), year > 1850) %>%
+  ggplot(aes(year)) +
+  facet_wrap(~country) +
+  geom_line(aes(y = predicted_income_polity_mod %>% exp(), colour = country), linetype = 'dashed') +
+  geom_line(aes(y = rgdpnapc_interpolated, colour = country)) 
+filter(historical_gdp_stats_growth_fin, country == 'China') %>% View()
+
+
 
 
 filter(historical_gdp_stats_growth, country %in% c('United States', 'United Kingdom', 'Argentina'), between(year, 1890, 1900) | between(year, 1930, 1940)) %>%
@@ -269,11 +435,45 @@ animated_us_argentina = us_argentine_comparison %>%
 #         height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 150, start_pause = 4, end_pause = 20)
 # 
 
-argentina_greater_us
+argentina_stats = filter(stats_by_country, country == 'Argentina') %>% as.data.frame()
+
+dollar_label_func = function(x) {
+  dollar(round(x, 0))
+}
+ggplot(stats_by_country, aes(income_1900, income_2015)) +
+  theme_bw() +
+  # geom_vline(aes(xintercept = ifelse(country == 'Argentina', income_1900, NA)), na.rm = T, linetype = 'dashed') +
+  # geom_hline(aes(yintercept = ifelse(country == 'Argentina', income_2015, NA)), na.rm = T, linetype = 'dashed') +
+  geom_segment(data = argentina_stats, aes(x = income_1900, xend = 8000, y = income_2015, yend = 15000), colour = 'orange') +
+  geom_label(data = argentina_stats, aes(x = 8000, y = 15000, 
+                                         label = sprintf("Argentina's Income was in the %sth percentile in 1900, but fell to the %sth percentile by 2015.", 
+                                                         round(percentile_1900*100), round(percentile_2015 * 100)) %>% str_wrap(32)
+                                         )) +
+  
+# annotate('text', x = 8000, y = 15000, label = sprintf("Argentina's Income was in the %sth percentile in 1900", round(argentina_stats$percentile_1900*100)) %>% str_wrap(32)) +
+  
+  # geom_segment(aes(x = 0, xend = ifelse(country == 'Argentina', income_1900, NA), y = ifelse(country == 'Argentina', income_2015, NA), yend = ifelse(country == 'Argentina', income_2015, NA)), na.rm = T, linetype = 'dashed') +
+  # geom_segment(aes(y = 0, yend = ifelse(country == 'Argentina', income_2015, NA), x = ifelse(country == 'Argentina', income_1900, NA), xend = ifelse(country == 'Argentina', income_1900, NA)), na.rm = T, linetype = 'dashed') +
+  labs(
+    x = 'Log Real Per Capita GDP in 1900\n(2011 USD)',
+    y = 'Log Real Per Capita GDP in 2015\n(2011 USD)',
+    title = 'Per Capita Income in 1900 vs. 2015'
+  ) +
+  
+  # geom_label_repel(aes(label = ifelse(country %in% c('Argentina', 'United States'), country, NA)), na.rm = T) +
+  scale_x_continuous(labels = dollar_label_func, trans = 'log') +
+  scale_y_continuous(labels = dollar_label_func, trans = 'log') +
+  stat_smooth(method = 'lm', se = F) +
+  geom_point() 
+  
+
+
+
 
 us_argentine_comparison %>%
   ggplot() +
   theme_bw() +
+  # annotation_custom(grob = ggplotGrob(historical_income_plot), xmin = 1850, xmax = 1900, ymin = 20e3, ymax = 55e3) +
   geom_label_repel(aes(year, rgdpnapc, label = label), nudge_x = 1, na.rm = T, nudge_y = 3e3, segment.colour = 'orange') +
   geom_rect(data = argentina_rects[2,], aes(xmin = xmin, xmax = xmax, ymin = 0, 
                                         ymax = 55000), alpha = 0.25, fill = 'gray90', colour = 'black', linetype = 'dashed') +  
@@ -302,8 +502,9 @@ us_argentine_comparison %>%
   ) +
   theme_minimal() +
   theme(
-    legend.background = element_rect(fill = 'white'),
-    legend.position = c(0.10, 0.90),
+    # legend.background = element_rect(fill = 'white'),
+    # legend.position = c(0.10, 0.90),
+    legend.position = 'bottom',
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 16),
     plot.subtitle = element_text(size = 18),
@@ -560,21 +761,21 @@ ggplot(stats_by_country, aes(income_1850, income_2015)) +
   scale_fill_viridis_c(option = 'A') +
     scale_colour_viridis_c() 
 
-ggplot(stats_by_country %>% filter(!is.na(avg_polity2)), aes(income_1900, income_2015)) +
-  theme_bw() +
-  labs(
-    x = 'Real Per Capita GDP in 1900',
-    y = 'Real Per Capita GDP in 2015'
-  ) +
-  scale_x_continuous(labels = dollar) +
-  scale_y_continuous(labels = dollar) +
-  geom_point(aes(fill = avg_polity2  ), pch = 21, size = 5) +
-  geom_text_repel(aes(label = country)) +
-  # scale_fill_gradient2(low = 'red', mid = 'gray', high= 'blue', midpoint = 5) +
-  scale_fill_viridis_c(option = 'A', name = 'Avg. Polity Score') +
-  scale_colour_viridis_c() 
+filter(stats_by_country, !is.na(income_1900) & !is.na(income_2015)) %>%
+  ungroup() %>%
+  summarize(
+    the_cor = cor(income_1900, income_2015),
+    log_cor = cor(log(income_1900), log(income_2015))
+  )
+
+cor(stats_by_country$income_1900, stats_by_country$income_2015)
+
 
 names(historical_gdp_stats_growth)
+
+names(stats_by_country)
+
+filter(stats_by_country, coup_war_score > 0)
 simple_growth_model = lm(real_gdp_cap_growth ~ year + autocratic_shift + polity_desc + lagged_real_gdp_cap_growth, data = historical_gdp_stats_growth)
 summary(simple_growth_model)
 
@@ -589,3 +790,52 @@ ggplot(historical_gdp_stats_growth, aes(lagged_real_gdp_cap_growth, real_gdp_cap
   facet_wrap(~year > 1975)
 
 historical_gdp_stats_growth$polity2
+
+
+##### map coups, civil wars #####
+
+polity_income_vars = expand.grid(
+  var = c('income', 'polity', 'pop'),
+  year = c(seq(1960, 2010, by = 10), 2015)
+) %>% 
+  arrange(var, year) %>%
+  mutate(
+    var_combo = paste(var, year, sep = '_')
+  )
+stats_by_country$pop_1960
+
+stats_by_country_long = pivot_longer(
+  stats_by_country %>% as.data.frame(),
+  cols = polity_income_vars$var_combo, names_to = 'variable', values_to = 'value'
+)
+
+stats_by_country_map = left_join(world_map, stats_by_country_long, by = c('name' = 'country'))
+
+
+filter(stats_by_country_map %>% filter(str_detect(variable, 'income')), continent == 'Africa') %>%
+  ggplot() + 
+  facet_wrap(~str_replace(variable, '_', " ") %>% str_to_title()) +
+  geom_sf(aes(fill = value)) +
+  scale_fill_viridis_c() 
+
+filter(stats_by_country_map %>% filter(str_detect(variable, 'polity')), continent == 'Africa') %>%
+  ggplot() + 
+  facet_wrap(~str_replace(variable, '_', " ") %>% str_to_title()) +
+  geom_sf(aes(fill = value)) +
+  scale_fill_gradient2(low = 'red', high = 'blue', mid = 'gray', midpoint = 0)
+
+
+maps_by_continent = lapply(unique(stats_by_country_map$continent), function(the_continent){
+  # the_continent = 'North America'
+  cont_sub = filter(stats_by_country_map, continent == the_continent)
+  the_plot = ggplot(cont_sub) + 
+    geom_sf(aes(fill = avg_polity2)) +
+    scale_fill_viridis_c() +
+    geom_sf_label(aes(label = ifelse(is.na(avg_polity2), name, NA)), na.rm = T)
+  return(the_plot)
+})
+cowplot::plot_grid(plotlist = maps_by_continent)
+
+View(polity_v_fin)
+filter(polity_v_fin, country == 'Kazakhstan') %>% pull(polity2)
+View(stats_by_country)
