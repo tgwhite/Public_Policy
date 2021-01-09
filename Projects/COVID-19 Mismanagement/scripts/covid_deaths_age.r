@@ -8,9 +8,9 @@ library(extrafont)
 library(ggrepel)
 library(gridExtra)
 library(packcircles)
+library(cowplot)
 
 loadfonts(device = "win")
-windowsFonts()
 font_family = 'Calibri'
 
 setwd("~/Public_Policy_Upd/Projects/COVID-19 Mismanagement/output")
@@ -500,7 +500,7 @@ excess_2020 = filter(stats_by_year, type == type_to_use, outcome == 'All causes'
 
 selected_excess_death_data = filter(us_excess_death_data, outcome == 'All causes', type == type_to_use)
 
-ggplot(selected_excess_death_data, aes(weeknum, observed_number, colour = year < 2020)) +
+full_excess_deaths_plot = ggplot(selected_excess_death_data, aes(weeknum, observed_number, colour = year < 2020)) +
   
   theme_bw() +
   theme(
@@ -532,7 +532,41 @@ ggplot(selected_excess_death_data, aes(weeknum, observed_number, colour = year <
   geom_label_repel(data = stats_by_year %>% filter(outcome == 'All causes', type == type_to_use), 
                    aes(last_weeknum, last_observed_number, label = year), nudge_x = 0.75, segment.color = 'gray', family = font_family) 
   
-ggsave('all_cause_mortality_us.png', height = 9, width = 12, units = 'in', dpi = 600)
+ggsave('all_cause_mortality_us.png', height = 9, width = 12, units = 'in', dpi = 600, plot = full_excess_deaths_plot)
+
+cor(johns_hopkins_deaths_with_excess$weekly_deaths, johns_hopkins_deaths_with_excess$excess_over_average)
+cor(johns_hopkins_deaths_with_excess$weekly_deaths, johns_hopkins_deaths_with_excess$excess_over_average)^2
+johns_hopkins_deaths_with_excess$week_ending_date
+johns_hopkins_deaths_with_excess$weekly_deaths
+johns_hopkins_deaths_with_excess %>% pivot_longer(cols = c('weekly_deaths', 'excess_over_average'), names_to = 'metric') %>%
+ggplot(aes(week_ending_date, value, colour = metric)) +
+  geom_line(size = 1) +
+  scale_y_continuous(labels = comma) +
+  scale_x_date(date_labels = '%b %d', breaks = '4 weeks') +
+  theme_bw() +
+  theme(
+    text = element_text(family = font_family),
+    legend.text = element_text(size = 15),
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 16),
+    plot.title = element_text(size = 26),
+    plot.subtitle = element_text(size = 14.5, face = 'italic'),
+    plot.caption = element_text(size = 11, hjust = 0, face = 'italic'),
+    legend.position = 'bottom'
+  ) +
+  labs(
+    x = '', y = 'Weekly COVID Deaths', 
+    title = 'U.S. Excess Deaths for 2020 vs. Johns Hopkins Counted COVID Deaths',
+    subtitle = 'Excess deaths are computed by comparing observed deaths from all causes to prior year averages. Counted COVID deaths are obtained by counting each death linked to COVID.' %>% str_wrap(120),
+    caption = 'Chart: Taylor G. White (@t_g_white)\nData: CDC, Johns Hopkins CSSE'
+  ) +
+  scale_colour_manual(
+    name = '',
+    values = c('weekly_deaths' = 'steelblue', 'excess_over_average' = 'orange'), 
+                      labels = c('weekly_deaths' = 'Weekly counted COVID Deaths\nvia Johns Hopkins', 'excess_over_average' = 'CDC Excess Deaths'))
+
+ggsave('comparing_counted_covid_deaths_to_excess.png', height = 9, width = 12, units = 'in', dpi = 600)
+
 
 # geom_label_repel(aes(label = label), na.rm = T) +
   # # transition_states(

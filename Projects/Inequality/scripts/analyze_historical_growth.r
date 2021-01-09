@@ -577,3 +577,15 @@ ggplot(stats_by_country %>% filter(!is.na(avg_polity2)), aes(income_1900, income
 names(historical_gdp_stats_growth)
 simple_growth_model = lm(real_gdp_cap_growth ~ year + autocratic_shift + polity_desc + lagged_real_gdp_cap_growth, data = historical_gdp_stats_growth)
 summary(simple_growth_model)
+
+ggplot(historical_gdp_stats_growth, aes(lagged_real_gdp_cap_growth, real_gdp_cap_growth, colour = year > 1965)) +
+  geom_point(alpha = 0.5) + stat_smooth(se = F, method = 'lm') +
+  facet_wrap(~year > 1965)
+
+ggplot(historical_gdp_stats_growth, aes(lagged_real_gdp_cap_growth, real_gdp_cap_growth)) +
+  geom_point(alpha = 0.5, aes(colour = polity2)) + 
+  scale_colour_gradient2(low = 'red', mid = 'gray', high= 'blue', midpoint = 5) +
+  stat_smooth(se = F, method = 'lm') +
+  facet_wrap(~year > 1975)
+
+historical_gdp_stats_growth$polity2
