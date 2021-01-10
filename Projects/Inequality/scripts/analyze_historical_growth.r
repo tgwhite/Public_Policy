@@ -61,7 +61,8 @@ world_map <- ne_countries(scale = "medium", returnclass = "sf") %>%
                   `Central African Rep.` = "Central African Republic",
                   `North Macedonia` = 'Macedonia',
                   `Myanmar` = 'Myanmar (Burma)',
-                  `N. Cyprus` = 'Cyprus'
+                  `N. Cyprus` = 'Cyprus',
+                  `Lao PDR` = 'Laos'
                   )
   )
 world_map$name = ifelse(str_detect(world_map$name, 'Ivoire'), "Cote D'Ivoire", world_map$name)
@@ -100,7 +101,6 @@ historical_gdp_stats = read_excel("data/angus maddison historical gdp statistics
   arrange(countrycode, year) %>%
   data.table()
 
-View(historical_gdp_stats)
 
 historical_gdp_stats_growth = historical_gdp_stats[, {
   # china = filter(historical_gdp_stats, country == 'China')
@@ -125,6 +125,8 @@ historical_gdp_stats_growth = historical_gdp_stats[, {
       pop_interpolated = na.approx(pop, na.rm = F),
       real_gdp_cap_growth = (rgdpnapc - lag(rgdpnapc, 1))/ lag(rgdpnapc, 1),
       real_gdp_cap_growth_interp = (rgdpnapc_interpolated - lag(rgdpnapc_interpolated, 1))/ lag(rgdpnapc_interpolated, 1),
+      roll_5_real_gdp_cap_growth_interp = roll_mean(real_gdp_cap_growth_interp, 5),
+      lag_5_roll_5_real_gdp_cap_growth_interp = lag(roll_5_real_gdp_cap_growth_interp, 5),
       pop_growth = (pop - lag(pop, 1)) / lag(pop, 1),
       pop_growth_interp = (pop_interpolated - lag(pop_interpolated, 1)) / lag(pop_interpolated, 1),
       lagged_real_gdp_cap_growth = lag(real_gdp_cap_growth, 1),
@@ -166,9 +168,6 @@ historical_gdp_stats_growth_rollstats = historical_gdp_stats_growth[, {
   )
 }, by = list(country)]
 
-
-
-View(stats_by_country)
 
 stats_by_country = historical_gdp_stats_growth[,{
   list(
@@ -243,9 +242,10 @@ historical_gdp_stats_growth_fin = left_join(
 ##### quick model for per capita gdp #### 
 
 filter(historical_gdp_stats_growth_fin, country == 'Argentina', between(year, 1940, 1980)) %>% select(year, scoup1, atcoup2 )
+
 names(historical_gdp_stats_growth_fin)
 
-full_mod = lm(log_rgdpnapc_interpolated ~ log_lag_10_rgdpnapc_interpolated + avg_world_gdp_growth + lagged_mean_real_gdp_cap_growth_interp_10 +
+full_mod = lm(log_rgdpnapc_interpolated ~ log_lag_10_rgdpnapc_interpolated + avg_world_gdp_growth + lag_5_roll_5_real_gdp_cap_growth_interp +
                 percent_of_max_income + year + polity2 + had_attempted_coup + 
                 civwar_factor + had_successful_coup + percent_polity_changes_20, 
              data = historical_gdp_stats_growth_fin)
@@ -254,16 +254,16 @@ plot(full_mod)
 
 polity_with_coups_wars = lm(log_rgdpnapc_interpolated ~ log_lag_10_rgdpnapc_interpolated + percent_of_max_income * polity2 + 
                               had_attempted_coup + had_successful_coup + I(civwar > 0) + 
-                       lagged_mean_real_gdp_cap_growth_interp_10 + avg_world_gdp_growth + year, 
+                              lag_5_roll_5_real_gdp_cap_growth_interp + avg_world_gdp_growth + year, 
                      data = historical_gdp_stats_growth_fin %>% filter(year <= 2005))
 
+summary(polity_with_coups_wars)
 
-
-pure_polity_mod = lm(log_rgdpnapc_interpolated ~ log_lag_10_rgdpnapc_interpolated + percent_of_max_income * polity2 + percent_polity_changes_20 + 
-                       lagged_mean_real_gdp_cap_growth_interp_10 + avg_world_gdp_growth + year, 
+pure_polity_mod = lm(log_rgdpnapc_interpolated ~ log_lag_10_rgdpnapc_interpolated + percent_of_max_income + polity_desc*polity2 + percent_polity_changes_20 + 
+                       lag_5_roll_5_real_gdp_cap_growth_interp + avg_world_gdp_growth + year, 
                      data = historical_gdp_stats_growth_fin %>% filter(year <= 2005))
 
-
+summary(pure_polity_mod)
 
 
 predict(pure_polity_mod, newdata = overall_means %>% 
@@ -813,12 +813,24 @@ stats_by_country_long = pivot_longer(
 )
 
 
-ggplot(stats_by_country_map) +
-  geom_sf(aes(fill = n_civil_war_years > 0)) +
-  scale_fill_viridis_d()
 
 stats_by_country_map = left_join(world_map, stats_by_country, by = c('name' = 'country'))
-View(stats_by_country_map)
+ggplot(stats_by_country_map) +
+  geom_sf(aes(fill = n_civil_war_years > 0)) +
+  geom_sf_label(aes(label = ifelse(is.na(n_civil_war_years), name, NA)), na.rm = T) +
+  scale_fill_viridis_d()
+names(stats_by_country_map)
+ggplot(stats_by_country_map) +
+  geom_sf(aes(fill = n_coup_attempts + n_successful_coups + n_civil_war_years > 0)) +
+  # geom_sf_label(aes(label = ifelse(is.na(n_civil_war_years), name, NA)), na.rm = T) +
+  scale_fill_viridis_d()
+
+ggplot(stats_by_country_map) +
+  geom_sf(aes(fill = income_2015 %>% log())) +
+  # geom_sf_label(aes(label = ifelse(is.na(n_civil_war_years), name, NA)), na.rm = T) +
+  scale_fill_viridis_c()
+
+
 
 stats_by_country_map_long = left_join(world_map, stats_by_country_long, by = c('name' = 'country'))
 
