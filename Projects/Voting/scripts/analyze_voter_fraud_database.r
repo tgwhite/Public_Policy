@@ -348,7 +348,7 @@ setwd('~/Public_Policy_Upd/Projects/Voting/output')
 
 animate(fraud_anim,
          renderer = gifski_renderer("fraud_frequency_comparison.gif"),
-          nframes = 200,
+          nframes = 300,
          height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
 
