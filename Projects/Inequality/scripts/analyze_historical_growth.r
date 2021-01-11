@@ -283,7 +283,15 @@ roll_mod = lm(log(rgdpnapc) ~ log(lag_10_rgdpnapc) + avg_world_gdp_growth + I(rg
                 I(n_coup_attempts_last_10_years > 0) + I(n_civil_war_years_last_10_years > 0) + I(n_coups_last_10_years > 0), 
              data = historical_gdp_stats_growth_fin)
 
-historical_gdp_stats_growth_fin$predicted_income_polity_mod = predict(pure_polity_mod, newdata = historical_gdp_stats_growth_fin)
+levels(historical_gdp_stats_growth_fin$polity_desc)
+historical_gdp_stats_growth_fin$predicted_income_polity_mod = predict(pure_polity_mod, 
+                                                                      newdata = historical_gdp_stats_growth_fin %>%
+                                                                        mutate(
+                                                                          # polity2 = ifelse(country == 'Argentina', 10, polity2),
+                                                                          # polity_desc = ifelse(country == 'Argentina', levels(historical_gdp_stats_growth_fin$polity_desc)[3], polity_desc),
+                                                                          # polity_desc = factor(polity_desc)
+                                                                        )
+                                                                      )
 
 ggplot(historical_gdp_stats_growth_fin, aes(predicted_income_polity_mod %>% exp(), rgdpnapc)) +
   facet_wrap(~year <= 2005) + 

@@ -31,9 +31,8 @@ while(continue_loop) {
     }
     row_values = html_children(row) %>% html_node('.field-content') %>% map_chr(html_text)
     row_labels = html_children(row) %>% html_node('.views-label') %>% map_chr(html_text)
-    child_text = map_chr(row_children, html_text)
-    length(row_values)
-    length(row_labels)
+    # child_text = map_chr(row_labels, html_text)
+    
     names(row_values) = row_labels
     out_data = as.data.frame(row_values) %>% t() %>% as.data.frame()
     row_catcher[[length(row_catcher) + 1]] = out_data
@@ -58,6 +57,3 @@ all_results_stacked = bind_rows(all_results_list)
 
 row.names(all_results_stacked) = NULL
 write.csv(all_results_stacked, 'heritage_voterfraud_database.csv', row.names = F)
-all_results_stacked$`Fraud Type`
-group_by(all_results_stacked, State, `Fraud Type`) %>% summarize(obs = n()) %>% View()
-table(all_results_stacked$`Fraud Type`) %>% sort(decreasing = T)
