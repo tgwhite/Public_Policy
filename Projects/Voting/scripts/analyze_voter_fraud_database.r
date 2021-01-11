@@ -192,7 +192,7 @@ circle_areas = tibble(
 stacked_circle_dat = bind_rows(
   tibble(
     plot_order = 1,
-    circle_desc = 'People are more likely to be\nstruck by lightning\nthan commit voter fraud.',
+    circle_desc = 'Americans are more likely to be\nstruck by lightning\nthan commit voter fraud.',
     desc = circle_desc, 
     source_label = 'Chart: Taylor G. White (@t_g_white)',
     desc_position = 0, desc_size = 20, 
@@ -263,7 +263,7 @@ stacked_circle_dat = bind_rows(
   tibble(
     plot_order = 8,
     # circle_desc = NA,
-    circle_desc = sprintf('Only %s percent of the %s contested federal elections between 1976-2020 were decided by a thousand votes or less.', percent(percent_races_less_1k_margin, accuracy = 0.01), comma(nrow(combined_margin_analysis))) %>% str_wrap(32),
+    circle_desc = sprintf('Only %s percent of the %s contested federal elections between 1976-2018 were decided by a thousand votes or less.', percent(percent_races_less_1k_margin, accuracy = 0.01), comma(nrow(combined_margin_analysis))) %>% str_wrap(32),
     desc = "close race desc", 
     source_label = '',
     desc_position = 0, 
@@ -341,8 +341,6 @@ fraud_anim = ggplot(stacked_circle_dat) +
   ) +
   # shadow_mark(exclude_layer = c(2, 3, 4, 5)) +
   view_zoom(pause_length = 40, step_length = 10, nsteps = max(stacked_circle_dat$plot_order), ease = 'sine-in-out')
-
-fraud_anim
 
 setwd('~/Public_Policy_Upd/Projects/Voting/output')
 
