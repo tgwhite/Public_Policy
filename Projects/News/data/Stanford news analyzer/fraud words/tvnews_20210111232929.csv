@@ -1,0 +1,1180 @@
+Query,Time,Value,Unit
+"text='rigged' and channel=""cnn""",2020-01-01,2,seconds
+"text='rigged' and channel=""cnn""",2020-01-02,1,seconds
+"text='rigged' and channel=""cnn""",2020-01-04,1,seconds
+"text='rigged' and channel=""cnn""",2020-01-07,1,seconds
+"text='rigged' and channel=""cnn""",2020-01-08,1,seconds
+"text='rigged' and channel=""cnn""",2020-01-09,2,seconds
+"text='rigged' and channel=""cnn""",2020-01-10,5,seconds
+"text='rigged' and channel=""cnn""",2020-01-13,1,seconds
+"text='rigged' and channel=""cnn""",2020-01-15,4,seconds
+"text='rigged' and channel=""cnn""",2020-01-17,5,seconds
+"text='rigged' and channel=""cnn""",2020-01-19,4,seconds
+"text='rigged' and channel=""cnn""",2020-01-20,7,seconds
+"text='rigged' and channel=""cnn""",2020-01-21,9,seconds
+"text='rigged' and channel=""cnn""",2020-01-23,1.614,seconds
+"text='rigged' and channel=""cnn""",2020-01-27,1,seconds
+"text='rigged' and channel=""cnn""",2020-01-28,3,seconds
+"text='rigged' and channel=""cnn""",2020-01-29,2,seconds
+"text='rigged' and channel=""cnn""",2020-01-30,1,seconds
+"text='rigged' and channel=""cnn""",2020-01-31,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-01,8,seconds
+"text='rigged' and channel=""cnn""",2020-02-02,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-03,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-04,22,seconds
+"text='rigged' and channel=""cnn""",2020-02-05,7,seconds
+"text='rigged' and channel=""cnn""",2020-02-06,5,seconds
+"text='rigged' and channel=""cnn""",2020-02-07,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-08,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-09,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-11,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-13,2,seconds
+"text='rigged' and channel=""cnn""",2020-02-14,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-15,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-17,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-18,4,seconds
+"text='rigged' and channel=""cnn""",2020-02-19,6,seconds
+"text='rigged' and channel=""cnn""",2020-02-22,4,seconds
+"text='rigged' and channel=""cnn""",2020-02-23,2,seconds
+"text='rigged' and channel=""cnn""",2020-02-24,2,seconds
+"text='rigged' and channel=""cnn""",2020-02-25,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-27,1,seconds
+"text='rigged' and channel=""cnn""",2020-02-28,1,seconds
+"text='rigged' and channel=""cnn""",2020-03-01,1,seconds
+"text='rigged' and channel=""cnn""",2020-03-02,2,seconds
+"text='rigged' and channel=""cnn""",2020-03-03,1,seconds
+"text='rigged' and channel=""cnn""",2020-03-04,1,seconds
+"text='rigged' and channel=""cnn""",2020-03-07,2,seconds
+"text='rigged' and channel=""cnn""",2020-03-08,1,seconds
+"text='rigged' and channel=""cnn""",2020-03-26,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-02,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-03,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-09,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-10,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-12,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-23,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-24,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-25,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-26,1,seconds
+"text='rigged' and channel=""cnn""",2020-04-27,1,seconds
+"text='rigged' and channel=""cnn""",2020-05-09,1,seconds
+"text='rigged' and channel=""cnn""",2020-05-17,1,seconds
+"text='rigged' and channel=""cnn""",2020-05-19,3,seconds
+"text='rigged' and channel=""cnn""",2020-05-20,5,seconds
+"text='rigged' and channel=""cnn""",2020-05-24,1,seconds
+"text='rigged' and channel=""cnn""",2020-05-25,1,seconds
+"text='rigged' and channel=""cnn""",2020-05-26,4,seconds
+"text='rigged' and channel=""cnn""",2020-05-27,1,seconds
+"text='rigged' and channel=""cnn""",2020-05-28,1,seconds
+"text='rigged' and channel=""cnn""",2020-06-04,1,seconds
+"text='rigged' and channel=""cnn""",2020-06-05,1,seconds
+"text='rigged' and channel=""cnn""",2020-06-22,1,seconds
+"text='rigged' and channel=""cnn""",2020-06-23,3,seconds
+"text='rigged' and channel=""cnn""",2020-06-26,2,seconds
+"text='rigged' and channel=""cnn""",2020-06-27,2,seconds
+"text='rigged' and channel=""cnn""",2020-07-14,1,seconds
+"text='rigged' and channel=""cnn""",2020-07-16,1,seconds
+"text='rigged' and channel=""cnn""",2020-07-19,1,seconds
+"text='rigged' and channel=""cnn""",2020-07-20,6.886,seconds
+"text='rigged' and channel=""cnn""",2020-07-21,5.734,seconds
+"text='rigged' and channel=""cnn""",2020-07-24,5.824,seconds
+"text='rigged' and channel=""cnn""",2020-07-26,4,seconds
+"text='rigged' and channel=""cnn""",2020-07-27,1,seconds
+"text='rigged' and channel=""cnn""",2020-07-28,7,seconds
+"text='rigged' and channel=""cnn""",2020-07-29,7,seconds
+"text='rigged' and channel=""cnn""",2020-07-30,20,seconds
+"text='rigged' and channel=""cnn""",2020-07-31,13,seconds
+"text='rigged' and channel=""cnn""",2020-08-01,4,seconds
+"text='rigged' and channel=""cnn""",2020-08-02,9,seconds
+"text='rigged' and channel=""cnn""",2020-08-04,2,seconds
+"text='rigged' and channel=""cnn""",2020-08-05,1,seconds
+"text='rigged' and channel=""cnn""",2020-08-06,2,seconds
+"text='rigged' and channel=""cnn""",2020-08-07,2,seconds
+"text='rigged' and channel=""cnn""",2020-08-08,1,seconds
+"text='rigged' and channel=""cnn""",2020-08-10,3,seconds
+"text='rigged' and channel=""cnn""",2020-08-11,2,seconds
+"text='rigged' and channel=""cnn""",2020-08-12,1,seconds
+"text='rigged' and channel=""cnn""",2020-08-13,3,seconds
+"text='rigged' and channel=""cnn""",2020-08-14,12.004999999999999,seconds
+"text='rigged' and channel=""cnn""",2020-08-15,8,seconds
+"text='rigged' and channel=""cnn""",2020-08-16,6,seconds
+"text='rigged' and channel=""cnn""",2020-08-17,13,seconds
+"text='rigged' and channel=""cnn""",2020-08-18,16,seconds
+"text='rigged' and channel=""cnn""",2020-08-19,9,seconds
+"text='rigged' and channel=""cnn""",2020-08-20,9,seconds
+"text='rigged' and channel=""cnn""",2020-08-21,8,seconds
+"text='rigged' and channel=""cnn""",2020-08-22,2,seconds
+"text='rigged' and channel=""cnn""",2020-08-23,7.819,seconds
+"text='rigged' and channel=""cnn""",2020-08-24,17,seconds
+"text='rigged' and channel=""cnn""",2020-08-25,2,seconds
+"text='rigged' and channel=""cnn""",2020-08-31,2,seconds
+"text='rigged' and channel=""cnn""",2020-09-02,5,seconds
+"text='rigged' and channel=""cnn""",2020-09-03,9,seconds
+"text='rigged' and channel=""cnn""",2020-09-04,13,seconds
+"text='rigged' and channel=""cnn""",2020-09-05,4,seconds
+"text='rigged' and channel=""cnn""",2020-09-06,6,seconds
+"text='rigged' and channel=""cnn""",2020-09-07,4,seconds
+"text='rigged' and channel=""cnn""",2020-09-08,1,seconds
+"text='rigged' and channel=""cnn""",2020-09-09,15,seconds
+"text='rigged' and channel=""cnn""",2020-09-10,5,seconds
+"text='rigged' and channel=""cnn""",2020-09-11,3,seconds
+"text='rigged' and channel=""cnn""",2020-09-12,2,seconds
+"text='rigged' and channel=""cnn""",2020-09-13,1,seconds
+"text='rigged' and channel=""cnn""",2020-09-14,1,seconds
+"text='rigged' and channel=""cnn""",2020-09-15,6,seconds
+"text='rigged' and channel=""cnn""",2020-09-16,6,seconds
+"text='rigged' and channel=""cnn""",2020-09-17,9,seconds
+"text='rigged' and channel=""cnn""",2020-09-18,4,seconds
+"text='rigged' and channel=""cnn""",2020-09-19,1,seconds
+"text='rigged' and channel=""cnn""",2020-09-20,3,seconds
+"text='rigged' and channel=""cnn""",2020-09-21,1,seconds
+"text='rigged' and channel=""cnn""",2020-09-22,6,seconds
+"text='rigged' and channel=""cnn""",2020-09-23,8,seconds
+"text='rigged' and channel=""cnn""",2020-09-24,44,seconds
+"text='rigged' and channel=""cnn""",2020-09-25,53,seconds
+"text='rigged' and channel=""cnn""",2020-09-26,50,seconds
+"text='rigged' and channel=""cnn""",2020-09-27,12,seconds
+"text='rigged' and channel=""cnn""",2020-09-28,6,seconds
+"text='rigged' and channel=""cnn""",2020-09-29,10,seconds
+"text='rigged' and channel=""cnn""",2020-09-30,3,seconds
+"text='rigged' and channel=""cnn""",2020-10-01,5,seconds
+"text='rigged' and channel=""cnn""",2020-10-05,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-06,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-07,2,seconds
+"text='rigged' and channel=""cnn""",2020-10-08,4,seconds
+"text='rigged' and channel=""cnn""",2020-10-09,5,seconds
+"text='rigged' and channel=""cnn""",2020-10-10,5,seconds
+"text='rigged' and channel=""cnn""",2020-10-12,3,seconds
+"text='rigged' and channel=""cnn""",2020-10-13,6,seconds
+"text='rigged' and channel=""cnn""",2020-10-14,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-15,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-16,3,seconds
+"text='rigged' and channel=""cnn""",2020-10-17,2,seconds
+"text='rigged' and channel=""cnn""",2020-10-18,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-19,6,seconds
+"text='rigged' and channel=""cnn""",2020-10-20,6.952,seconds
+"text='rigged' and channel=""cnn""",2020-10-21,6,seconds
+"text='rigged' and channel=""cnn""",2020-10-22,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-23,2,seconds
+"text='rigged' and channel=""cnn""",2020-10-24,7,seconds
+"text='rigged' and channel=""cnn""",2020-10-25,2,seconds
+"text='rigged' and channel=""cnn""",2020-10-26,2,seconds
+"text='rigged' and channel=""cnn""",2020-10-27,2,seconds
+"text='rigged' and channel=""cnn""",2020-10-28,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-29,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-30,1,seconds
+"text='rigged' and channel=""cnn""",2020-10-31,2,seconds
+"text='rigged' and channel=""cnn""",2020-11-01,8,seconds
+"text='rigged' and channel=""cnn""",2020-11-02,9,seconds
+"text='rigged' and channel=""cnn""",2020-11-03,4,seconds
+"text='rigged' and channel=""cnn""",2020-11-04,4,seconds
+"text='rigged' and channel=""cnn""",2020-11-05,8,seconds
+"text='rigged' and channel=""cnn""",2020-11-06,14,seconds
+"text='rigged' and channel=""cnn""",2020-11-07,2,seconds
+"text='rigged' and channel=""cnn""",2020-11-08,7,seconds
+"text='rigged' and channel=""cnn""",2020-11-09,4,seconds
+"text='rigged' and channel=""cnn""",2020-11-10,7,seconds
+"text='rigged' and channel=""cnn""",2020-11-11,20.853,seconds
+"text='rigged' and channel=""cnn""",2020-11-12,26,seconds
+"text='rigged' and channel=""cnn""",2020-11-13,23,seconds
+"text='rigged' and channel=""cnn""",2020-11-14,15,seconds
+"text='rigged' and channel=""cnn""",2020-11-15,57,seconds
+"text='rigged' and channel=""cnn""",2020-11-16,32.468,seconds
+"text='rigged' and channel=""cnn""",2020-11-17,18,seconds
+"text='rigged' and channel=""cnn""",2020-11-18,31,seconds
+"text='rigged' and channel=""cnn""",2020-11-19,15,seconds
+"text='rigged' and channel=""cnn""",2020-11-20,9,seconds
+"text='rigged' and channel=""cnn""",2020-11-21,5,seconds
+"text='rigged' and channel=""cnn""",2020-11-22,5,seconds
+"text='rigged' and channel=""cnn""",2020-11-24,5,seconds
+"text='rigged' and channel=""cnn""",2020-11-25,15.065999999999999,seconds
+"text='rigged' and channel=""cnn""",2020-11-26,20.070999999999998,seconds
+"text='rigged' and channel=""cnn""",2020-11-27,41,seconds
+"text='rigged' and channel=""cnn""",2020-11-28,22,seconds
+"text='rigged' and channel=""cnn""",2020-11-29,44,seconds
+"text='rigged' and channel=""cnn""",2020-11-30,45,seconds
+"text='rigged' and channel=""cnn""",2020-12-01,16,seconds
+"text='rigged' and channel=""cnn""",2020-12-02,19,seconds
+"text='rigged' and channel=""cnn""",2020-12-03,25,seconds
+"text='rigged' and channel=""cnn""",2020-12-04,28,seconds
+"text='rigged' and channel=""cnn""",2020-12-05,38,seconds
+"text='rigged' and channel=""cnn""",2020-12-06,39,seconds
+"text='rigged' and channel=""cnn""",2020-12-07,64,seconds
+"text='rigged' and channel=""cnn""",2020-12-08,14,seconds
+"text='rigged' and channel=""cnn""",2020-12-09,11,seconds
+"text='rigged' and channel=""cnn""",2020-12-10,8,seconds
+"text='rigged' and channel=""cnn""",2020-12-11,10,seconds
+"text='rigged' and channel=""cnn""",2020-12-12,10,seconds
+"text='rigged' and channel=""cnn""",2020-12-13,13,seconds
+"text='rigged' and channel=""cnn""",2020-12-15,2,seconds
+"text='rigged' and channel=""cnn""",2020-12-16,34.64,seconds
+"text='rigged' and channel=""cnn""",2020-12-17,37.629,seconds
+"text='rigged' and channel=""cnn""",2020-12-18,5,seconds
+"text='rigged' and channel=""cnn""",2020-12-19,1,seconds
+"text='rigged' and channel=""cnn""",2020-12-21,3,seconds
+"text='rigged' and channel=""cnn""",2020-12-22,4.003,seconds
+"text='rigged' and channel=""cnn""",2020-12-23,3,seconds
+"text='rigged' and channel=""cnn""",2020-12-24,4,seconds
+"text='rigged' and channel=""cnn""",2020-12-26,2,seconds
+"text='rigged' and channel=""cnn""",2020-12-27,1,seconds
+"text='rigged' and channel=""cnn""",2020-12-28,3,seconds
+"text='rigged' and channel=""cnn""",2021-01-02,1,seconds
+"text='rigged' and channel=""cnn""",2021-01-03,1,seconds
+"text='rigged' and channel=""cnn""",2021-01-04,5.449,seconds
+"text='rigged' and channel=""cnn""",2021-01-05,18,seconds
+"text='rigged' and channel=""cnn""",2021-01-06,4,seconds
+"text='rigged' and channel=""cnn""",2021-01-07,9.836,seconds
+"text='rigged' and channel=""cnn""",2021-01-08,2,seconds
+"text='rigged' and channel=""cnn""",2020-01-03,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-05,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-06,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-11,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-12,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-14,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-16,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-18,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-22,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-24,0,seconds
+"text='rigged' and channel=""cnn""",2020-01-26,0,seconds
+"text='rigged' and channel=""cnn""",2020-02-10,0,seconds
+"text='rigged' and channel=""cnn""",2020-02-12,0,seconds
+"text='rigged' and channel=""cnn""",2020-02-16,0,seconds
+"text='rigged' and channel=""cnn""",2020-02-20,0,seconds
+"text='rigged' and channel=""cnn""",2020-02-21,0,seconds
+"text='rigged' and channel=""cnn""",2020-02-26,0,seconds
+"text='rigged' and channel=""cnn""",2020-02-29,0,seconds
+"text='rigged' and channel=""cnn""",2020-03-05,0,seconds
+"text='rigged' and channel=""cnn""",2020-03-06,0,seconds
+"text='rigged' and channel=""cnn""",2020-03-09,0,seconds
+"text='rigged' and channel=""cnn""",2020-03-25,0,seconds
+"text='rigged' and channel=""cnn""",2020-03-27,0,seconds
+"text='rigged' and channel=""cnn""",2020-04-01,0,seconds
+"text='rigged' and channel=""cnn""",2020-04-04,0,seconds
+"text='rigged' and channel=""cnn""",2020-04-08,0,seconds
+"text='rigged' and channel=""cnn""",2020-04-11,0,seconds
+"text='rigged' and channel=""cnn""",2020-04-13,0,seconds
+"text='rigged' and channel=""cnn""",2020-04-22,0,seconds
+"text='rigged' and channel=""cnn""",2020-04-28,0,seconds
+"text='rigged' and channel=""cnn""",2020-05-08,0,seconds
+"text='rigged' and channel=""cnn""",2020-05-10,0,seconds
+"text='rigged' and channel=""cnn""",2020-05-16,0,seconds
+"text='rigged' and channel=""cnn""",2020-05-18,0,seconds
+"text='rigged' and channel=""cnn""",2020-05-21,0,seconds
+"text='rigged' and channel=""cnn""",2020-05-23,0,seconds
+"text='rigged' and channel=""cnn""",2020-05-29,0,seconds
+"text='rigged' and channel=""cnn""",2020-06-03,0,seconds
+"text='rigged' and channel=""cnn""",2020-06-06,0,seconds
+"text='rigged' and channel=""cnn""",2020-06-21,0,seconds
+"text='rigged' and channel=""cnn""",2020-06-24,0,seconds
+"text='rigged' and channel=""cnn""",2020-06-25,0,seconds
+"text='rigged' and channel=""cnn""",2020-06-28,0,seconds
+"text='rigged' and channel=""cnn""",2020-07-13,0,seconds
+"text='rigged' and channel=""cnn""",2020-07-15,0,seconds
+"text='rigged' and channel=""cnn""",2020-07-17,0,seconds
+"text='rigged' and channel=""cnn""",2020-07-18,0,seconds
+"text='rigged' and channel=""cnn""",2020-07-22,0,seconds
+"text='rigged' and channel=""cnn""",2020-07-23,0,seconds
+"text='rigged' and channel=""cnn""",2020-07-25,0,seconds
+"text='rigged' and channel=""cnn""",2020-08-03,0,seconds
+"text='rigged' and channel=""cnn""",2020-08-09,0,seconds
+"text='rigged' and channel=""cnn""",2020-08-26,0,seconds
+"text='rigged' and channel=""cnn""",2020-08-30,0,seconds
+"text='rigged' and channel=""cnn""",2020-09-01,0,seconds
+"text='rigged' and channel=""cnn""",2020-10-02,0,seconds
+"text='rigged' and channel=""cnn""",2020-10-04,0,seconds
+"text='rigged' and channel=""cnn""",2020-10-11,0,seconds
+"text='rigged' and channel=""cnn""",2020-11-23,0,seconds
+"text='rigged' and channel=""cnn""",2020-12-14,0,seconds
+"text='rigged' and channel=""cnn""",2020-12-20,0,seconds
+"text='rigged' and channel=""cnn""",2020-12-25,0,seconds
+"text='rigged' and channel=""cnn""",2020-12-29,0,seconds
+"text='rigged' and channel=""cnn""",2021-01-01,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-02,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-04,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-05,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-06,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-10,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-12,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-14,4,seconds
+"text='stolen' and channel=""cnn""",2020-01-15,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-19,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-22,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-23,2,seconds
+"text='stolen' and channel=""cnn""",2020-01-24,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-25,1,seconds
+"text='stolen' and channel=""cnn""",2020-01-30,3,seconds
+"text='stolen' and channel=""cnn""",2020-01-31,1,seconds
+"text='stolen' and channel=""cnn""",2020-02-02,3,seconds
+"text='stolen' and channel=""cnn""",2020-02-05,2,seconds
+"text='stolen' and channel=""cnn""",2020-02-09,2,seconds
+"text='stolen' and channel=""cnn""",2020-02-10,2,seconds
+"text='stolen' and channel=""cnn""",2020-02-13,3,seconds
+"text='stolen' and channel=""cnn""",2020-02-15,3,seconds
+"text='stolen' and channel=""cnn""",2020-02-16,1,seconds
+"text='stolen' and channel=""cnn""",2020-02-17,3,seconds
+"text='stolen' and channel=""cnn""",2020-02-18,6,seconds
+"text='stolen' and channel=""cnn""",2020-02-19,4,seconds
+"text='stolen' and channel=""cnn""",2020-02-21,3,seconds
+"text='stolen' and channel=""cnn""",2020-02-23,2,seconds
+"text='stolen' and channel=""cnn""",2020-02-25,2,seconds
+"text='stolen' and channel=""cnn""",2020-02-27,2,seconds
+"text='stolen' and channel=""cnn""",2020-02-28,4,seconds
+"text='stolen' and channel=""cnn""",2020-03-08,1,seconds
+"text='stolen' and channel=""cnn""",2020-03-09,1,seconds
+"text='stolen' and channel=""cnn""",2020-03-23,1,seconds
+"text='stolen' and channel=""cnn""",2020-03-24,1,seconds
+"text='stolen' and channel=""cnn""",2020-03-29,2,seconds
+"text='stolen' and channel=""cnn""",2020-03-30,1,seconds
+"text='stolen' and channel=""cnn""",2020-03-31,1,seconds
+"text='stolen' and channel=""cnn""",2020-04-04,1,seconds
+"text='stolen' and channel=""cnn""",2020-04-05,2,seconds
+"text='stolen' and channel=""cnn""",2020-04-23,1,seconds
+"text='stolen' and channel=""cnn""",2020-04-24,1,seconds
+"text='stolen' and channel=""cnn""",2020-04-25,1,seconds
+"text='stolen' and channel=""cnn""",2020-04-27,1,seconds
+"text='stolen' and channel=""cnn""",2020-05-05,2,seconds
+"text='stolen' and channel=""cnn""",2020-05-06,1,seconds
+"text='stolen' and channel=""cnn""",2020-05-11,1,seconds
+"text='stolen' and channel=""cnn""",2020-05-12,3,seconds
+"text='stolen' and channel=""cnn""",2020-05-13,9,seconds
+"text='stolen' and channel=""cnn""",2020-05-14,6,seconds
+"text='stolen' and channel=""cnn""",2020-05-16,1,seconds
+"text='stolen' and channel=""cnn""",2020-05-17,3,seconds
+"text='stolen' and channel=""cnn""",2020-05-29,2,seconds
+"text='stolen' and channel=""cnn""",2020-05-31,1,seconds
+"text='stolen' and channel=""cnn""",2020-06-01,5,seconds
+"text='stolen' and channel=""cnn""",2020-06-09,1,seconds
+"text='stolen' and channel=""cnn""",2020-06-11,1,seconds
+"text='stolen' and channel=""cnn""",2020-06-12,3,seconds
+"text='stolen' and channel=""cnn""",2020-06-13,1,seconds
+"text='stolen' and channel=""cnn""",2020-06-14,1,seconds
+"text='stolen' and channel=""cnn""",2020-06-16,2,seconds
+"text='stolen' and channel=""cnn""",2020-06-17,3,seconds
+"text='stolen' and channel=""cnn""",2020-06-20,1,seconds
+"text='stolen' and channel=""cnn""",2020-06-23,2,seconds
+"text='stolen' and channel=""cnn""",2020-06-24,2,seconds
+"text='stolen' and channel=""cnn""",2020-06-26,1,seconds
+"text='stolen' and channel=""cnn""",2020-07-01,2,seconds
+"text='stolen' and channel=""cnn""",2020-07-02,1,seconds
+"text='stolen' and channel=""cnn""",2020-07-03,1,seconds
+"text='stolen' and channel=""cnn""",2020-07-04,1,seconds
+"text='stolen' and channel=""cnn""",2020-07-05,2,seconds
+"text='stolen' and channel=""cnn""",2020-07-07,3,seconds
+"text='stolen' and channel=""cnn""",2020-07-08,2,seconds
+"text='stolen' and channel=""cnn""",2020-07-12,1,seconds
+"text='stolen' and channel=""cnn""",2020-07-17,2,seconds
+"text='stolen' and channel=""cnn""",2020-07-20,2,seconds
+"text='stolen' and channel=""cnn""",2020-07-21,2,seconds
+"text='stolen' and channel=""cnn""",2020-07-22,2,seconds
+"text='stolen' and channel=""cnn""",2020-07-24,3,seconds
+"text='stolen' and channel=""cnn""",2020-07-25,3,seconds
+"text='stolen' and channel=""cnn""",2020-08-04,2,seconds
+"text='stolen' and channel=""cnn""",2020-08-05,6.882,seconds
+"text='stolen' and channel=""cnn""",2020-08-06,6.226,seconds
+"text='stolen' and channel=""cnn""",2020-08-07,1,seconds
+"text='stolen' and channel=""cnn""",2020-08-08,2,seconds
+"text='stolen' and channel=""cnn""",2020-08-09,4,seconds
+"text='stolen' and channel=""cnn""",2020-08-10,2,seconds
+"text='stolen' and channel=""cnn""",2020-08-11,2,seconds
+"text='stolen' and channel=""cnn""",2020-08-12,2,seconds
+"text='stolen' and channel=""cnn""",2020-08-14,2,seconds
+"text='stolen' and channel=""cnn""",2020-08-15,1,seconds
+"text='stolen' and channel=""cnn""",2020-08-16,1,seconds
+"text='stolen' and channel=""cnn""",2020-08-17,1,seconds
+"text='stolen' and channel=""cnn""",2020-08-18,1,seconds
+"text='stolen' and channel=""cnn""",2020-08-19,1,seconds
+"text='stolen' and channel=""cnn""",2020-08-20,4,seconds
+"text='stolen' and channel=""cnn""",2020-08-22,4,seconds
+"text='stolen' and channel=""cnn""",2020-08-23,4,seconds
+"text='stolen' and channel=""cnn""",2020-08-24,3,seconds
+"text='stolen' and channel=""cnn""",2020-08-25,3,seconds
+"text='stolen' and channel=""cnn""",2020-08-27,1,seconds
+"text='stolen' and channel=""cnn""",2020-08-29,6,seconds
+"text='stolen' and channel=""cnn""",2020-09-01,2,seconds
+"text='stolen' and channel=""cnn""",2020-09-02,3,seconds
+"text='stolen' and channel=""cnn""",2020-09-05,2,seconds
+"text='stolen' and channel=""cnn""",2020-09-06,3,seconds
+"text='stolen' and channel=""cnn""",2020-09-07,5,seconds
+"text='stolen' and channel=""cnn""",2020-09-08,2,seconds
+"text='stolen' and channel=""cnn""",2020-09-12,1,seconds
+"text='stolen' and channel=""cnn""",2020-09-16,1,seconds
+"text='stolen' and channel=""cnn""",2020-09-18,4,seconds
+"text='stolen' and channel=""cnn""",2020-09-19,7,seconds
+"text='stolen' and channel=""cnn""",2020-09-20,1,seconds
+"text='stolen' and channel=""cnn""",2020-09-21,6,seconds
+"text='stolen' and channel=""cnn""",2020-09-22,7,seconds
+"text='stolen' and channel=""cnn""",2020-09-23,3,seconds
+"text='stolen' and channel=""cnn""",2020-09-24,1,seconds
+"text='stolen' and channel=""cnn""",2020-09-25,4,seconds
+"text='stolen' and channel=""cnn""",2020-09-26,4,seconds
+"text='stolen' and channel=""cnn""",2020-09-27,5,seconds
+"text='stolen' and channel=""cnn""",2020-09-28,2,seconds
+"text='stolen' and channel=""cnn""",2020-10-01,5,seconds
+"text='stolen' and channel=""cnn""",2020-10-09,1,seconds
+"text='stolen' and channel=""cnn""",2020-10-11,1,seconds
+"text='stolen' and channel=""cnn""",2020-10-13,2,seconds
+"text='stolen' and channel=""cnn""",2020-10-15,1,seconds
+"text='stolen' and channel=""cnn""",2020-10-18,5,seconds
+"text='stolen' and channel=""cnn""",2020-10-19,1,seconds
+"text='stolen' and channel=""cnn""",2020-10-21,3,seconds
+"text='stolen' and channel=""cnn""",2020-10-22,4,seconds
+"text='stolen' and channel=""cnn""",2020-10-23,6,seconds
+"text='stolen' and channel=""cnn""",2020-10-24,2,seconds
+"text='stolen' and channel=""cnn""",2020-10-25,6,seconds
+"text='stolen' and channel=""cnn""",2020-10-26,1,seconds
+"text='stolen' and channel=""cnn""",2020-10-28,1,seconds
+"text='stolen' and channel=""cnn""",2020-11-01,6,seconds
+"text='stolen' and channel=""cnn""",2020-11-03,6,seconds
+"text='stolen' and channel=""cnn""",2020-11-04,12,seconds
+"text='stolen' and channel=""cnn""",2020-11-05,24,seconds
+"text='stolen' and channel=""cnn""",2020-11-06,14,seconds
+"text='stolen' and channel=""cnn""",2020-11-07,6,seconds
+"text='stolen' and channel=""cnn""",2020-11-08,35,seconds
+"text='stolen' and channel=""cnn""",2020-11-09,29,seconds
+"text='stolen' and channel=""cnn""",2020-11-10,21,seconds
+"text='stolen' and channel=""cnn""",2020-11-11,13,seconds
+"text='stolen' and channel=""cnn""",2020-11-12,10,seconds
+"text='stolen' and channel=""cnn""",2020-11-13,15,seconds
+"text='stolen' and channel=""cnn""",2020-11-14,29,seconds
+"text='stolen' and channel=""cnn""",2020-11-15,35,seconds
+"text='stolen' and channel=""cnn""",2020-11-16,6,seconds
+"text='stolen' and channel=""cnn""",2020-11-17,4,seconds
+"text='stolen' and channel=""cnn""",2020-11-18,6,seconds
+"text='stolen' and channel=""cnn""",2020-11-19,7,seconds
+"text='stolen' and channel=""cnn""",2020-11-20,13,seconds
+"text='stolen' and channel=""cnn""",2020-11-21,15,seconds
+"text='stolen' and channel=""cnn""",2020-11-22,7,seconds
+"text='stolen' and channel=""cnn""",2020-11-23,10.988,seconds
+"text='stolen' and channel=""cnn""",2020-11-24,9,seconds
+"text='stolen' and channel=""cnn""",2020-11-25,13,seconds
+"text='stolen' and channel=""cnn""",2020-11-26,9,seconds
+"text='stolen' and channel=""cnn""",2020-11-27,16,seconds
+"text='stolen' and channel=""cnn""",2020-11-28,5,seconds
+"text='stolen' and channel=""cnn""",2020-11-29,12,seconds
+"text='stolen' and channel=""cnn""",2020-11-30,8,seconds
+"text='stolen' and channel=""cnn""",2020-12-01,7,seconds
+"text='stolen' and channel=""cnn""",2020-12-02,12,seconds
+"text='stolen' and channel=""cnn""",2020-12-03,12,seconds
+"text='stolen' and channel=""cnn""",2020-12-04,14,seconds
+"text='stolen' and channel=""cnn""",2020-12-05,11,seconds
+"text='stolen' and channel=""cnn""",2020-12-06,15,seconds
+"text='stolen' and channel=""cnn""",2020-12-07,11,seconds
+"text='stolen' and channel=""cnn""",2020-12-08,3,seconds
+"text='stolen' and channel=""cnn""",2020-12-09,7,seconds
+"text='stolen' and channel=""cnn""",2020-12-10,4,seconds
+"text='stolen' and channel=""cnn""",2020-12-11,7,seconds
+"text='stolen' and channel=""cnn""",2020-12-12,13,seconds
+"text='stolen' and channel=""cnn""",2020-12-13,22,seconds
+"text='stolen' and channel=""cnn""",2020-12-15,6,seconds
+"text='stolen' and channel=""cnn""",2020-12-16,27,seconds
+"text='stolen' and channel=""cnn""",2020-12-17,12,seconds
+"text='stolen' and channel=""cnn""",2020-12-18,9,seconds
+"text='stolen' and channel=""cnn""",2020-12-19,1,seconds
+"text='stolen' and channel=""cnn""",2020-12-20,3,seconds
+"text='stolen' and channel=""cnn""",2020-12-21,7,seconds
+"text='stolen' and channel=""cnn""",2020-12-22,9,seconds
+"text='stolen' and channel=""cnn""",2020-12-23,7,seconds
+"text='stolen' and channel=""cnn""",2020-12-24,3,seconds
+"text='stolen' and channel=""cnn""",2020-12-26,3,seconds
+"text='stolen' and channel=""cnn""",2020-12-27,10,seconds
+"text='stolen' and channel=""cnn""",2020-12-28,11,seconds
+"text='stolen' and channel=""cnn""",2020-12-29,6,seconds
+"text='stolen' and channel=""cnn""",2021-01-01,1,seconds
+"text='stolen' and channel=""cnn""",2021-01-02,5,seconds
+"text='stolen' and channel=""cnn""",2021-01-03,2,seconds
+"text='stolen' and channel=""cnn""",2021-01-04,11,seconds
+"text='stolen' and channel=""cnn""",2021-01-05,7,seconds
+"text='stolen' and channel=""cnn""",2021-01-06,10,seconds
+"text='stolen' and channel=""cnn""",2021-01-07,27,seconds
+"text='stolen' and channel=""cnn""",2021-01-08,16,seconds
+"text='stolen' and channel=""cnn""",2020-01-01,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-03,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-07,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-09,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-11,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-13,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-16,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-18,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-20,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-21,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-26,0,seconds
+"text='stolen' and channel=""cnn""",2020-01-29,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-01,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-03,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-04,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-06,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-08,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-11,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-12,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-14,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-20,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-22,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-24,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-26,0,seconds
+"text='stolen' and channel=""cnn""",2020-02-29,0,seconds
+"text='stolen' and channel=""cnn""",2020-03-07,0,seconds
+"text='stolen' and channel=""cnn""",2020-03-10,0,seconds
+"text='stolen' and channel=""cnn""",2020-03-22,0,seconds
+"text='stolen' and channel=""cnn""",2020-03-25,0,seconds
+"text='stolen' and channel=""cnn""",2020-03-28,0,seconds
+"text='stolen' and channel=""cnn""",2020-04-01,0,seconds
+"text='stolen' and channel=""cnn""",2020-04-03,0,seconds
+"text='stolen' and channel=""cnn""",2020-04-06,0,seconds
+"text='stolen' and channel=""cnn""",2020-04-22,0,seconds
+"text='stolen' and channel=""cnn""",2020-04-26,0,seconds
+"text='stolen' and channel=""cnn""",2020-04-28,0,seconds
+"text='stolen' and channel=""cnn""",2020-05-04,0,seconds
+"text='stolen' and channel=""cnn""",2020-05-07,0,seconds
+"text='stolen' and channel=""cnn""",2020-05-10,0,seconds
+"text='stolen' and channel=""cnn""",2020-05-15,0,seconds
+"text='stolen' and channel=""cnn""",2020-05-18,0,seconds
+"text='stolen' and channel=""cnn""",2020-05-28,0,seconds
+"text='stolen' and channel=""cnn""",2020-05-30,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-02,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-08,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-10,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-15,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-18,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-19,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-21,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-22,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-25,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-27,0,seconds
+"text='stolen' and channel=""cnn""",2020-06-30,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-06,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-09,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-11,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-13,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-16,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-18,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-19,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-23,0,seconds
+"text='stolen' and channel=""cnn""",2020-07-26,0,seconds
+"text='stolen' and channel=""cnn""",2020-08-03,0,seconds
+"text='stolen' and channel=""cnn""",2020-08-13,0,seconds
+"text='stolen' and channel=""cnn""",2020-08-21,0,seconds
+"text='stolen' and channel=""cnn""",2020-08-26,0,seconds
+"text='stolen' and channel=""cnn""",2020-08-28,0,seconds
+"text='stolen' and channel=""cnn""",2020-08-30,0,seconds
+"text='stolen' and channel=""cnn""",2020-08-31,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-03,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-04,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-09,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-11,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-13,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-15,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-17,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-29,0,seconds
+"text='stolen' and channel=""cnn""",2020-09-30,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-02,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-08,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-10,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-12,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-14,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-16,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-17,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-20,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-27,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-29,0,seconds
+"text='stolen' and channel=""cnn""",2020-10-31,0,seconds
+"text='stolen' and channel=""cnn""",2020-11-02,0,seconds
+"text='stolen' and channel=""cnn""",2020-12-14,0,seconds
+"text='stolen' and channel=""cnn""",2020-12-25,0,seconds
+"text='stolen' and channel=""cnn""",2020-12-30,0,seconds
+"text='stolen' and channel=""cnn""",2020-12-31,0,seconds
+"text='fraud' and channel=""cnn""",2020-01-01,2,seconds
+"text='fraud' and channel=""cnn""",2020-01-02,2,seconds
+"text='fraud' and channel=""cnn""",2020-01-05,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-06,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-07,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-08,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-09,5,seconds
+"text='fraud' and channel=""cnn""",2020-01-10,8,seconds
+"text='fraud' and channel=""cnn""",2020-01-11,2.9610000000000003,seconds
+"text='fraud' and channel=""cnn""",2020-01-13,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-14,4,seconds
+"text='fraud' and channel=""cnn""",2020-01-15,3,seconds
+"text='fraud' and channel=""cnn""",2020-01-16,8,seconds
+"text='fraud' and channel=""cnn""",2020-01-17,2,seconds
+"text='fraud' and channel=""cnn""",2020-01-19,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-20,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-21,3,seconds
+"text='fraud' and channel=""cnn""",2020-01-23,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-24,2,seconds
+"text='fraud' and channel=""cnn""",2020-01-25,2,seconds
+"text='fraud' and channel=""cnn""",2020-01-26,2,seconds
+"text='fraud' and channel=""cnn""",2020-01-27,4,seconds
+"text='fraud' and channel=""cnn""",2020-01-28,3,seconds
+"text='fraud' and channel=""cnn""",2020-01-29,1,seconds
+"text='fraud' and channel=""cnn""",2020-01-30,6,seconds
+"text='fraud' and channel=""cnn""",2020-01-31,1,seconds
+"text='fraud' and channel=""cnn""",2020-02-02,5,seconds
+"text='fraud' and channel=""cnn""",2020-02-03,1,seconds
+"text='fraud' and channel=""cnn""",2020-02-04,2,seconds
+"text='fraud' and channel=""cnn""",2020-02-05,3,seconds
+"text='fraud' and channel=""cnn""",2020-02-06,6,seconds
+"text='fraud' and channel=""cnn""",2020-02-07,1,seconds
+"text='fraud' and channel=""cnn""",2020-02-08,7,seconds
+"text='fraud' and channel=""cnn""",2020-02-10,2,seconds
+"text='fraud' and channel=""cnn""",2020-02-11,1,seconds
+"text='fraud' and channel=""cnn""",2020-02-13,1,seconds
+"text='fraud' and channel=""cnn""",2020-02-14,6,seconds
+"text='fraud' and channel=""cnn""",2020-02-15,6,seconds
+"text='fraud' and channel=""cnn""",2020-02-16,3,seconds
+"text='fraud' and channel=""cnn""",2020-02-17,15,seconds
+"text='fraud' and channel=""cnn""",2020-02-18,22,seconds
+"text='fraud' and channel=""cnn""",2020-02-19,29.62,seconds
+"text='fraud' and channel=""cnn""",2020-02-20,4,seconds
+"text='fraud' and channel=""cnn""",2020-02-21,4,seconds
+"text='fraud' and channel=""cnn""",2020-02-22,2,seconds
+"text='fraud' and channel=""cnn""",2020-02-25,4.239,seconds
+"text='fraud' and channel=""cnn""",2020-02-28,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-02,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-03,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-06,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-07,2,seconds
+"text='fraud' and channel=""cnn""",2020-03-08,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-09,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-18,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-19,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-25,1,seconds
+"text='fraud' and channel=""cnn""",2020-03-28,2,seconds
+"text='fraud' and channel=""cnn""",2020-03-29,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-04,2,seconds
+"text='fraud' and channel=""cnn""",2020-04-05,2,seconds
+"text='fraud' and channel=""cnn""",2020-04-06,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-07,8,seconds
+"text='fraud' and channel=""cnn""",2020-04-08,32.474000000000004,seconds
+"text='fraud' and channel=""cnn""",2020-04-09,19.224,seconds
+"text='fraud' and channel=""cnn""",2020-04-10,9,seconds
+"text='fraud' and channel=""cnn""",2020-04-11,15,seconds
+"text='fraud' and channel=""cnn""",2020-04-12,6,seconds
+"text='fraud' and channel=""cnn""",2020-04-14,1.869,seconds
+"text='fraud' and channel=""cnn""",2020-04-15,3,seconds
+"text='fraud' and channel=""cnn""",2020-04-17,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-18,3,seconds
+"text='fraud' and channel=""cnn""",2020-04-21,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-22,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-24,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-26,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-28,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-29,1,seconds
+"text='fraud' and channel=""cnn""",2020-04-30,1,seconds
+"text='fraud' and channel=""cnn""",2020-05-08,4,seconds
+"text='fraud' and channel=""cnn""",2020-05-09,8,seconds
+"text='fraud' and channel=""cnn""",2020-05-10,3,seconds
+"text='fraud' and channel=""cnn""",2020-05-12,2,seconds
+"text='fraud' and channel=""cnn""",2020-05-13,8,seconds
+"text='fraud' and channel=""cnn""",2020-05-14,1,seconds
+"text='fraud' and channel=""cnn""",2020-05-16,3,seconds
+"text='fraud' and channel=""cnn""",2020-05-17,6,seconds
+"text='fraud' and channel=""cnn""",2020-05-18,6,seconds
+"text='fraud' and channel=""cnn""",2020-05-19,4,seconds
+"text='fraud' and channel=""cnn""",2020-05-20,51,seconds
+"text='fraud' and channel=""cnn""",2020-05-21,79.295,seconds
+"text='fraud' and channel=""cnn""",2020-05-22,14,seconds
+"text='fraud' and channel=""cnn""",2020-05-23,9,seconds
+"text='fraud' and channel=""cnn""",2020-05-24,34.9,seconds
+"text='fraud' and channel=""cnn""",2020-05-25,15,seconds
+"text='fraud' and channel=""cnn""",2020-05-26,19,seconds
+"text='fraud' and channel=""cnn""",2020-05-27,26,seconds
+"text='fraud' and channel=""cnn""",2020-05-28,3,seconds
+"text='fraud' and channel=""cnn""",2020-05-29,2,seconds
+"text='fraud' and channel=""cnn""",2020-05-31,2,seconds
+"text='fraud' and channel=""cnn""",2020-06-02,3,seconds
+"text='fraud' and channel=""cnn""",2020-06-04,1,seconds
+"text='fraud' and channel=""cnn""",2020-06-09,3,seconds
+"text='fraud' and channel=""cnn""",2020-06-10,3,seconds
+"text='fraud' and channel=""cnn""",2020-06-11,1,seconds
+"text='fraud' and channel=""cnn""",2020-06-15,2,seconds
+"text='fraud' and channel=""cnn""",2020-06-16,1,seconds
+"text='fraud' and channel=""cnn""",2020-06-17,1,seconds
+"text='fraud' and channel=""cnn""",2020-06-18,6,seconds
+"text='fraud' and channel=""cnn""",2020-06-19,13,seconds
+"text='fraud' and channel=""cnn""",2020-06-20,4,seconds
+"text='fraud' and channel=""cnn""",2020-06-22,6,seconds
+"text='fraud' and channel=""cnn""",2020-06-23,13,seconds
+"text='fraud' and channel=""cnn""",2020-06-24,15,seconds
+"text='fraud' and channel=""cnn""",2020-06-26,2,seconds
+"text='fraud' and channel=""cnn""",2020-06-28,4,seconds
+"text='fraud' and channel=""cnn""",2020-06-29,5,seconds
+"text='fraud' and channel=""cnn""",2020-07-02,3,seconds
+"text='fraud' and channel=""cnn""",2020-07-03,10,seconds
+"text='fraud' and channel=""cnn""",2020-07-04,3,seconds
+"text='fraud' and channel=""cnn""",2020-07-07,7,seconds
+"text='fraud' and channel=""cnn""",2020-07-08,16,seconds
+"text='fraud' and channel=""cnn""",2020-07-10,2,seconds
+"text='fraud' and channel=""cnn""",2020-07-12,2,seconds
+"text='fraud' and channel=""cnn""",2020-07-13,1,seconds
+"text='fraud' and channel=""cnn""",2020-07-14,5,seconds
+"text='fraud' and channel=""cnn""",2020-07-15,1,seconds
+"text='fraud' and channel=""cnn""",2020-07-16,1,seconds
+"text='fraud' and channel=""cnn""",2020-07-17,1,seconds
+"text='fraud' and channel=""cnn""",2020-07-19,11.835,seconds
+"text='fraud' and channel=""cnn""",2020-07-20,24.009,seconds
+"text='fraud' and channel=""cnn""",2020-07-21,24.685,seconds
+"text='fraud' and channel=""cnn""",2020-07-23,5,seconds
+"text='fraud' and channel=""cnn""",2020-07-24,30.068,seconds
+"text='fraud' and channel=""cnn""",2020-07-25,4,seconds
+"text='fraud' and channel=""cnn""",2020-07-26,1,seconds
+"text='fraud' and channel=""cnn""",2020-07-27,6,seconds
+"text='fraud' and channel=""cnn""",2020-07-28,17,seconds
+"text='fraud' and channel=""cnn""",2020-07-29,10,seconds
+"text='fraud' and channel=""cnn""",2020-07-30,20,seconds
+"text='fraud' and channel=""cnn""",2020-07-31,35.53,seconds
+"text='fraud' and channel=""cnn""",2020-08-01,13,seconds
+"text='fraud' and channel=""cnn""",2020-08-02,17,seconds
+"text='fraud' and channel=""cnn""",2020-08-03,19.823999999999998,seconds
+"text='fraud' and channel=""cnn""",2020-08-04,75.724,seconds
+"text='fraud' and channel=""cnn""",2020-08-05,47.495,seconds
+"text='fraud' and channel=""cnn""",2020-08-06,36.165,seconds
+"text='fraud' and channel=""cnn""",2020-08-07,13,seconds
+"text='fraud' and channel=""cnn""",2020-08-08,35.685,seconds
+"text='fraud' and channel=""cnn""",2020-08-09,9,seconds
+"text='fraud' and channel=""cnn""",2020-08-10,10,seconds
+"text='fraud' and channel=""cnn""",2020-08-11,18,seconds
+"text='fraud' and channel=""cnn""",2020-08-12,7,seconds
+"text='fraud' and channel=""cnn""",2020-08-13,49.339,seconds
+"text='fraud' and channel=""cnn""",2020-08-14,80.09899999999999,seconds
+"text='fraud' and channel=""cnn""",2020-08-15,84,seconds
+"text='fraud' and channel=""cnn""",2020-08-16,72,seconds
+"text='fraud' and channel=""cnn""",2020-08-17,30,seconds
+"text='fraud' and channel=""cnn""",2020-08-18,19,seconds
+"text='fraud' and channel=""cnn""",2020-08-19,13,seconds
+"text='fraud' and channel=""cnn""",2020-08-20,46.573,seconds
+"text='fraud' and channel=""cnn""",2020-08-21,33,seconds
+"text='fraud' and channel=""cnn""",2020-08-22,43,seconds
+"text='fraud' and channel=""cnn""",2020-08-23,71.873,seconds
+"text='fraud' and channel=""cnn""",2020-08-24,36.856,seconds
+"text='fraud' and channel=""cnn""",2020-08-25,10,seconds
+"text='fraud' and channel=""cnn""",2020-08-27,1,seconds
+"text='fraud' and channel=""cnn""",2020-08-28,1,seconds
+"text='fraud' and channel=""cnn""",2020-08-29,2,seconds
+"text='fraud' and channel=""cnn""",2020-08-31,6,seconds
+"text='fraud' and channel=""cnn""",2020-09-01,4,seconds
+"text='fraud' and channel=""cnn""",2020-09-02,47,seconds
+"text='fraud' and channel=""cnn""",2020-09-03,67,seconds
+"text='fraud' and channel=""cnn""",2020-09-04,27,seconds
+"text='fraud' and channel=""cnn""",2020-09-05,15,seconds
+"text='fraud' and channel=""cnn""",2020-09-06,56.202,seconds
+"text='fraud' and channel=""cnn""",2020-09-07,4,seconds
+"text='fraud' and channel=""cnn""",2020-09-08,12,seconds
+"text='fraud' and channel=""cnn""",2020-09-09,34,seconds
+"text='fraud' and channel=""cnn""",2020-09-10,4,seconds
+"text='fraud' and channel=""cnn""",2020-09-11,16,seconds
+"text='fraud' and channel=""cnn""",2020-09-12,7,seconds
+"text='fraud' and channel=""cnn""",2020-09-13,13,seconds
+"text='fraud' and channel=""cnn""",2020-09-14,1,seconds
+"text='fraud' and channel=""cnn""",2020-09-15,5,seconds
+"text='fraud' and channel=""cnn""",2020-09-16,9,seconds
+"text='fraud' and channel=""cnn""",2020-09-17,4,seconds
+"text='fraud' and channel=""cnn""",2020-09-18,7,seconds
+"text='fraud' and channel=""cnn""",2020-09-20,1,seconds
+"text='fraud' and channel=""cnn""",2020-09-21,2,seconds
+"text='fraud' and channel=""cnn""",2020-09-22,9,seconds
+"text='fraud' and channel=""cnn""",2020-09-23,14,seconds
+"text='fraud' and channel=""cnn""",2020-09-24,90,seconds
+"text='fraud' and channel=""cnn""",2020-09-25,173.721,seconds
+"text='fraud' and channel=""cnn""",2020-09-26,66,seconds
+"text='fraud' and channel=""cnn""",2020-09-27,25,seconds
+"text='fraud' and channel=""cnn""",2020-09-28,54,seconds
+"text='fraud' and channel=""cnn""",2020-09-29,68.39500000000001,seconds
+"text='fraud' and channel=""cnn""",2020-09-30,59,seconds
+"text='fraud' and channel=""cnn""",2020-10-01,70,seconds
+"text='fraud' and channel=""cnn""",2020-10-05,5,seconds
+"text='fraud' and channel=""cnn""",2020-10-07,17,seconds
+"text='fraud' and channel=""cnn""",2020-10-08,24,seconds
+"text='fraud' and channel=""cnn""",2020-10-09,10,seconds
+"text='fraud' and channel=""cnn""",2020-10-10,19,seconds
+"text='fraud' and channel=""cnn""",2020-10-11,14,seconds
+"text='fraud' and channel=""cnn""",2020-10-12,13,seconds
+"text='fraud' and channel=""cnn""",2020-10-13,15,seconds
+"text='fraud' and channel=""cnn""",2020-10-14,10,seconds
+"text='fraud' and channel=""cnn""",2020-10-15,14,seconds
+"text='fraud' and channel=""cnn""",2020-10-16,9.515,seconds
+"text='fraud' and channel=""cnn""",2020-10-17,2.8,seconds
+"text='fraud' and channel=""cnn""",2020-10-18,6,seconds
+"text='fraud' and channel=""cnn""",2020-10-19,11,seconds
+"text='fraud' and channel=""cnn""",2020-10-20,9,seconds
+"text='fraud' and channel=""cnn""",2020-10-21,9.949,seconds
+"text='fraud' and channel=""cnn""",2020-10-22,6.961,seconds
+"text='fraud' and channel=""cnn""",2020-10-23,1,seconds
+"text='fraud' and channel=""cnn""",2020-10-24,12,seconds
+"text='fraud' and channel=""cnn""",2020-10-25,11,seconds
+"text='fraud' and channel=""cnn""",2020-10-26,18,seconds
+"text='fraud' and channel=""cnn""",2020-10-28,1,seconds
+"text='fraud' and channel=""cnn""",2020-10-29,4.605,seconds
+"text='fraud' and channel=""cnn""",2020-10-30,4,seconds
+"text='fraud' and channel=""cnn""",2020-10-31,6,seconds
+"text='fraud' and channel=""cnn""",2020-11-01,17,seconds
+"text='fraud' and channel=""cnn""",2020-11-02,40,seconds
+"text='fraud' and channel=""cnn""",2020-11-03,11,seconds
+"text='fraud' and channel=""cnn""",2020-11-04,56,seconds
+"text='fraud' and channel=""cnn""",2020-11-05,97.645,seconds
+"text='fraud' and channel=""cnn""",2020-11-06,110.819,seconds
+"text='fraud' and channel=""cnn""",2020-11-07,33.266999999999996,seconds
+"text='fraud' and channel=""cnn""",2020-11-08,87.814,seconds
+"text='fraud' and channel=""cnn""",2020-11-09,128,seconds
+"text='fraud' and channel=""cnn""",2020-11-10,185.91,seconds
+"text='fraud' and channel=""cnn""",2020-11-11,202.371,seconds
+"text='fraud' and channel=""cnn""",2020-11-12,137.6,seconds
+"text='fraud' and channel=""cnn""",2020-11-13,112.779,seconds
+"text='fraud' and channel=""cnn""",2020-11-14,108.583,seconds
+"text='fraud' and channel=""cnn""",2020-11-15,89,seconds
+"text='fraud' and channel=""cnn""",2020-11-16,57.824,seconds
+"text='fraud' and channel=""cnn""",2020-11-17,80,seconds
+"text='fraud' and channel=""cnn""",2020-11-18,159.114,seconds
+"text='fraud' and channel=""cnn""",2020-11-19,136.61,seconds
+"text='fraud' and channel=""cnn""",2020-11-20,109.82300000000001,seconds
+"text='fraud' and channel=""cnn""",2020-11-21,69,seconds
+"text='fraud' and channel=""cnn""",2020-11-22,58,seconds
+"text='fraud' and channel=""cnn""",2020-11-23,74,seconds
+"text='fraud' and channel=""cnn""",2020-11-24,33.715,seconds
+"text='fraud' and channel=""cnn""",2020-11-25,65,seconds
+"text='fraud' and channel=""cnn""",2020-11-26,20,seconds
+"text='fraud' and channel=""cnn""",2020-11-27,188.34799999999998,seconds
+"text='fraud' and channel=""cnn""",2020-11-28,61,seconds
+"text='fraud' and channel=""cnn""",2020-11-29,116,seconds
+"text='fraud' and channel=""cnn""",2020-11-30,72,seconds
+"text='fraud' and channel=""cnn""",2020-12-01,169,seconds
+"text='fraud' and channel=""cnn""",2020-12-02,153,seconds
+"text='fraud' and channel=""cnn""",2020-12-03,141.79399999999998,seconds
+"text='fraud' and channel=""cnn""",2020-12-04,73.525,seconds
+"text='fraud' and channel=""cnn""",2020-12-05,56.579,seconds
+"text='fraud' and channel=""cnn""",2020-12-06,62,seconds
+"text='fraud' and channel=""cnn""",2020-12-07,88,seconds
+"text='fraud' and channel=""cnn""",2020-12-08,50,seconds
+"text='fraud' and channel=""cnn""",2020-12-09,46,seconds
+"text='fraud' and channel=""cnn""",2020-12-10,52,seconds
+"text='fraud' and channel=""cnn""",2020-12-11,49,seconds
+"text='fraud' and channel=""cnn""",2020-12-12,20,seconds
+"text='fraud' and channel=""cnn""",2020-12-13,26,seconds
+"text='fraud' and channel=""cnn""",2020-12-15,16,seconds
+"text='fraud' and channel=""cnn""",2020-12-16,126.011,seconds
+"text='fraud' and channel=""cnn""",2020-12-17,70.003,seconds
+"text='fraud' and channel=""cnn""",2020-12-18,13,seconds
+"text='fraud' and channel=""cnn""",2020-12-19,8,seconds
+"text='fraud' and channel=""cnn""",2020-12-20,43,seconds
+"text='fraud' and channel=""cnn""",2020-12-21,25,seconds
+"text='fraud' and channel=""cnn""",2020-12-22,39.644,seconds
+"text='fraud' and channel=""cnn""",2020-12-23,28,seconds
+"text='fraud' and channel=""cnn""",2020-12-24,25,seconds
+"text='fraud' and channel=""cnn""",2020-12-25,1,seconds
+"text='fraud' and channel=""cnn""",2020-12-26,8,seconds
+"text='fraud' and channel=""cnn""",2020-12-27,7,seconds
+"text='fraud' and channel=""cnn""",2020-12-28,40,seconds
+"text='fraud' and channel=""cnn""",2020-12-29,9,seconds
+"text='fraud' and channel=""cnn""",2020-12-31,1,seconds
+"text='fraud' and channel=""cnn""",2021-01-01,2,seconds
+"text='fraud' and channel=""cnn""",2021-01-02,30,seconds
+"text='fraud' and channel=""cnn""",2021-01-03,12,seconds
+"text='fraud' and channel=""cnn""",2021-01-04,40,seconds
+"text='fraud' and channel=""cnn""",2021-01-05,45.415,seconds
+"text='fraud' and channel=""cnn""",2021-01-06,13,seconds
+"text='fraud' and channel=""cnn""",2021-01-07,35,seconds
+"text='fraud' and channel=""cnn""",2021-01-08,23,seconds
+"text='fraud' and channel=""cnn""",2020-01-03,0,seconds
+"text='fraud' and channel=""cnn""",2020-01-04,0,seconds
+"text='fraud' and channel=""cnn""",2020-01-12,0,seconds
+"text='fraud' and channel=""cnn""",2020-01-18,0,seconds
+"text='fraud' and channel=""cnn""",2020-01-22,0,seconds
+"text='fraud' and channel=""cnn""",2020-02-01,0,seconds
+"text='fraud' and channel=""cnn""",2020-02-09,0,seconds
+"text='fraud' and channel=""cnn""",2020-02-12,0,seconds
+"text='fraud' and channel=""cnn""",2020-02-23,0,seconds
+"text='fraud' and channel=""cnn""",2020-02-24,0,seconds
+"text='fraud' and channel=""cnn""",2020-02-26,0,seconds
+"text='fraud' and channel=""cnn""",2020-02-27,0,seconds
+"text='fraud' and channel=""cnn""",2020-02-29,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-01,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-04,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-05,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-10,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-17,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-20,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-24,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-26,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-27,0,seconds
+"text='fraud' and channel=""cnn""",2020-03-30,0,seconds
+"text='fraud' and channel=""cnn""",2020-04-03,0,seconds
+"text='fraud' and channel=""cnn""",2020-04-13,0,seconds
+"text='fraud' and channel=""cnn""",2020-04-16,0,seconds
+"text='fraud' and channel=""cnn""",2020-04-19,0,seconds
+"text='fraud' and channel=""cnn""",2020-04-20,0,seconds
+"text='fraud' and channel=""cnn""",2020-04-23,0,seconds
+"text='fraud' and channel=""cnn""",2020-04-25,0,seconds
+"text='fraud' and channel=""cnn""",2020-04-27,0,seconds
+"text='fraud' and channel=""cnn""",2020-05-01,0,seconds
+"text='fraud' and channel=""cnn""",2020-05-07,0,seconds
+"text='fraud' and channel=""cnn""",2020-05-11,0,seconds
+"text='fraud' and channel=""cnn""",2020-05-15,0,seconds
+"text='fraud' and channel=""cnn""",2020-05-30,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-01,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-03,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-05,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-08,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-12,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-14,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-21,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-25,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-27,0,seconds
+"text='fraud' and channel=""cnn""",2020-06-30,0,seconds
+"text='fraud' and channel=""cnn""",2020-07-01,0,seconds
+"text='fraud' and channel=""cnn""",2020-07-05,0,seconds
+"text='fraud' and channel=""cnn""",2020-07-06,0,seconds
+"text='fraud' and channel=""cnn""",2020-07-09,0,seconds
+"text='fraud' and channel=""cnn""",2020-07-11,0,seconds
+"text='fraud' and channel=""cnn""",2020-07-18,0,seconds
+"text='fraud' and channel=""cnn""",2020-07-22,0,seconds
+"text='fraud' and channel=""cnn""",2020-08-26,0,seconds
+"text='fraud' and channel=""cnn""",2020-08-30,0,seconds
+"text='fraud' and channel=""cnn""",2020-09-19,0,seconds
+"text='fraud' and channel=""cnn""",2020-10-02,0,seconds
+"text='fraud' and channel=""cnn""",2020-10-04,0,seconds
+"text='fraud' and channel=""cnn""",2020-10-06,0,seconds
+"text='fraud' and channel=""cnn""",2020-10-27,0,seconds
+"text='fraud' and channel=""cnn""",2020-12-14,0,seconds
+"text='fraud' and channel=""cnn""",2020-12-30,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-01-09,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-01-10,5,seconds
+"text='voter fraud' and channel=""cnn""",2020-01-13,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-02-02,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-02-10,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-02-11,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-07,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-08,18,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-09,9,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-10,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-11,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-26,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-09,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-10,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-12,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-19,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-20,30,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-21,34,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-22,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-23,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-24,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-26,13,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-27,17,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-28,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-29,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-31,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-09,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-10,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-15,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-19,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-20,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-23,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-24,7,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-28,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-29,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-03,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-12,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-19,8.809999999999999,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-20,13.875,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-21,19.637,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-24,21.035,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-27,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-28,7,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-29,5,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-30,7,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-31,10.239,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-01,7,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-02,5,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-03,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-04,18,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-05,9,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-06,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-07,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-08,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-10,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-11,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-13,15,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-14,28.71,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-15,20,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-16,34,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-17,14,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-18,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-19,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-21,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-22,8,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-23,32.299,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-24,8,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-25,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-28,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-29,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-31,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-02,15,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-03,24,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-04,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-05,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-06,29.07,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-07,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-08,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-09,14,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-11,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-12,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-13,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-15,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-17,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-18,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-20,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-21,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-22,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-23,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-24,29,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-25,90.72,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-26,36,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-27,11,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-28,8,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-29,12,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-30,7,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-01,18,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-05,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-07,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-08,13,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-09,5,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-10,11,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-11,12,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-12,5,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-13,10,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-14,7,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-15,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-16,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-18,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-19,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-20,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-22,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-24,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-25,7,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-26,11,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-29,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-30,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-31,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-01,3.063,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-02,12,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-03,3,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-04,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-05,12,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-06,23,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-07,13,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-08,34.945,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-09,45,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-10,63,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-11,62,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-12,46,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-13,38,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-14,48,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-15,33,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-16,20,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-17,23,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-18,54.114,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-19,46.601,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-20,16,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-21,28,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-22,17,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-23,14,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-24,8,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-25,30,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-26,9,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-27,36,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-28,18,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-29,65,seconds
+"text='voter fraud' and channel=""cnn""",2020-11-30,23,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-01,39,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-02,43,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-03,41,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-04,21,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-05,25,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-06,23,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-07,23,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-08,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-09,5,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-10,12,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-11,9,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-12,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-13,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-15,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-16,57,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-17,27,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-18,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-19,2,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-20,28,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-21,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-22,8,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-23,6,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-24,10,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-25,1,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-27,4,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-28,22,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-29,2,seconds
+"text='voter fraud' and channel=""cnn""",2021-01-02,18,seconds
+"text='voter fraud' and channel=""cnn""",2021-01-03,1,seconds
+"text='voter fraud' and channel=""cnn""",2021-01-04,8,seconds
+"text='voter fraud' and channel=""cnn""",2021-01-05,12,seconds
+"text='voter fraud' and channel=""cnn""",2021-01-06,2,seconds
+"text='voter fraud' and channel=""cnn""",2021-01-07,14,seconds
+"text='voter fraud' and channel=""cnn""",2021-01-08,12,seconds
+"text='voter fraud' and channel=""cnn""",2020-01-08,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-01-11,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-01-12,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-01-14,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-02-01,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-02-03,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-02-09,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-02-12,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-06,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-12,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-25,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-04-27,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-08,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-11,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-13,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-18,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-25,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-05-30,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-01,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-08,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-11,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-14,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-16,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-18,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-21,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-22,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-25,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-27,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-06-30,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-02,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-04,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-11,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-13,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-18,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-22,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-23,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-25,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-07-26,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-09,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-12,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-20,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-26,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-27,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-08-30,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-01,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-10,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-14,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-16,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-09-19,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-02,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-04,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-06,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-17,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-21,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-23,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-27,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-10-28,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-14,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-26,0,seconds
+"text='voter fraud' and channel=""cnn""",2020-12-30,0,seconds
+"text='voter fraud' and channel=""cnn""",2021-01-01,0,seconds

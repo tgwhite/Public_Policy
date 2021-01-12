@@ -7,6 +7,7 @@ library(ggforce)
 library(ggrepel)
 library(extrafont)
 library(uuid)
+library(scales)
 
 loadfonts(device = "win")
 font_family = 'Calibri'
@@ -34,6 +35,7 @@ fraud_stats_by_year = group_by(heritage_voterfraud_database, Year) %>%
   summarize(
     count = n()
   ) 
+
 
 ##### Get political data #####
 
@@ -66,11 +68,19 @@ house_elections = read.csv('1976-2018-house.csv') %>%
 
 
 margins_by_house_race = get_margins_by_race(house_elections %>% 
-                                              group_by(state, year, district)) 
+                                              group_by(state, year, district)) %>%
+  mutate(
+    race_id = paste(state, year, district, sep = '_')
+  )
 
 house_totals_by_state_year = group_by(margins_by_house_race, state, year) %>%
   summarize(
     house_total_votes = sum(total_votes, na.rm = T)
+  )
+
+group_by(margins_by_house_race, year) %>%
+  summarize(
+    n_races = n_distinct(race_id)
   )
 
 
@@ -248,7 +258,7 @@ stacked_circle_dat = bind_rows(
   tibble(
     plot_order = 7,
     # circle_desc = NA,
-    circle_desc = 'Very few federal elections are close enough to be impacted by fraud.' %>% str_wrap(32),
+    circle_desc = 'Few federal elections are close enough to be impacted by fraud.' %>% str_wrap(32),
     desc = "close race desc", 
     source_label = '',
     desc_position = 0, 
@@ -278,7 +288,7 @@ stacked_circle_dat = bind_rows(
   tibble(
     plot_order = 9,
     # circle_desc = NA,
-    circle_desc = 'Large scale fraud carries a strong punishment and can be detected easily, which serves as a deterrent.' %>% str_wrap(28),
+    circle_desc = 'Large-scale fraud carries a strong punishment and can be detected easily, which serves as a deterrent.' %>% str_wrap(28),
     desc = "last panel desc", 
     source_label = '',
     desc_position = 0, 
@@ -345,7 +355,7 @@ fraud_anim = ggplot(stacked_circle_dat) +
 setwd('~/Public_Policy_Upd/Projects/Voting/output')
 
 animate(fraud_anim,
-         renderer = gifski_renderer("fraud_frequency_comparison.gif"),
+         renderer = gifski_renderer("fraud_frequency_comparison_upd.gif"),
           nframes = 300,
          height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
