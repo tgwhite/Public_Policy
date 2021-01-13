@@ -360,5 +360,8 @@ animate(fraud_anim,
          height = 8, width = 8, units = 'in',  type = 'cairo-png', res = 200)
 
 
-  
+
+# consider creating barchart, saving that down separately, and then reading that in as a set of pixels
+# plot the pixels and view_zoom will show it perfectly. 
+# http://mfviz.com/r-image-art/
 
